@@ -66,3 +66,10 @@ a{
 .bold{
   font-weight: bold;
 }
+hr{
+  color:#909097
+}
+
+.pl-4{
+  padding-left: 25px;
+}

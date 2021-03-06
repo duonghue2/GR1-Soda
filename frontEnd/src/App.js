@@ -6,6 +6,7 @@ import {
   withRouter
 } from "react-router-dom"; 
 import Home from './pages/home/Home'
+import ProductDetail from './pages/productDetail/ProductDetail'
 //import Home from './pages/Home.js'
 // import News from './pages/News.js'
 // import Shop from './pages/Shop.js'
@@ -27,6 +28,7 @@ function App(props) {
           <div className="">
         
             <Route path="/" exact component={Home}></Route>
+            <Route path="/products/:id" component={ProductDetail}></Route>
              {/*  <Route path="/home" exact component={Home}></Route>
           <Route path="/news" exact component={News}></Route>
             <Route path="/men" exact component={Shop}></Route>
@@ -37,7 +39,7 @@ function App(props) {
             <Route path="/women/:cate" exact component={Shop}></Route>
             <Route path="/contact" exact component={Contact}></Route>
             <Route path="/collection/:id" exact component={Collection}></Route>
-            <Route path="/products/:id" exact component={ProductDetail}></Route>
+            
             <Route path="/admin" exact component={Login}></Route>
             <Route path="/admin/dashboard" exact component={Dashboard}></Route>
             <Route path="/checkout" exact component={Checkout}></Route>  */}
