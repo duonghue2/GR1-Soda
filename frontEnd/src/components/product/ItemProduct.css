@@ -64,3 +64,16 @@ font-weight: bold;
     padding-top: 7px;
     padding-bottom: 7px;
 }
+.yellow{
+    color:#ffb136
+}
+.ant-modal-body{
+padding:unset!important;
+
+}
+.text-center{
+    text-align: center;
+}
+.price{
+    font-size: 30px;
+}

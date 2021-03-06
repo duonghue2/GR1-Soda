@@ -1,5 +1,5 @@
 import React from 'react';
-import {Row,Col,Button} from 'antd';
+import {Row,Col} from 'antd';
 
 import ItemProduct from '../../components/product/ItemProduct'
 import './ItemProduct.css'
@@ -31,9 +31,7 @@ class DisplayListProduct extends React.Component{
                 <ItemProduct source={this.props.source} product={this.props.product} {...this.props}/>
             </Col>
       
-            ))}
-            
-            
+            ))}      
                          </Row>
 
                          <Row align="middle" justify="center">

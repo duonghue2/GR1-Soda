@@ -2,8 +2,6 @@ import React from 'react';
 import {Image,Row} from 'antd';
 import{ShoppingCartOutlined,HeartOutlined}from '@ant-design/icons'
 import ProductDetail from './ProductDetail'
-import { withRouter } from 'react-router'; 
-
 import './ItemProduct.css'
 class ItemProduct extends React.Component{
 state={
