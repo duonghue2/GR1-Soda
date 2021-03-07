@@ -11,13 +11,14 @@ class Banner extends React.Component{
     }
 render(){
     return (
-        <div>
+        <div className="banner">
         <Carousel afterChange={this.onChange} autoplay={true} effect="fade">
-        <div>
+        <div >
             <span className="test">New Arival</span>
             <span className="women"><a href="/">Women collection</a></span>
             <span className="man"><a href="/">Man collection</a></span>
-          <Image src={Banner1} preview={false} height="82vh"/>
+            
+          <Image src={Banner1} preview={false} height="82vh"  />
         </div>
         <div>
         <span className="whiteSneaker"><a href="/">White Sneaker</a></span>

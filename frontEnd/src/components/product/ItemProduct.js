@@ -29,7 +29,7 @@ setVisible=(e)=>{
     render(){
         const { match, location, history } = this.props
         return(
-            <div >
+            <div style={{paddingLeft:"40px",paddingRight:"40px"}} >
                 <div>
                 <Image src={this.props.source} alt="" onMouseMove={this.showCart} onMouseOut={this.hiddenCart} preview={false} onClick={this.showDetail}/>
                 <Row align="middle"  justify="center" className={this.state.className} onMouseMove={this.showCart} onMouseOut={this.hiddenCart}>
@@ -42,7 +42,7 @@ setVisible=(e)=>{
                 </div>
                 <div className="mt-5 mb-5">
                 <Row align="middle" justify="center">
-                    <span className="nameProduct" onClick={()=>history.push('/'+this.props.product.id)}>{this.props.product.name}</span>
+                    <span className="nameProduct" onClick={()=>history.push('/products/'+this.props.product.id)}>{this.props.product.name}</span>
                 </Row>
                 <Row align="middle" justify="center">
                     <span className="bold">{this.props.product.price}</span>

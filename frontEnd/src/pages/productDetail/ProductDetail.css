@@ -1,0 +1,15 @@
+.ant-tabs-tab, .ant-tabs-tab:hover{
+    font-size: 21px !important;
+}
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn{
+    color: #23232c!important;
+}
+.review{
+    width:50vw;
+    justify-content: center;
+ 
+}
+.ant-tabs-tabpane.ant-tabs-tabpane-active{
+    display: flex;
+    justify-content: center;
+}

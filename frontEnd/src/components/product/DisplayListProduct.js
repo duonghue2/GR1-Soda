@@ -25,9 +25,10 @@ class DisplayListProduct extends React.Component{
     render(){
         return(
             <div className="mb-5">
-            <Row align="start">
-            {this.props.numberItem.map((item,index)=>(
-              <Col lg={5} xl={5} xs={22} md={10} sm={10} offset={1}>
+            <Row align="start" justify="start">
+            {this.props.numberItem.map((item,index)=>(   
+    
+     <Col lg={6} xl={6} xs={22} md={10} sm={10}   >
                 <ItemProduct source={this.props.source} product={this.props.product} {...this.props}/>
             </Col>
       

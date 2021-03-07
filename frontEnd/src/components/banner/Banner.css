@@ -99,3 +99,9 @@ text-decoration: underline;
             text-decoration: underline;
             }
       }
+
+.banner{
+margin-left: 40px;
+margin-right: 40px;
+height: 82vh;
+}

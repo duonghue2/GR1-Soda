@@ -1,17 +1,45 @@
 import React from 'react'
 import Header from '../../components/header/Header'
 import Footer from '../../components/footer/Footer'
-import { Row, Col, Image, InputNumber } from 'antd'
+import { Row, Col, Image, InputNumber, Tabs } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ShoppingCartOutlined, HeartOutlined, RightOutlined, StarFilled } from '@ant-design/icons'
 import { currencyFormat } from '../../utils/function'
+import './ProductDetail.css'
 import image1 from '../../assests/Product/1-19.jpg'
 import image2 from '../../assests/Product/2-19.jpg'
 import image3 from '../../assests/Product/3-12.jpg'
 import image4 from '../../assests/Product/4-5.jpg'
 import image5 from '../../assests/Product/5.jpg'
 import { faFacebookF, faTwitter, faInstagram, faPinterest, faGoogle } from '@fortawesome/free-brands-svg-icons';
+import Review from './Review'
+const { TabPane } = Tabs;
 
+const review = [{
+  user: "Gerhard",
+  content: "Etenim nec iustitia nec amicitia esse omnino poterunt, nisi ipsae per se expetuntur. Quos quidem tibi studiose et diligenter tractandos magnopere censeo.",
+  date: "28/12/2016",
+  rate: 5
+},
+{
+  user: "Gerhard",
+  content: "Etenim nec iustitia nec amicitia esse omnino poterunt, nisi ipsae per se expetuntur. Quos quidem tibi studiose et diligenter tractandos magnopere censeo.",
+  date: "28/12/2016",
+  rate: 5
+},
+{
+  user: "Gerhard",
+  content: "Etenim nec iustitia nec amicitia esse omnino poterunt, nisi ipsae per se expetuntur. Quos quidem tibi studiose et diligenter tractandos magnopere censeo.",
+  date: "28/12/2016",
+  rate: 5
+},
+{
+  user: "Gerhard",
+  content: "Etenim nec iustitia nec amicitia esse omnino poterunt, nisi ipsae per se expetuntur. Quos quidem tibi studiose et diligenter tractandos magnopere censeo.",
+  date: "28/12/2016",
+  rate: 5
+}
+]
 class ProductDetail extends React.Component {
   state = {
     product: {
@@ -25,6 +53,9 @@ class ProductDetail extends React.Component {
       price: 215
 
     }
+  }
+  callback = () => {
+
   }
   render() {
     return (
@@ -88,7 +119,17 @@ class ProductDetail extends React.Component {
 
           </div>
 
+          <Tabs defaultActiveKey="1" onChange={this.callback} centered={true}>
+            <TabPane tab="Description" key="1">
+              <Row align="middle" justify="center">
+                <p>{this.state.product.description}</p>
+              </Row>
+            </TabPane>
+            <TabPane tab="Review" key="2">
+            <Review review={review}/>
+            </TabPane>
 
+          </Tabs>
 
 
         </div>

@@ -54,7 +54,7 @@ class ProductDetail extends React.Component{
           </Col >
           <Col lg={12} xs={12} md={12} className="pl-5 text-center ">
             <Row align="middle" justify="center" > 
-             <h1 style={{fontSize:"32px"}} className="mt-5"> <a href={"/product/"+this.state.product.id}>{this.state.product.name}</a></h1>
+             <h1 style={{fontSize:"32px"}} className="mt-5"> <a href={"/products/"+this.state.product.id}>{this.state.product.name}</a></h1>
             </Row>
             <Row align="middle" justify="center">
               <p style={{fontSize:"18px",paddingRight:"15px"}}>{this.state.product.description}</p>
