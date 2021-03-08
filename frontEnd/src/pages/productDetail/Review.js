@@ -9,20 +9,20 @@ class Review extends React.Component{
         return(
             <div className="review">
               {this.props.review.map((data,index)=>(
-                  <div key={index} >
+                  <div key={index}  className="review-div">
                   <Row align="middle" justify="space-between">
                   <Col>
                   <div>
                       <Row>
-                      {data.user}</Row>
-                      <Row> {data.date}</Row>
+                      <span className="bold size-18 ">{data.user}</span></Row>
+                      <Row> <span className="review-date">{data.date}</span></Row>
                       </div> 
                   </Col>
                   <Col> 
                   <StarFilled style={{color:"#ffb136"}} /><StarFilled style={{color:"#ffb136"}} /><StarFilled style={{color:"#ffb136"}} /><StarFilled style={{color:"#ffb136"}} /><StarFilled style={{color:"#ffb136"}} />
                   </Col>
                   </Row>
-                  <Row><p>{data.content}</p></Row>
+                  <Row><p className="review-date review-content">{data.content}</p></Row>
               </div>
               ))}  
             </div>

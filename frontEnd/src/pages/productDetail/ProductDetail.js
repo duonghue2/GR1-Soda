@@ -5,7 +5,10 @@ import { Row, Col, Image, InputNumber, Tabs } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ShoppingCartOutlined, HeartOutlined, RightOutlined, StarFilled } from '@ant-design/icons'
 import { currencyFormat } from '../../utils/function'
+import ItemProduct from '../../components/product/ItemProduct'
 import './ProductDetail.css'
+import  image from '../../assests/Product/1.jpg'
+
 import image1 from '../../assests/Product/1-19.jpg'
 import image2 from '../../assests/Product/2-19.jpg'
 import image3 from '../../assests/Product/3-12.jpg'
@@ -40,6 +43,14 @@ const review = [{
   rate: 5
 }
 ]
+const product={
+  name:"Azure tote",
+  describe:"this is a shirt",
+  price:"$150",
+  state:"new",
+  id:1
+}
+const loop=[1,1,1,1]
 class ProductDetail extends React.Component {
   state = {
     product: {
@@ -133,7 +144,17 @@ class ProductDetail extends React.Component {
 
 
         </div>
+<div>
+<Row align="start" justify="space-around">
+{loop.map((item,index)=>(
+  <Col lg={5} xl={5}>
+  <ItemProduct key={index}  source={image} product={product} {...this.props}/>
+  </Col>
+))}
 
+
+</Row>
+</div>
         <Footer />
       </div>
     )

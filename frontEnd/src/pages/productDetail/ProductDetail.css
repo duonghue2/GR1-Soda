@@ -13,3 +13,19 @@
     display: flex;
     justify-content: center;
 }
+.size-18{
+    font-size: 18px;
+}
+.review-date{
+    color:#909097
+}
+.review-content{
+    margin-top: 13px;
+    margin-bottom: 25px;
+    font-size: 18px;
+
+}
+.review-div{
+    border-bottom:  1px solid #f1f2f4;
+    margin-top: 25px;
+}

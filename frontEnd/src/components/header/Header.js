@@ -94,7 +94,7 @@ class Header extends React.Component {
       src={logo}
     /></div>
           </div>
-          <div>
+          <div style={{marginRight:"20px"}}>
               <SearchOutlined style={{ fontSize: '25px', marginRight:"25px",fontWeight:'bold' }} />
               <ShoppingCartOutlined style={{ fontSize: '25px', marginRight:"25px" }} />
               <UserOutlined  style={{ fontSize: '25px', marginRight:"25px" }}/>  
