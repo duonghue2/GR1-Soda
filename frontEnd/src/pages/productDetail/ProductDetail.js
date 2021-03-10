@@ -145,6 +145,7 @@ class ProductDetail extends React.Component {
 
         </div>
 <div>
+  <Row align="middle" justify="center">  <span className="related-product">Our offer</span></Row>
 <Row align="start" justify="space-around">
 {loop.map((item,index)=>(
   <Col lg={5} xl={5}>
