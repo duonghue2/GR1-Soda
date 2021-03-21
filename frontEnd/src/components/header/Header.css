@@ -3,6 +3,21 @@
 }
 .header{
   height:"13vh";
-  padding-left: 25px;
+ 
+  margin: 20px 10px 20px 10px;
 
+}
+
+.logo{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  
+}
+.item-header{
+  width: 25vw;
+}
+.float-right{
+ display: flex;
+ justify-content: flex-end;
 }

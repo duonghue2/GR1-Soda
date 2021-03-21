@@ -21,36 +21,37 @@ class Header extends React.Component {
         const { current } = this.state;
         return (
             <div >
-            <Row align="middle" justify="space-between" className="header" >
+            <Row align="middle" justify="space-between" className="header"   >
+            <div className="item-header">
             <Menu onClick={this.handleClick} selectedKeys={[current]} mode="horizontal">
             <Menu.Item key="home" >
-              Home
+             <a href="/">Home</a> 
             </Menu.Item>
           
             <SubMenu key="women" title="Women">
             
             <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+            <a  rel="noopener noreferrer" href="/women/shirt">
                 Shirt
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+            <a  rel="noopener noreferrer" href="/women/pants">
                 Pants
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+            <a  rel="noopener noreferrer" href="/women/dress">
                 Dress
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+            <a  rel="noopener noreferrer" href="/women/bags">
                 Bags
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+            <a  rel="noopener noreferrer" href="/women/glasses">
                 Glasses
         </a>
         </Menu.Item>
@@ -58,27 +59,27 @@ class Header extends React.Component {
             <SubMenu key="man" title="Men">
             
             <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+            <a  rel="noopener noreferrer" href="/man/shirt">
                 Shirt
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
+            <a  rel="noopener noreferrer" href="/man/pants">
                 Pants
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+            <a  rel="noopener noreferrer" href="/man/jackets">
                 Jackets
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+            <a  rel="noopener noreferrer" href="/man/bags">
                 Bags
         </a>
         </Menu.Item>
         <Menu.Item>
-            <a target="_blank" rel="noopener noreferrer" href="https://www.luohanacademy.com">
+            <a  rel="noopener noreferrer" href="/man/glasses">
                 Glasses
         </a>
         </Menu.Item>
@@ -87,14 +88,14 @@ class Header extends React.Component {
               Contact
             </Menu.Item>
           </Menu>
-          <div>
-              <div style={{alignItems:"center"}}>
+          </div>
+              <div className="logo item-header">
           <Image preview={false}
       width={100}
       src={logo}
     /></div>
-          </div>
-          <div style={{marginRight:"20px"}}>
+         
+          <div className="item-header float-right">
               <SearchOutlined style={{ fontSize: '25px', marginRight:"25px",fontWeight:'bold' }} />
               <ShoppingCartOutlined style={{ fontSize: '25px', marginRight:"25px" }} />
               <UserOutlined  style={{ fontSize: '25px', marginRight:"25px" }}/>  

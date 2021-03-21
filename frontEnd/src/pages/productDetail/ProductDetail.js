@@ -72,12 +72,12 @@ class ProductDetail extends React.Component {
     return (
       <div>
         <Header />
-        <div>
-          <Row align="middle" className="mb-5 pl-4">
-            Home  <RightOutlined /> {this.state.product.category} <RightOutlined />  {this.state.product.name}
+        <div className="content">
+          <Row align="middle" className=" route">
+            Home  <RightOutlined  className="router"/> {this.state.product.category} <RightOutlined  className="router" />  {this.state.product.name}
           </Row>
           <Row>
-            <Col lg={12} xl={12} md={12} xs={24} style={{ paddingLeft: "25px" }}>{
+            <Col lg={12} xl={12} md={12} xs={24}>{
               this.state.product.image.map((item, index) => (
                 <Image src={item} key="index" style={{ marginBottom: "15px" }} />
               ))

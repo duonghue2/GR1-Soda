@@ -1,5 +1,7 @@
 .banner{
     height: 75vh;
+    margin-left: 30px;
+    margin-right: 36px;
 }
 .test,.shopNow,.whiteSneaker,.women,.man{
     position: absolute;
@@ -25,7 +27,7 @@
 }
 .women{
 top:53vh;
-left:40vw;
+left:35vw;
 font-size: 30px;
 text-decoration: underline;
 }

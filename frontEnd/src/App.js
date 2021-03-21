@@ -7,6 +7,7 @@ import {
 } from "react-router-dom"; 
 import Home from './pages/home/Home'
 import ProductDetail from './pages/productDetail/ProductDetail'
+import Categories from './pages/categories/Categories'
 //import Home from './pages/Home.js'
 // import News from './pages/News.js'
 // import Shop from './pages/Shop.js'
@@ -29,6 +30,8 @@ function App(props) {
         
             <Route path="/" exact component={Home}></Route>
             <Route path="/products/:id" component={ProductDetail}></Route>
+            <Route path="/women/:categories" component={Categories}></Route>
+            <Route path="/man/:categories" component={Categories}></Route>
              {/*  <Route path="/home" exact component={Home}></Route>
           <Route path="/news" exact component={News}></Route>
             <Route path="/men" exact component={Shop}></Route>
