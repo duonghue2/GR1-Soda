@@ -16,7 +16,7 @@ const product={
 class Home extends React.Component{
     state = {
         current: 'bestSellers',
-        numberItem:[1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        numberItem:[1,1,1,1,1,1,1,1,1,1,1,1]
       };
     
       handleClick = e => {
@@ -41,19 +41,22 @@ class Home extends React.Component{
             <Row align='middle' justify='center' style={{marginTop:"15px",marginBottom:"15px"}}>
             
             <Menu onClick={this.handleClick} selectedKeys={[current]} mode="horizontal">
+            <Menu.Item key="allProduct" >
+          <span style={{fontSize:"20px"}}>All products</span>
+        </Menu.Item>
         <Menu.Item key="bestSeller" >
-          <span style={{fontSize:"24px"}}>Best sellers</span>
+          <span style={{fontSize:"20px"}}>Best sellers</span>
         </Menu.Item>
         <Menu.Item key="newProduct"  >
-        <span style={{fontSize:"24px"}}>New Product</span>
+        <span style={{fontSize:"20px"}}>New Product</span>
         </Menu.Item>
         <Menu.Item key="saleProduct"  >
-        <span style={{fontSize:"24px"}}>Sale Product</span>
+        <span style={{fontSize:"20px"}}>Sale Product</span>
         </Menu.Item>
         </Menu>
             </Row>
              </div >
-           <DisplayListProduct numberItem={this.state.numberItem} source={image} product={product} {...this.props}/>
+           <DisplayListProduct plainOptions={['Shirt','Male|Jacket','Dress','Glasses','Bag']} numberItem={this.state.numberItem} source={image} product={product} {...this.props}/>
              <Footer/>
             </div>
           

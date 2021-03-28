@@ -2,3 +2,23 @@
     color:white;
     z-index: 1;
 }
+.verticle{
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+}
+.title{
+    font-size: 40px;
+    text-transform: uppercase;
+}
+.subTitle{
+    font-size: 32px;
+    
+}
+.mr-5{
+    margin-right: 25px;
+}
+.pagination{
+    margin-right: 25px;
+    margin-bottom:25px ;
+}

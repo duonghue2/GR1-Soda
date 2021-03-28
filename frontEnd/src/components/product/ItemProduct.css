@@ -116,3 +116,23 @@ div.sticky {
     top: 0;
   
   }
+  .InputFilter{
+      width:100px!important;
+  }
+  .ml-5{
+      margin-left: 25px;
+  }
+  .submitFilter{
+      width: 100%;
+      background-color: #23232c;
+      color:white;
+      border-radius: 5px;
+      border:none;
+      height: 40px;
+      margin-top: 10px;
+      cursor: pointer;
+  }
+  .option >*{
+    width:120px;
+
+  }
