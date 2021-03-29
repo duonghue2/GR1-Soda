@@ -14,7 +14,28 @@ visible:false
 hiddenCart=()=>{
     this.setState({className:"Hidden"})
 }
-addToCart=()=>{}
+addToCart=(i)=>{
+    debugger;
+    let listProduct=[];
+    let item={};
+    item.id=i.id;
+    item.qty=2;
+   
+  let j=  localStorage.getItem("cart");
+  console.log(j);
+  if(!j){listProduct.push(item);
+    
+localStorage.setItem("cart",[])}
+  else{
+      console.log(j[0]);
+  listProduct=[...j];
+  listProduct.push(item);}
+  console.log(listProduct.toString());
+localStorage.setItem("cart",listProduct.toString());
+console.log(localStorage.getItem("cart"))
+
+
+}
 addToWishlist=()=>{}
 showDetail=()=>{
     this.setState({
@@ -33,7 +54,7 @@ setVisible=(e)=>{
            <div style={{position:"relative"}}>
                 <Image src={this.props.source} alt="" onMouseMove={this.showCart} onMouseOut={this.hiddenCart} preview={false} onClick={this.showDetail}/>
                 <Row align="middle"  justify="center" className={this.state.className} onMouseMove={this.showCart} onMouseOut={this.hiddenCart}>
-                    <div className="circle" onClick={this.addToCart}><ShoppingCartOutlined  style={{color:'white',fontSize:"32px",alignSelf:'center',paddingTop:"5px"}}/></div>
+                    <div className="circle" onClick={()=>this.addToCart(this.props.product)}><ShoppingCartOutlined  style={{color:'white',fontSize:"32px",alignSelf:'center',paddingTop:"5px"}}/></div>
                     <div className="circle" onClick={this.addToWishlist}><HeartOutlined style={{color:'white',fontSize:"32px",alignSelf:'center',paddingTop:"5px"}}/></div>
                 </Row>
               {this.props.product.state&&<div className={this.props.product.state=="new"?"new":"sale"}>
