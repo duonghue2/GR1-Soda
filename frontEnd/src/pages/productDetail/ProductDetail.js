@@ -68,6 +68,16 @@ class ProductDetail extends React.Component {
   callback = () => {
 
   }
+  addToCart=(i)=>{
+    let listProduct=[];
+    let j=  localStorage.getItem("cart");
+    if(!j){listProduct.push(i);}
+    else{
+    listProduct=[...j];
+    listProduct.push(i);}
+  localStorage.setItem("cart",listProduct);
+  console.log(localStorage.getItem("cart"));
+  }
   render() {
     return (
       <div>
@@ -105,7 +115,7 @@ class ProductDetail extends React.Component {
                 <br />
                 <Row align="middle" justify="center">
                   <InputNumber min={1} max={this.state.product.max} defaultValue={1} onChange={this.onChange} size="large" />
-                  <button className="primary-btn" onClick={this.addToCart}> <ShoppingCartOutlined style={{ color: 'white', fontSize: "28px", alignSelf: 'center' }} /><span style={{ paddingLeft: "5px", fontSize: "20px" }}>  Add to cart </span></button>
+                  <button className="primary-btn" onClick={()=>this.addToCart(this.state.product)}> <ShoppingCartOutlined style={{ color: 'white', fontSize: "28px", alignSelf: 'center' }} /><span style={{ paddingLeft: "5px", fontSize: "20px" }}>  Add to cart </span></button>
                   <button className="wishlist" onClick={this.addToWishlist} > <HeartOutlined style={{ fontSize: "28px", alignSelf: 'center', color: "#909097" }} /></button>
                 </Row>
                 <br />
