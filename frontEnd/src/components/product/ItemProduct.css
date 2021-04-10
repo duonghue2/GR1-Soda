@@ -6,6 +6,7 @@
     align-self: center;
     margin-right: 10px;
     text-align: center;
+    cursor: pointer;
 }
 .loadMore{
     background-color: #23232c;

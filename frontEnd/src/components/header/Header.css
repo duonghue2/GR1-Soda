@@ -21,3 +21,6 @@
  display: flex;
  justify-content: flex-end;
 }
+.ant-menu-item-selected a{
+  font-size: 22px!important;
+}

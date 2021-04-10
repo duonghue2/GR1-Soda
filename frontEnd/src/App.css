@@ -74,3 +74,7 @@ hr{
 .pl-4{
   padding-left: 25px;
 }
+.ant-tabs-tab-btn:focus,.ant-tabs-tab-btn:hover{
+color:#23232c;
+
+}
