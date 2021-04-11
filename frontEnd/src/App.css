@@ -78,3 +78,33 @@ hr{
 color:#23232c;
 
 }
+.ant-modal-header{
+  display: flex;
+  justify-content: center;
+  border-bottom:unset  !important
+}
+.ant-modal-footer {
+  display: flex;
+  justify-content: center;
+  border-top:unset  !important
+}
+.ant-form{
+  padding-left: 14%!important;
+}
+input{
+  height: 40px;
+  font-size: 18px!important;
+}
+.ant-form-item{
+  align-items:center;
+}
+label{
+  font-size: 17px!important;
+}
+.ant-modal-title {
+font-size: 22px!important;
+}
+button{
+  height: 40px !important;
+  font-size: 18px !important;
+}
