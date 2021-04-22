@@ -1,0 +1,3 @@
+Scaffold-DbContext "Server=DESKTOP-9NGASCB\SQLEXPRESS;Database=Soda2; Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models -Force -context DbContext 
+
+Scaffold-DbContext "Server=DESKTOP-9NGASCB\SQLEXPRESS;Database=Soda2; Trusted_Connection=True;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entity -context Soda2Context -Project Test -force

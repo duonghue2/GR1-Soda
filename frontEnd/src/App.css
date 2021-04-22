@@ -104,7 +104,7 @@ label{
 .ant-modal-title {
 font-size: 22px!important;
 }
-button{
+ button.ant-btn, button.ant-btn-primary{
   height: 40px !important;
   font-size: 18px !important;
 }
