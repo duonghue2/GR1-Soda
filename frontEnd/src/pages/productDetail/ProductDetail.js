@@ -1,19 +1,16 @@
 import React from 'react'
 import Header from '../../components/header/Header'
 import Footer from '../../components/footer/Footer'
-import { Row, Col, Image, InputNumber, Tabs } from 'antd'
+import { Row, Col, Image, InputNumber, Tabs, message } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ShoppingCartOutlined, HeartOutlined, RightOutlined, StarFilled } from '@ant-design/icons'
+import { useHistory, useParams } from 'react-router-dom'
+import axios from 'axios'
+import { server } from '../../enviroment'
 import { currencyFormat } from '../../utils/function'
 import ItemProduct from '../../components/product/ItemProduct'
 import './ProductDetail.css'
-import  image from '../../assests/Product/1.jpg'
 
-import image1 from '../../assests/Product/1-19.jpg'
-import image2 from '../../assests/Product/2-19.jpg'
-import image3 from '../../assests/Product/3-12.jpg'
-import image4 from '../../assests/Product/4-5.jpg'
-import image5 from '../../assests/Product/5.jpg'
 import { faFacebookF, faTwitter, faInstagram, faPinterest, faGoogle } from '@fortawesome/free-brands-svg-icons';
 import Review from './Review'
 const { TabPane } = Tabs;
@@ -43,40 +40,59 @@ const review = [{
   rate: 5
 }
 ]
-const product={
-  name:"Azure tote",
-  describe:"this is a shirt",
-  price:"$150",
-  state:"new",
-  id:1
-}
-const loop=[1,1,1,1]
+
+
 class ProductDetail extends React.Component {
+  constructor(props) {
+    super(props)
+  }
   state = {
     product: {
-      name: "Crewneck Blouse",
-      category: "Woman",
-      id: "4",
-      image: [image1, image2, image3, image4, image5],
-      description: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-      rate: 5,
-      max: 35,
-      price: 215
-
-    }
+      images: [],
+      detail: []
+    },
+    offer: []
   }
   callback = () => {
 
   }
-  addToCart=(i)=>{
-    let listProduct=[];
-    let j=  localStorage.getItem("cart");
-    if(!j){listProduct.push(i);}
-    else{
-    listProduct=[...j];
-    listProduct.push(i);}
-  localStorage.setItem("cart",listProduct);
-  console.log(localStorage.getItem("cart"));
+  addToCart = (i) => {
+    let listProduct = [];
+    let j = localStorage.getItem("cart");
+    if (!j) { listProduct.push(i); }
+    else {
+      listProduct = [...j];
+      listProduct.push(i);
+    }
+    localStorage.setItem("cart", listProduct);
+    console.log(localStorage.getItem("cart"));
+  }
+  async componentDidMount() {
+    const { id } = this.props.match.params
+    try {
+      await axios.get(server + 'api/Products/' + id).then((response) => {
+        // console.log(response);
+        if (response.data.status == 1)
+          this.state.product = response.data.data
+
+        console.log(this.state.product)
+      }, (error) => {
+        message.error("Some error occurs, pls try again");
+      });
+      await axios.post(server + 'api/Products/get-list-product', { page: 1, limit: 4 }).then((response) => {
+        // console.log(response);
+        if (response.data.status == 1)
+          this.state.offer = response.data.data
+        // console.log(this.state.listProduct)
+      }, (error) => {
+        message.error("Some error occurs, pls try again");
+      });
+      this.setState(this.state)
+
+    } catch (error) {
+
+    }
+
   }
   render() {
     return (
@@ -84,12 +100,12 @@ class ProductDetail extends React.Component {
         <Header />
         <div className="content">
           <Row align="middle" className=" route">
-            Home  <RightOutlined  className="router"/> {this.state.product.category} <RightOutlined  className="router" />  {this.state.product.name}
+            Home  <RightOutlined className="router" /> {this.state.product.category} <RightOutlined className="router" />  {this.state.product.name}
           </Row>
           <Row>
             <Col lg={12} xl={12} md={12} xs={24}>{
-              this.state.product.image.map((item, index) => (
-                <Image src={item} key="index" style={{ marginBottom: "15px" }} />
+              this.state.product.images.map((item, index) => (
+                <Image src={item} key={index} style={{ marginBottom: "15px" }} />
               ))
             }
 
@@ -97,7 +113,7 @@ class ProductDetail extends React.Component {
             <Col lg={12} xl={12} md={12} xs={24} className="pl-5 text-center">
               <div className="sticky">
                 <Row align="middle" justify="center" >
-                  <h1 style={{ fontSize: "32px" }} className="mt-5"> <a href={"/product/" + this.state.product.id}>{this.state.product.name}</a></h1>
+                  <h1 style={{ fontSize: "32px" }} className="mt-5"> <a href={"/products/" + this.state.product.id}>{this.state.product.name}</a></h1>
                 </Row>
                 <Row align="middle" justify="center">
                   <p style={{ fontSize: "18px", paddingRight: "15px" }}>{this.state.product.description}</p>
@@ -106,16 +122,16 @@ class ProductDetail extends React.Component {
                   <span><StarFilled style={{ color: "#ffb136" }} /> <StarFilled style={{ color: "#ffb136" }} /><StarFilled style={{ color: "#ffb136" }} /><StarFilled style={{ color: "#ffb136" }} /><StarFilled style={{ color: "#ffb136" }} /></span>
 
                 </Row>
-                <Row align="middle" justify="center"> (0 customer reviews)</Row>
+                <Row align="middle" justify="center"> (4 customer reviews)</Row>
                 <br />
                 <Row align="middle" justify="center">
-                  <span className="price">{currencyFormat(this.state.product.price)}</span>
+                  <span className="price">{this.state.product.detail.length == 0 ? this.state.product.originPrice : currencyFormat(this.state.product.detail[0].price)}</span>
                 </Row>
                 <br />
                 <br />
                 <Row align="middle" justify="center">
                   <InputNumber min={1} max={this.state.product.max} defaultValue={1} onChange={this.onChange} size="large" />
-                  <button className="primary-btn" onClick={()=>this.addToCart(this.state.product)}> <ShoppingCartOutlined style={{ color: 'white', fontSize: "28px", alignSelf: 'center' }} /><span style={{ paddingLeft: "5px", fontSize: "20px" }}>  Add to cart </span></button>
+                  <button className="primary-btn" onClick={() => this.addToCart(this.state.product)}> <ShoppingCartOutlined style={{ color: 'white', fontSize: "28px", alignSelf: 'center' }} /><span style={{ paddingLeft: "5px", fontSize: "20px" }}>  Add to cart </span></button>
                   <button className="wishlist" onClick={this.addToWishlist} > <HeartOutlined style={{ fontSize: "28px", alignSelf: 'center', color: "#909097" }} /></button>
                 </Row>
                 <br />
@@ -147,25 +163,25 @@ class ProductDetail extends React.Component {
               </Row>
             </TabPane>
             <TabPane tab="Review" key="2">
-            <Review review={review}/>
+              <Review review={review} />
             </TabPane>
 
           </Tabs>
 
 
         </div>
-<div>
-  <Row align="middle" justify="center">  <span className="related-product">Our offer</span></Row>
-<Row align="start" justify="space-around">
-{loop.map((item,index)=>(
-  <Col lg={5} xl={5}>
-  <ItemProduct key={index}  source={image} product={product} {...this.props}/>
-  </Col>
-))}
+        <div>
+          <Row align="middle" justify="center">  <span className="related-product">Our offer</span></Row>
+          <Row align="start" justify="space-around">
+            {this.state.offer.map((item, index) => (
+              <Col lg={5} xl={5}>
+                <ItemProduct key={index} product={item} {...this.props} />
+              </Col>
+            ))}
 
 
-</Row>
-</div>
+          </Row>
+        </div>
         <Footer />
       </div>
     )

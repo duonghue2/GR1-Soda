@@ -23,8 +23,9 @@ namespace Test.Controllers
         }
 
         // GET: api/Products
-        [HttpGet]
-        public async Task<BaseResponse> GetProducts()
+        [HttpPost]
+        [Route("get-list-product")]
+        public async Task<BaseResponse> GetProducts(getListProductRequest request)
         {
             try {
                 var listProduct =  _context.Products.ToList();
@@ -43,12 +44,14 @@ namespace Test.Controllers
                     productModel.Detail = detail;
                     listProductModel.Add(productModel);
                 }
+                var list = listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList();
                 var response = new BaseResponse();
                 response.Status = 1;
                 response.Message = "oke";
-                response.Data = listProductModel;
-            
-            return response;
+                response.Data = list;
+                response.Total = listProductModel.Count;
+
+                return response;
         }
         catch(Exception e){
                 var response = new BaseResponse();
@@ -93,11 +96,11 @@ namespace Test.Controllers
         }
         // GET: api/Products/name
         [HttpGet("name={name}")]
-        public async Task<BaseResponse> GetListProductByName(string name)
+        public async Task<BaseResponse> GetListProductByName(getListProductRequest request)
         {
             try
             {
-                var listProduct = await _context.Products.Where(s => s.Name.Contains(name)).ToListAsync();
+                var listProduct = await _context.Products.Where(s => s.Name.Contains(request.Name)).ToListAsync();
                 var response = new BaseResponse();
                 if (listProduct.Count==0)
                 {
@@ -123,11 +126,11 @@ namespace Test.Controllers
                     productModel.Detail = detail;
                     listProductModel.Add(productModel);
                 }
-             
+                var list = listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList();
                 response.Status = 1;
                 response.Message = "oke";
-                response.Data = listProductModel;
-
+                response.Data = list;
+                response.Total = listProductModel.Count;
                 return response;
             }
             catch (Exception e)
@@ -142,13 +145,13 @@ namespace Test.Controllers
 
         }
         // POST: api/Products/
-        [HttpPost("byCategory")]
-        public async Task<BaseResponse> GetListProductByCategory([FromBody]GetListProductByCateoryRequestcs request)
+        [HttpPost("by-category")]
+        public async Task<BaseResponse> GetListProductByCategory(GetListProductByCateoryRequestcs request)
         {
 
             try
             {
-                var listProduct = _context.Products.Where(s=>s.Category.Contains(request.Category)).ToList();
+                var listProduct = _context.Products.Where(s=>s.Category.ToLower().Contains(request.Category.ToLower())).ToList();
                 var listProductModel = new List<ProductModel>();
                 foreach (Product pr in listProduct)
                 {
@@ -168,10 +171,12 @@ namespace Test.Controllers
                         listProductModel.Add(productModel);
                     }
                 }
+                var list =listProductModel.Count>request.Limit? listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList():listProductModel;
                 var response = new BaseResponse();
                 response.Status = 1;
                 response.Message = "oke";
-                response.Data = listProductModel;
+                response.Data = list;
+                response.Total = listProductModel.Count;
 
                 return response;
             }

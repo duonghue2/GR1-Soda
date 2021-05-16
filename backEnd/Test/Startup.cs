@@ -29,6 +29,11 @@ namespace Test
             services.AddScoped<IStateService, StateService>();
             var connection = @"Server=DESKTOP-9NGASCB\SQLEXPRESS;Database=Soda2;Trusted_Connection=True;";
             services.AddDbContext<Soda2Context>(options => options.UseSqlServer(connection));
+
+            services.AddCors();
+            services.AddSwaggerGen();
+
+            //  services.AddRazorPages();
             object p = services.AddControllers().AddNewtonsoftJson(options =>
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
 );
@@ -47,9 +52,22 @@ namespace Test
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-           // app.UseCors(Microsoft.Owin.Cors.CorsOptions.AllowAll);
-            app.UseStaticFiles();
 
+            app.UseStaticFiles();
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+            app.UseCors(builder => builder
+                       .AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .SetIsOriginAllowed((host) => true)
+                       .AllowCredentials()
+                   );
             app.UseRouting();
 
             app.UseAuthorization();
@@ -60,6 +78,11 @@ namespace Test
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+          
+
+
+           
+
         }
     }
 }

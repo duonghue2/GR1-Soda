@@ -1,23 +1,16 @@
 import React from 'react';
 import Header from '../../components/header/Header';
 import Banner from '../../components/banner/Banner';
-import { Row, Menu, Col } from 'antd';
-import ItemProduct from '../../components/product/ItemProduct';
+import { Row, Menu, Col, message } from 'antd';
 import Footer from '../../components/footer/Footer';
 import DisplayListProduct from '../../components/product/DisplayListProduct'
-import image from '../../assests/Product/1.jpg'
-const product = {
-  name: "Azure tote",
-  describe: "this is a shirt",
-  price: "$150",
-  state: "new",
-  id: 1,
-  url: image
-}
+import { server } from '../../enviroment'
+import axios from 'axios'
+
 class Home extends React.Component {
   state = {
     current: 'bestSellers',
-    numberItem: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    listProduct: []
   };
 
   handleClick = e => {
@@ -32,6 +25,25 @@ class Home extends React.Component {
       //get sale product
     }
   };
+  getUser = async () => {
+    try {
+      await axios.post(server + 'api/Products/get-list-product', { page: 1, limit: 12 }).then((response) => {
+        // console.log(response);
+        if (response.data.status == 1)
+          this.state.listProduct = response.data.data
+        // console.log(this.state.listProduct)
+      }, (error) => {
+        message.error("Some error occurs, pls try again");
+      });
+
+    } catch (error) {
+
+    }
+    this.setState(this.state);
+  }
+  componentDidMount() {
+    this.getUser();
+  }
   render() {
     const { current } = this.state;
     return (
@@ -57,7 +69,7 @@ class Home extends React.Component {
             </Menu>
           </Row>
         </div >
-        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} numberItem={this.state.numberItem} source={image} product={product} {...this.props} />
+        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} />
         <Footer />
       </div>
 

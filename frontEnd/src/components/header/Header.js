@@ -100,16 +100,7 @@ class Header extends React.Component {
 
                             <SubMenu key="women" title="Women">
 
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/women/shirt">
-                                        Shirt
-                                       </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/women/pants">
-                                        Pants
-                                      </a>
-                                </Menu.Item>
+
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/women/dress">
                                         Dress
@@ -123,6 +114,11 @@ class Header extends React.Component {
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/women/glasses">
                                         Glasses
+                                 </a>
+                                </Menu.Item>
+                                <Menu.Item>
+                                    <a rel="noopener noreferrer" href="/women/jacket">
+                                        Jacket
                                  </a>
                                 </Menu.Item>
                             </SubMenu>

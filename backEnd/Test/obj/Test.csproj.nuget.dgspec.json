@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\DELL\\source\\repos\\Test\\Test\\Test.csproj": {}
+    "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj": {}
   },
   "projects": {
-    "C:\\Users\\DELL\\source\\repos\\Test\\Test\\Test.csproj": {
+    "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\DELL\\source\\repos\\Test\\Test\\Test.csproj",
+        "projectUniqueName": "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj",
         "projectName": "Test",
-        "projectPath": "C:\\Users\\DELL\\source\\repos\\Test\\Test\\Test.csproj",
+        "projectPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\DELL\\source\\repos\\Test\\Test\\obj\\",
+        "outputPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -47,6 +47,10 @@
               "target": "Package",
               "version": "[5.12.12, )"
             },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.Mvc.NewtonsoftJson": {
               "target": "Package",
               "version": "[3.1.2, )"
@@ -68,6 +72,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[3.1.5, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[5.6.3, )"
             }
           },
           "imports": [
@@ -88,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, Row, message } from 'antd';
 import { ShoppingCartOutlined, HeartOutlined } from '@ant-design/icons'
 import ProductDetail from './ProductDetail'
+import defaultImage from '../../assests/Product/1.jpg'
 import './ItemProduct.css'
 class ItemProduct extends React.Component {
     state = {
@@ -53,12 +54,15 @@ class ItemProduct extends React.Component {
             visible: e
         })
     }
+
+
     render() {
         const { match, location, history } = this.props
+        // console.log(this.props.product)
         return (
             <div style={{ paddingLeft: "40px", paddingRight: "40px" }} >
                 <div style={{ position: "relative" }}>
-                    <Image src={this.props.source} alt="" onMouseMove={this.showCart} onMouseOut={this.hiddenCart} preview={false} onClick={this.showDetail} />
+                    <Image src={this.props.product.images[0] || defaultImage} alt="" onMouseMove={this.showCart} onMouseOut={this.hiddenCart} preview={false} onClick={this.showDetail} />
                     <Row align="middle" justify="center" className={this.state.className} onMouseMove={this.showCart} onMouseOut={this.hiddenCart}>
                         <div className="circle" onClick={() => this.addToCart(this.props.product)}><ShoppingCartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div>
                         <div className="circle" onClick={this.addToWishlist}><HeartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div>
@@ -73,10 +77,11 @@ class ItemProduct extends React.Component {
                         <span className="nameProduct" onClick={() => history.push('/products/' + this.props.product.id)}>{this.props.product.name}</span>
                     </Row>
                     <Row align="middle" justify="center">
-                        <span className="bold">{this.props.product.price}</span>
+                        <span className="bold">{this.props.product.detail[0] ? this.props.product.detail[0].price : 10}</span>
+
                     </Row>
                 </div>
-                <ProductDetail visible={this.state.visible} setVisible={this.setVisible} />
+                <ProductDetail visible={this.state.visible} product={this.props.product} setVisible={this.setVisible} />
             </div>
         )
     }
