@@ -10,9 +10,13 @@ import axios from 'axios'
 class Home extends React.Component {
   state = {
     current: 'bestSellers',
-    listProduct: []
+    listProduct: [],
+    index: 1,
+    total: 0,
+    loadMore: null,
   };
-
+  loadMore = "LoadMore";
+  index = 1;
   handleClick = e => {
     this.setState({ current: e.key });
     if (e.key == "bestSeller") {
@@ -25,12 +29,15 @@ class Home extends React.Component {
       //get sale product
     }
   };
-  getUser = async () => {
+  getListProduct = async (pageNumber) => {
     try {
-      await axios.post(server + 'api/Products/get-list-product', { page: 1, limit: 12 }).then((response) => {
-        // console.log(response);
+      await axios.post(server + 'api/Products/get-list-product', { page: pageNumber, limit: 12 }).then((response) => {
+        console.log(response.data);
         if (response.data.status == 1)
-          this.state.listProduct = response.data.data
+          this.state.listProduct = this.state.listProduct.concat(response.data.data);
+
+        this.state.total = response.data.total;
+        this.setState(this.state);
         // console.log(this.state.listProduct)
       }, (error) => {
         message.error("Some error occurs, pls try again");
@@ -39,10 +46,24 @@ class Home extends React.Component {
     } catch (error) {
 
     }
-    this.setState(this.state);
+
+  }
+  handleLoadMore = () => {
+
+    if (this.index * 12 < this.state.total) {
+      this.index = this.index + 1;
+      this.loadMore = "LoadMore";
+
+      this.getListProduct(this.index);
+
+    }
+    else {
+      this.loadMore = "Hidden"
+    }
+
   }
   componentDidMount() {
-    this.getUser();
+    this.getListProduct(1);
   }
   render() {
     const { current } = this.state;
@@ -69,7 +90,7 @@ class Home extends React.Component {
             </Menu>
           </Row>
         </div >
-        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} />
+        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} loadMore={this.loadMore} products={this.state.listProduct} {...this.props} handleLoadMore={this.handleLoadMore()} />
         <Footer />
       </div>
 

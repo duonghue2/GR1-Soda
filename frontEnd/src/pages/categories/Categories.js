@@ -14,21 +14,37 @@ import ProductDetail from '../../components/product/ProductDetail.js';
 class Categories extends React.Component {
   state = {
     current: 'bestSellers',
-    listProduct: []
+    listProduct: [],
+    loadMore: null,
+    index: 1,
+    total: 0
+
   };
-
-  async componentDidMount() {
+  getListProduct = async (pageNumber) => {
     const { match: { params } } = this.props;
-
-    await axios.post(server + 'api/Products/by-category', { page: 1, limit: 12, category: params.sex, subcategory: params.categories }).then((response) => {
+    await axios.post(server + 'api/Products/by-category', { page: pageNumber, limit: 12, category: params.sex, subcategory: params.categories }).then((response) => {
       // console.log(response);
       if (response.data.status == 1)
-        this.state.listProduct = response.data.data
+        this.state.listProduct = this.state.listProduct.concat(response.data.data)
+      this.state.total = response.data.total
       this.setState(this.state);
     }, (error) => {
       message.error("Some error occurs, pls try again");
     });
+  }
+  componentDidMount() {
 
+    this.getListProduct(1);
+
+  }
+  handleLoadMore() {
+    if (this.state.index * 12 < this.state.total) {
+      this.state.index = this.state.index + 1;
+      this.state.loadMore = "LoadMore";
+      this.getListProduct(this.state.index);
+    }
+    else this.state.loadMore = "Hidden"
+    this.setState(this.props)
   }
   render() {
     const { match: { params } } = this.props;
@@ -41,7 +57,7 @@ class Categories extends React.Component {
             <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row>
             <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row>
           </div>
-          <DisplayListProduct products={this.state.listProduct} {...this.props} />
+          <DisplayListProduct products={this.state.listProduct} loadMore={this.state.loadMore} {...this.props} handleLoadMore={this.handleLoadMore()} />
         </div>)
     else return (<div>
       {/* 

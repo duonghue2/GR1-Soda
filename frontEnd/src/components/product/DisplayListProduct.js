@@ -6,33 +6,25 @@ import './ItemProduct.css'
 const plainOptions = ['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag'];
 class DisplayListProduct extends React.Component {
     state = {
-        loadMore: "loadMore"
+
+        gender: null
     }
-    handleLoadMore = () => {
-        // call api to get more item
-    }
-    handleSex = () => {
-        //handleSex
+
+    handleSex = (e) => {
+        console.log(e);
+        this.state.gender = e;
+        this.setState(this.state);
     }
     componentDidMount() {
-        if (this.props.products.size % 4 !== 0 || this.props.products.size % 2 !== 0) {
-            this.setState({
-                loadMore: "Hidden"
-            })
-        }
-        else {
-            this.setState({
-                loadMore: "loadMore"
-            })
-        }
+
     }
     render() {
 
         return (
             <div className="mb-5 mt-5 ml-5">
-                <Row align="middle" justify="end" className="pagination">
-                    <Pagination defaultCurrent={1} total={50} />
-                </Row>
+                {/* <Row align="middle" justify="end" className="pagination">
+                    <Pagination defaultCurrent={1} total={this.props.total} />
+                </Row> */}
                 <Row>
                     <Col span={4}  >
                         <div >
@@ -42,7 +34,7 @@ class DisplayListProduct extends React.Component {
                                 </Row>
                                 <Row align="middle" justify="center">
                                     <div className="option">
-                                        <Checkbox.Group options={this.props.plainOptions} onChange={this.handleSex} />
+                                        <Checkbox.Group options={this.props.plainOptions} onChange={e => this.handleSex(e)} />
                                     </div>
                                 </Row>
                             </div>
@@ -75,7 +67,7 @@ class DisplayListProduct extends React.Component {
                         </Row>
 
                         <Row align="middle" justify="center">
-                            <button className={this.state.loadMore} onClick={this.handleLoadMore}>Load more</button>
+                            <button className={this.props.loadMore} onClick={this.props.handleLoadMore}>Load more</button>
                         </Row>
                     </Col>
                 </Row>

@@ -21,7 +21,7 @@ namespace Test.Controllers
             _context = context;
         }
 
-
+        public List<String> listToken { get; set; }= new List<string>();
         // PUT: api/getUser/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -79,13 +79,31 @@ namespace Test.Controllers
 
             return CreatedAtAction("GetUser", new { id = user.Id }, user);
         }
+        public string Decode(string username,string password)
+        {
+            string input = username + password;
+            char[] returnValue= input.ToCharArray();
+            for(var i = 0; i < input.Length; i++)
+            {
+                returnValue[i] = (char)(input[i] + 29);
+                
+            }
+            return new String(returnValue);
+
+        }
+        public bool Encode(string token)
+        {
+            return listToken.Contains(token);
+
+        }
+
         // POST: api/login
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost("login")]
-        public async Task<BaseResponse> Login(User user)
+        public async Task<LoginResponse> Login(LoginRequest user)
         {
-            var response = new BaseResponse();
+            var response = new LoginResponse();
             var data = _context.Users.Where(s => s.Email == user.Email && s.Password == user.Password).FirstOrDefault();
             if (data == null) { response.Status = 0;
                 response.Message = "Email or password is wrong";
@@ -93,10 +111,18 @@ namespace Test.Controllers
                 return response;
             }
             else
-            {
+            { var userR = new UserData();
+                userR.Email = data.Email;
+                userR.Phone = data.Phonenumber;
+                userR.UserName = data.Name;
+
                 response.Status = 1;
                 response.Message = "Succesfull login";
-                response.Data = null;
+                
+                response.Data = userR;
+                var token=Decode(user.Email, user.Password);
+                listToken.Add(token);
+                response.token = token;
                 return response;
             }
         }

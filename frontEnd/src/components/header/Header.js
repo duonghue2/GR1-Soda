@@ -1,12 +1,30 @@
-import { Menu, Image, Row, Modal, Form, Input, DatePicker, TimePicker, Select, Cascader, InputNumber } from 'antd';
+import { Menu, Image, Row, Modal, Form, Input, Select, message, Popover } from 'antd';
 import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
-
+import { server } from '../../enviroment'
+import axios from 'axios'
 import React from 'react'
 import logo from '../../assests/logo.png'
 import Banner from '../banner/Banner'
 import './Header.css'
 const { SubMenu } = Menu;
 const { Option } = Select;
+
+
+const content = (props) => {
+    const logout = (e) => {
+        e.preventDefault();
+        alert("log out");
+    }
+    return (
+        <div>
+            <Row>{props.userName} </Row>
+            <Row>{props.email}</Row>
+            <Row>{props.phone}</Row>
+            <Row><i onClick={e => logout(e)} style={{ color: '#FACC2E' }}>log out</i></Row>
+        </div>
+    )
+}
+
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -38,19 +56,27 @@ class Header extends React.Component {
             error: null,
             validation: "",
             value: null
-        }
+        },
+        userInfor: null
     };
 
     handleClick = e => {
         console.log('click ', e);
         this.setState({ current: e.key });
     };
-    login = () => {
-        this.setState({
-            visible: true
-        })
+    login = (e) => {
+        e.preventDefault();
+        if (this.state.userInfor == null)
+            this.setState({
+                visible: true
+            })
     }
-    handleSubmit = () => {
+    componentDidMount() {
+
+        this.state.userInfor = JSON.parse(localStorage.getItem('userInfo'));
+    }
+
+    handleSubmit = async () => {
         let email = document.getElementById('email').value;
         let password = document.getElementById('password').value;
         if (!email) {
@@ -64,6 +90,26 @@ class Header extends React.Component {
             this.state.password.error = "Password is not empty"
         }
         if (email && password) {
+            try {
+                await axios.post(server + 'api/login', { email: email, password: password }).then((response) => {
+
+                    if (response.data.status == 1) {
+                        localStorage.setItem("token", response.data.token);
+                        localStorage.setItem("userInfo", JSON.stringify(response.data.data));
+                        this.state.userInfor = response.data.data;
+                        message.success(response.data.message);
+                    }
+                    else message.error(response.data.message)
+                    this.setState({
+                        visible: false
+                    })
+                }, (error) => {
+                    message.error("Some error occurs, pls try again");
+                });
+
+            } catch (error) {
+
+            }
             // post data to server;
         }
 
@@ -164,8 +210,11 @@ class Header extends React.Component {
                     <div className="item-header float-right">
                         <SearchOutlined style={{ fontSize: '25px', marginRight: "25px", fontWeight: 'bold' }} />
                         <a href='/cart'><ShoppingCartOutlined style={{ fontSize: '25px', marginRight: "25px" }} /></a>
-                        <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} onClick={this.login} />
-
+                        {this.state.userInfor && <Popover placement="bottomRight" content={() => content(this.state.userInfor)} trigger="click">
+                            <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} />
+                        </Popover>}
+                        {!this.state.userInfor && <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} onClick={e => this.login(e)} />
+                        }
                     </div>
                     <Modal
                         title=" Login"
