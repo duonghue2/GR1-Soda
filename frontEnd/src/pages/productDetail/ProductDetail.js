@@ -4,7 +4,7 @@ import Footer from '../../components/footer/Footer'
 import { Row, Col, Image, InputNumber, Tabs, message } from 'antd'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ShoppingCartOutlined, HeartOutlined, RightOutlined, StarFilled } from '@ant-design/icons'
-import { useHistory, useParams } from 'react-router-dom'
+import { reactLocalStorage } from 'reactjs-localstorage';
 import axios from 'axios'
 import { server } from '../../enviroment'
 import { currencyFormat } from '../../utils/function'
@@ -58,14 +58,14 @@ class ProductDetail extends React.Component {
   }
   addToCart = (i) => {
     let listProduct = [];
-    let j = localStorage.getItem("cart");
+    let j = reactLocalStorage.getObject("Cart");
     if (!j) { listProduct.push(i); }
     else {
       listProduct = [...j];
       listProduct.push(i);
     }
-    localStorage.setItem("cart", listProduct);
-    console.log(localStorage.getItem("cart"));
+    reactLocalStorage.setObject("Cart", listProduct);
+
   }
   async componentDidMount() {
     const { id } = this.props.match.params
@@ -75,7 +75,7 @@ class ProductDetail extends React.Component {
         if (response.data.status == 1)
           this.state.product = response.data.data
 
-        console.log(this.state.product)
+
       }, (error) => {
         message.error("Some error occurs, pls try again");
       });

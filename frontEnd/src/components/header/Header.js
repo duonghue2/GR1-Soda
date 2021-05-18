@@ -4,23 +4,21 @@ import { server } from '../../enviroment'
 import axios from 'axios'
 import React from 'react'
 import logo from '../../assests/logo.png'
+import { reactLocalStorage } from 'reactjs-localstorage';
 import Banner from '../banner/Banner'
 import './Header.css'
 const { SubMenu } = Menu;
 const { Option } = Select;
 
 
-const content = (props) => {
-    const logout = (e) => {
-        e.preventDefault();
-        alert("log out");
-    }
+const content = ({ data, logout }) => {
+
     return (
         <div>
-            <Row>{props.userName} </Row>
-            <Row>{props.email}</Row>
-            <Row>{props.phone}</Row>
-            <Row><i onClick={e => logout(e)} style={{ color: '#FACC2E' }}>log out</i></Row>
+            <Row style={{ fontWeight: 'bold' }}>{data.userName} </Row>
+            <Row>{data.email}</Row>
+            <Row>{data.phone}</Row>
+            <Row><i onClick={e => logout(e)} style={{ color: '#FACC2E', cursor: 'pointer' }}>log out</i></Row>
         </div>
     )
 }
@@ -59,7 +57,26 @@ class Header extends React.Component {
         },
         userInfor: null
     };
+    logout = (e) => {
+        //  e.preventDefault();
+        reactLocalStorage.remove('token');
+        reactLocalStorage.remove('userInfo');
+        reactLocalStorage.remove('Cart');
+        this.state.userInfor = null;
+        this.state.email = {
+            error: null,
+            validation: "",
+            value: null,
+        };
+        this.state.password = {
+            error: null,
+            validation: "",
+            value: null
+        };
+        this.setState(this.state);
 
+        message.success("log out succesfully!");
+    }
     handleClick = e => {
         console.log('click ', e);
         this.setState({ current: e.key });
@@ -73,7 +90,7 @@ class Header extends React.Component {
     }
     componentDidMount() {
 
-        this.state.userInfor = JSON.parse(localStorage.getItem('userInfo'));
+        this.state.userInfor = reactLocalStorage.getObject('userInfo');
     }
 
     handleSubmit = async () => {
@@ -94,8 +111,9 @@ class Header extends React.Component {
                 await axios.post(server + 'api/login', { email: email, password: password }).then((response) => {
 
                     if (response.data.status == 1) {
-                        localStorage.setItem("token", response.data.token);
-                        localStorage.setItem("userInfo", JSON.stringify(response.data.data));
+                        reactLocalStorage.set('token', response.data.token);
+                        debugger;
+                        reactLocalStorage.setObject('userInfo', response.data.data);
                         this.state.userInfor = response.data.data;
                         message.success(response.data.message);
                     }
@@ -154,7 +172,7 @@ class Header extends React.Component {
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/women/bags">
-                                        Bags
+                                        Bag
                                    </a>
                                 </Menu.Item>
                                 <Menu.Item>
@@ -182,13 +200,8 @@ class Header extends React.Component {
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/man/jackets">
-                                        Jackets
+                                        Jacket
                                      </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/man/bags">
-                                        Bags
-                               </a>
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/man/glasses">
@@ -210,7 +223,7 @@ class Header extends React.Component {
                     <div className="item-header float-right">
                         <SearchOutlined style={{ fontSize: '25px', marginRight: "25px", fontWeight: 'bold' }} />
                         <a href='/cart'><ShoppingCartOutlined style={{ fontSize: '25px', marginRight: "25px" }} /></a>
-                        {this.state.userInfor && <Popover placement="bottomRight" content={() => content(this.state.userInfor)} trigger="click">
+                        {this.state.userInfor && <Popover placement="bottomRight" content={content({ data: this.state.userInfor, logout: this.logout })} trigger="click">
                             <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} />
                         </Popover>}
                         {!this.state.userInfor && <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} onClick={e => this.login(e)} />

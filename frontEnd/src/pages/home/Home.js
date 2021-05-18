@@ -14,6 +14,7 @@ class Home extends React.Component {
     index: 1,
     total: 0,
     loadMore: null,
+    loadMore: "LoadMore"
   };
   loadMore = "LoadMore";
   index = 1;
@@ -30,6 +31,7 @@ class Home extends React.Component {
     }
   };
   getListProduct = async (pageNumber) => {
+    debugger;
     try {
       await axios.post(server + 'api/Products/get-list-product', { page: pageNumber, limit: 12 }).then((response) => {
         console.log(response.data);
@@ -48,19 +50,13 @@ class Home extends React.Component {
     }
 
   }
-  handleLoadMore = () => {
-
+  handleLoadMore = (e) => {
+    e.preventDefault();
     if (this.index * 12 < this.state.total) {
       this.index = this.index + 1;
-      this.loadMore = "LoadMore";
-
       this.getListProduct(this.index);
 
     }
-    else {
-      this.loadMore = "Hidden"
-    }
-
   }
   componentDidMount() {
     this.getListProduct(1);
@@ -90,7 +86,7 @@ class Home extends React.Component {
             </Menu>
           </Row>
         </div >
-        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} loadMore={this.loadMore} products={this.state.listProduct} {...this.props} handleLoadMore={this.handleLoadMore()} />
+        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} />
         <Footer />
       </div>
 

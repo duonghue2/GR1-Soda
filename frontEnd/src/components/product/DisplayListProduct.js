@@ -15,9 +15,8 @@ class DisplayListProduct extends React.Component {
         this.state.gender = e;
         this.setState(this.state);
     }
-    componentDidMount() {
 
-    }
+
     render() {
 
         return (
@@ -67,7 +66,7 @@ class DisplayListProduct extends React.Component {
                         </Row>
 
                         <Row align="middle" justify="center">
-                            <button className={this.props.loadMore} onClick={this.props.handleLoadMore}>Load more</button>
+                            <button className={this.props.products.length % 12 != 0 ? "Hidden" : "LoadMore"} onClick={e => this.props.handleLoadMore(e)}>Load more</button>
                         </Row>
                     </Col>
                 </Row>

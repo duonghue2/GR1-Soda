@@ -108,3 +108,17 @@ font-size: 22px!important;
   height: 40px !important;
   font-size: 18px !important;
 }
+.size{
+  height: 35px;
+  width:50px;
+  background-color: white;
+  border: 1px solid #7e7e80;
+  border-radius: 5px;
+  font-size: 18px;
+  margin:15px;
+}
+button.size:focus{
+  background-color: #5c5d5f;
+  color:white;
+  border:none
+}

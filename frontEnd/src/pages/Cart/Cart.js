@@ -1,36 +1,35 @@
 import React from 'react';
 import { Row, Col, Tabs } from 'antd'
-import { Footer } from 'antd/lib/layout/layout';
 import RowCart from '../../components/rowCart/rowCart'
 import Header from '../../components/header/Header'
-import Image from '../../assests/Product/1.jpg'
 import './Cart.css'
+import { reactLocalStorage } from 'reactjs-localstorage';
 const { TabPane } = Tabs;
-const product = {
-  name: "Blue raincoat",
-  id: 1,
-  url: Image,
-  quantity: 6,
-  price: 30000
-}
 class Cart extends React.Component {
   state = {
     listProduct: [],
     wishlist: []
   }
+  componentDidUpdate(prevState) {
+    let cart = reactLocalStorage.getObject("Cart");
+    let wishlist = reactLocalStorage.getObject("Wishlist");
+    if (cart.length != prevState.cart.length) {
+      this.state.cart = cart
+
+    }
+    if (wishlist.length != prevState.wishlist.length) {
+      this.state.wishlist = wishlist
+    }
+    this.setState(cart, wishlist)
+  }
   componentDidMount() {
-    let cart = localStorage.getItem("Cart");
-    if (cart.length != 0) {
-      cart = JSON.parse(JSON.parse(cart));
-    }
-    else cart = [];
-    let wishlist = localStorage.getItem("Wishlist");
-    if (wishlist && wishlist.length != 0) {
-      wishlist = JSON.parse(JSON.parse(wishlist));
-    }
-    else wishlist = []
+    let cart = reactLocalStorage.getObject("Cart");
+
+    let wishlist = reactLocalStorage.getObject("Wishlist");
+
     this.setState({
-      wishlist: wishlist
+      wishlist: wishlist,
+      cart: cart
     })
   }
   render() {
@@ -72,7 +71,7 @@ class Cart extends React.Component {
                   </div>
                 </Row>
               } key="2">
-                {this.state.wishlist.map(item => (<RowCart product={item}>
+                {!this.state.wishlist.length && this.state.wishlist.map(item => (<RowCart product={item}>
                 </RowCart>
                 ))}
 

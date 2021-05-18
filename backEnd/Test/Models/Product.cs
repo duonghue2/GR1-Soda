@@ -13,7 +13,7 @@ namespace Test.Models
         //    ProductDetails = new HashSet<ProductDetail>();
         //}
 
-        public String Id { get; set; }
+        public string? Id { get; set; }
         public int Price { get; set; }
         public string Category { get; set; }
         public string Name { get; set; }

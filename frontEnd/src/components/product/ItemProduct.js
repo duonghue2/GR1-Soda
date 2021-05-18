@@ -2,8 +2,11 @@ import React from 'react';
 import { Image, Row, message } from 'antd';
 import { ShoppingCartOutlined, HeartOutlined } from '@ant-design/icons'
 import ProductDetail from './ProductDetail'
-import defaultImage from '../../assests/Product/1.jpg'
+
+import { reactLocalStorage } from 'reactjs-localstorage';
+import { server } from '../../enviroment'
 import './ItemProduct.css'
+import axios from 'axios';
 class ItemProduct extends React.Component {
     state = {
         className: "Hidden",
@@ -15,14 +18,35 @@ class ItemProduct extends React.Component {
     hiddenCart = () => {
         this.setState({ className: "Hidden" })
     }
-    addToCart = (i) => {
+    addToCart = async (i) => {
+        debugger;
+        let isLogin = reactLocalStorage.get("token");
+        let userInfo = reactLocalStorage.getObject("userInfo")
+        if (isLogin) {
+            const payload = {
+
+                userId: userInfo.userId,
+                productDetailId: i.productDetailId,
+                quantity: 1,
+                amount: i.price,
+            }
+            await axios.post(server + 'api/Carts/Create', payload).then((response) => {
+
+                if (response.data.status == 1)
+
+                    console.log(response.data);
+            }, (error) => {
+                message.error("Some error occurs, pls try again");
+            });
 
 
+        }
         let listProduct = [];
         let item = {};
         let flag = 0;
 
-        let j = JSON.parse(JSON.parse(localStorage.getItem("Cart")));
+        let j = reactLocalStorage.getObject("Cart");
+
         if (!j) {
             listProduct.push(item);
         }
@@ -37,8 +61,7 @@ class ItemProduct extends React.Component {
             })
             if (flag === 0) listProduct.push(i);
         }
-
-        localStorage.setItem("Cart", JSON.stringify(JSON.stringify(listProduct)));
+        reactLocalStorage.setObject("Cart", listProduct);
         message.success('Add ' + i.name + ' into cart');
 
 
@@ -62,7 +85,7 @@ class ItemProduct extends React.Component {
         return (
             <div style={{ paddingLeft: "40px", paddingRight: "40px" }} >
                 <div style={{ position: "relative" }}>
-                    <Image src={this.props.product.images[0] || defaultImage} alt="" onMouseMove={this.showCart} onMouseOut={this.hiddenCart} preview={false} onClick={this.showDetail} />
+                    <Image src={this.props.product.images[0]} alt="" onMouseMove={this.showCart} onMouseOut={this.hiddenCart} preview={false} onClick={this.showDetail} />
                     <Row align="middle" justify="center" className={this.state.className} onMouseMove={this.showCart} onMouseOut={this.hiddenCart}>
                         <div className="circle" onClick={() => this.addToCart(this.props.product)}><ShoppingCartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div>
                         <div className="circle" onClick={this.addToWishlist}><HeartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div>

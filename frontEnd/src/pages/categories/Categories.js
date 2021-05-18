@@ -16,16 +16,17 @@ class Categories extends React.Component {
     current: 'bestSellers',
     listProduct: [],
     loadMore: null,
-    index: 1,
     total: 0
 
   };
+  index = 0;
   getListProduct = async (pageNumber) => {
     const { match: { params } } = this.props;
     await axios.post(server + 'api/Products/by-category', { page: pageNumber, limit: 12, category: params.sex, subcategory: params.categories }).then((response) => {
       // console.log(response);
       if (response.data.status == 1)
         this.state.listProduct = this.state.listProduct.concat(response.data.data)
+      console.log(response.data)
       this.state.total = response.data.total
       this.setState(this.state);
     }, (error) => {
@@ -37,14 +38,12 @@ class Categories extends React.Component {
     this.getListProduct(1);
 
   }
-  handleLoadMore() {
-    if (this.state.index * 12 < this.state.total) {
-      this.state.index = this.state.index + 1;
-      this.state.loadMore = "LoadMore";
-      this.getListProduct(this.state.index);
+  handleLoadMore = (e) => {
+    e.preventDefault();
+    if (this.index * 12 < this.state.total) {
+      this.index = this.index + 1;
+      this.getListProduct(this.index);
     }
-    else this.state.loadMore = "Hidden"
-    this.setState(this.props)
   }
   render() {
     const { match: { params } } = this.props;
@@ -57,7 +56,7 @@ class Categories extends React.Component {
             <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row>
             <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row>
           </div>
-          <DisplayListProduct products={this.state.listProduct} loadMore={this.state.loadMore} {...this.props} handleLoadMore={this.handleLoadMore()} />
+          <DisplayListProduct products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} />
         </div>)
     else return (<div>
       {/* 

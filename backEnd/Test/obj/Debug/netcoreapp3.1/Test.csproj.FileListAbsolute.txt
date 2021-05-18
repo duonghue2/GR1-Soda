@@ -361,3 +361,8 @@ D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.Swag
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerGen.dll
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Swashbuckle.AspNetCore.SwaggerUI.dll
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\Test.MvcApplicationPartsAssemblyInfo.cs
+D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\Razor\Views\Carts\Create.cshtml.g.cs
+D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\Razor\Views\Carts\Delete.cshtml.g.cs
+D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\Razor\Views\Carts\Details.cshtml.g.cs
+D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\Razor\Views\Carts\Edit.cshtml.g.cs
+D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\Razor\Views\Carts\Index.cshtml.g.cs

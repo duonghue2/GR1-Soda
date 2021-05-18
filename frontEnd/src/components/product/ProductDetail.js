@@ -1,25 +1,60 @@
 import React from 'react';
-import { Modal, Row, Carousel, Image, Col, Button, InputNumber } from 'antd';
-import image1 from '../../assests/Product/1-19.jpg'
-import image2 from '../../assests/Product/2-19.jpg'
-import image3 from '../../assests/Product/3-12.jpg'
-import image4 from '../../assests/Product/4-5.jpg'
-import image5 from '../../assests/Product/5.jpg'
+import { Modal, Row, Carousel, Image, Col, InputNumber, message } from 'antd';
 import { ShoppingCartOutlined, HeartOutlined, StarFilled } from '@ant-design/icons'
 import { currencyFormat } from '../../utils/function'
 import './ItemProduct.css'
+import { reactLocalStorage } from 'reactjs-localstorage';
+import { server } from '../../enviroment'
+import axios from 'axios';
 class ProductDetail extends React.Component {
   constructor(props) {
     super(props)
-  }
-  onChange = () => {
-    //add to order
+    this.state = {
+      detailId: 0,
+      max: 10,
+      qty: 0,
+      price: this.props.product.detail[0].price || 0
+    }
   }
 
+  onChange = (e) => {
+    //add to order
+    this.state.qty = e; this.setState(this.state);
+    console.log("number:", e)
+  }
+  handleSize = (e) => {
+    this.state.detailId = e;
+    this.state.max = this.props.product.detail[e].quantity;
+    this.state.price = this.props.product.detail[e].price;
+    console.log(this.props.product.detail[e].price)
+    this.setState(this.state)
+  }
   componentDidMount() {
     //get infor
 
 
+  }
+  addToCart = async () => {
+    let isLogin = reactLocalStorage.get("token");
+    let userInfo = reactLocalStorage.getObject("userInfo")
+    if (isLogin) {
+      const payload = {
+        userId: userInfo.userId,
+        productDetailId: this.props.product[this.state.detailId].productDetailId,
+        quantity: this.state.qty,
+        amount: this.state.price,
+      }
+      await axios.post(server + 'api/Carts/Create', payload).then((response) => {
+
+        if (response.data.status == 1)
+
+          console.log(response.data);
+      }, (error) => {
+        message.error("Some error occurs, pls try again");
+      });
+
+
+    }
   }
 
   render() {
@@ -41,14 +76,14 @@ class ProductDetail extends React.Component {
                 </div>
               ))
               }
-            </Carousel>,
+            </Carousel>
           </Col >
           <Col lg={12} xs={12} md={12} className="pl-5 text-center ">
             <Row align="middle" justify="center" >
               <h1 style={{ fontSize: "32px" }} className="mt-5"> <a href={"/products/" + this.props.product.id}>{this.props.product.name}</a></h1>
             </Row>
             <Row align="middle" justify="center">
-              <p style={{ fontSize: "18px", paddingRight: "15px" }}>{this.props.product.description}</p>
+              <p style={{ fontSize: "18px", paddingRight: "15px" }}>{this.props.product.description.toLowerCase()}</p>
             </Row>
             <Row align="middle" justify="center">
               <span><StarFilled style={{ color: "#ffb136" }} /> <StarFilled style={{ color: "#ffb136" }} /><StarFilled style={{ color: "#ffb136" }} /><StarFilled style={{ color: "#ffb136" }} /><StarFilled style={{ color: "#ffb136" }} /></span>
@@ -57,12 +92,18 @@ class ProductDetail extends React.Component {
             <Row align="middle" justify="center"> (0 customer reviews)</Row>
             <br />
             <Row align="middle" justify="center">
-              <span className="price">{currencyFormat(this.props.product.originPrice)}</span>
+              {this.props.product.originPrice != this.state.price && <span className="price" style={{ textDecorationLine: 'line-through' }}>{currencyFormat(this.props.product.originPrice)}</span>}<span className="price">{currencyFormat(this.state.price)}</span>
             </Row>
             <br />
+
+            <Row align="middle" justify="center" className="mb-3">
+              {this.props.product.detail.map((item, index) => item.size && <button className="size" key={index} onClick={() => this.handleSize(index)}>
+                {item.size}
+              </button>)}
+            </Row>
             <br />
             <Row align="middle" justify="center">
-              <InputNumber min={1} max={this.props.product.max} defaultValue={1} onChange={this.onChange} size="large" />
+              <InputNumber min={1} max={this.state.max} defaultValue={1} onChange={e => this.onChange(e)} size="large" />
               <button className="primary-btn" onClick={this.addToCart}> <ShoppingCartOutlined style={{ color: 'white', fontSize: "28px", alignSelf: 'center' }} /><span style={{ paddingLeft: "5px", fontSize: "20px" }}>  Add to cart </span></button>
               <button className="wishlist" onClick={this.addToWishlist} > <HeartOutlined style={{ fontSize: "28px", alignSelf: 'center', color: "#909097" }} /></button>
             </Row>

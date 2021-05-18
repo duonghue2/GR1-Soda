@@ -9,7 +9,7 @@ namespace Test.Models
     {
         public int Id { get; set; }
         public string Image { get; set; }
-        public String ProductId { get; set; }
+        public string ProductId { get; set; }
 
         public virtual Product Product { get; set; }
     }

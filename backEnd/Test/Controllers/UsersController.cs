@@ -115,7 +115,7 @@ namespace Test.Controllers
                 userR.Email = data.Email;
                 userR.Phone = data.Phonenumber;
                 userR.UserName = data.Name;
-
+                userR.UserId = data.Id;
                 response.Status = 1;
                 response.Message = "Succesfull login";
                 
