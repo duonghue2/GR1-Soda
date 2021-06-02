@@ -36,29 +36,35 @@ class ProductDetail extends React.Component {
   }
   addToCart = async () => {
     let isLogin = reactLocalStorage.get("token");
-    let userInfo = reactLocalStorage.getObject("userInfo")
+    let userInfo = reactLocalStorage.getObject("userInfo");
+
     if (isLogin) {
       const payload = {
         userId: userInfo.userId,
-        productDetailId: this.props.product[this.state.detailId].productDetailId,
-        quantity: this.state.qty,
+        productDetailId: this.props.product.detail[this.state.detailId].id,
+        quantity: this.state.qty || 1,
         amount: this.state.price,
       }
+      console.log(payload);
       await axios.post(server + 'api/Carts/Create', payload).then((response) => {
 
         if (response.data.status == 1)
+          message.success("Add item into cart successfully!")
 
-          console.log(response.data);
       }, (error) => {
         message.error("Some error occurs, pls try again");
       });
 
 
     }
+    else {
+
+    }
   }
 
   render() {
     return (
+
       <Modal
         centered
         visible={this.props.visible}
@@ -118,6 +124,7 @@ class ProductDetail extends React.Component {
         </Row>
 
       </Modal>
+
     )
   }
 }

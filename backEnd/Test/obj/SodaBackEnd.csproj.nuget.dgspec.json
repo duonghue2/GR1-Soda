@@ -1,15 +1,15 @@
 {
   "format": 1,
   "restore": {
-    "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj": {}
+    "D:\\term 4.2\\GR1\\backEnd\\Test\\SodaBackEnd.csproj": {}
   },
   "projects": {
-    "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj": {
+    "D:\\term 4.2\\GR1\\backEnd\\Test\\SodaBackEnd.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj",
-        "projectName": "Test",
-        "projectPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj",
+        "projectUniqueName": "D:\\term 4.2\\GR1\\backEnd\\Test\\SodaBackEnd.csproj",
+        "projectName": "SodaBackEnd",
+        "projectPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\SodaBackEnd.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
         "outputPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\obj\\",
         "projectStyle": "PackageReference",

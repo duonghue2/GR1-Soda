@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "zBYosCdsMI/KLJMXkMeoUl7VSLNqWiWkmI4L8BZ1asDRKFnq9Vb2RrDd0pCatew0XhE7WrCWMHOxDGXPTLPmCw==",
+  "dgSpecHash": "KT6+oT7N8flYLosj+lFvlxlSHzeCh24NRdmBZ0metXL4wlGzFz5csEmGEIYHkBcW8IvVhFGHyE5cvN7Di50+NA==",
   "success": true,
-  "projectFilePath": "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj",
+  "projectFilePath": "D:\\term 4.2\\GR1\\backEnd\\Test\\SodaBackEnd.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\catel.core\\5.12.12\\catel.core.5.12.12.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\catel.mvvm\\5.12.12\\catel.mvvm.5.12.12.nupkg.sha512",

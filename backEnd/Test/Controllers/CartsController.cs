@@ -29,13 +29,13 @@ namespace Test.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost]
-        [Route("get-detail-by-user")]
+        [HttpGet]
+        [Route("get-detail-by-user/{id}")]
 
-        public async Task<BaseResponse> DetailByUserId(string userId)
+        public async Task<BaseResponse> DetailByUserId(string id)
         {
             var response = new BaseResponse();
-            var cart =  _context.Carts.Where(s => s.UserId == userId).ToList();
+            var cart =  _context.Carts.Where(s => s.UserId == id).ToList();
             if (cart.Count == 0)
             {
 
@@ -48,12 +48,13 @@ namespace Test.Controllers
             int sum = 0;
             cart.ForEach(item =>
             {
-                var detail = _context.ProductDetails.Where(s => s.ProductId == item.ProductDetailId).FirstOrDefault();
+                var detail = _context.ProductDetails.Where(s => s.Id == item.ProductDetailId).FirstOrDefault();
                 var image = _context.ProductImages.Where(s => s.ProductId == detail.ProductId).Select(s => s.Image).FirstOrDefault();
                 var product = _context.Products.Where(s => s.Id == detail.ProductId).FirstOrDefault();
                 var detailCart = new DetailCartModel();
                 detailCart.Image = image;
                 detailCart.Name = product.Name;
+                detailCart.Size = detail.Size;
                 detailCart.Id = item.Id;
                 detailCart.Price = detail.Price;
                 detailCart.OriginPrice = product.Price;

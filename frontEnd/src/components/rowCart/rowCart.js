@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row } from 'antd';
 import { CloseOutlined } from '@ant-design/icons';
+import { currencyFormat } from '../../utils/function'
 import './rowCart.css'
 class RowCart extends React.Component {
     delete = (id) => {
@@ -10,13 +11,16 @@ class RowCart extends React.Component {
     render() {
         console.log(this.props.product)
         return (
-            <div style={{ display: "flex", justifyContent: "center" }} className="mt-5">
+            <div className="mt-5">
                 <Row align="middle" justify="space-between" style={{ width: "50vw" }}>
-                    <div><img src={this.props.product.url} width="150" height="150" /> <a className="cartItem ml-5" href={"/products/" + this.props.product.id}>{this.props.product.name}</a></div>
+                    <div>
+                        <img src={this.props.product.image} width="150" height="150" />
+                        <a className="cartItem ml-5" href={"/products/" + this.props.product.id}>{this.props.product.name}</a></div>
                     <div className="cartItem"> Qty:   {this.props.product.qty} </div>
-                    <div className="cartItem"> {this.props.product.price}</div>
-                    <div className="cartItem"> <CloseOutlined onClick={() => this.delete(this.props.product.id)} /></div>
+                    <div className="cartItem"> {currencyFormat(this.props.product.price)}</div>
+                    <div className="cartItem"> <CloseOutlined onClick={() => this.delete(this.props.product.detailId)} /></div>
                 </Row>
+
             </div>
         )
     }

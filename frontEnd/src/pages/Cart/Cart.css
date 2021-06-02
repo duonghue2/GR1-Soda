@@ -16,3 +16,11 @@
     color:white;
     background-color: black;
 }
+button.btn-checkout{
+    background-color:#525151;
+   
+    border-radius: 5px;
+    color:white;
+    height: 40px;
+    border:none
+}

@@ -1,36 +1,57 @@
 import React from 'react';
-import { Row, Col, Tabs } from 'antd'
+import { Row, Col, Tabs, message } from 'antd'
 import RowCart from '../../components/rowCart/rowCart'
 import Header from '../../components/header/Header'
+import { server } from '../../enviroment'
 import './Cart.css'
 import { reactLocalStorage } from 'reactjs-localstorage';
+import { currencyFormat } from '../../utils/function'
+import axios from 'axios';
 const { TabPane } = Tabs;
 class Cart extends React.Component {
   state = {
     listProduct: [],
     wishlist: []
   }
-  componentDidUpdate(prevState) {
-    let cart = reactLocalStorage.getObject("Cart");
-    let wishlist = reactLocalStorage.getObject("Wishlist");
-    if (cart.length != prevState.cart.length) {
-      this.state.cart = cart
+  // componentDidUpdate(prevState) {
+  //   let cart = reactLocalStorage.getObject("Cart");
+  //   let wishlist = reactLocalStorage.getObject("Wishlist");
+  //   if (cart.length != prevState.cart.length) {
+  //     this.state.cart = cart
 
-    }
-    if (wishlist.length != prevState.wishlist.length) {
-      this.state.wishlist = wishlist
-    }
-    this.setState(cart, wishlist)
-  }
-  componentDidMount() {
-    let cart = reactLocalStorage.getObject("Cart");
+  //   }
+  //   if (wishlist.length != prevState.wishlist.length) {
+  //     this.state.wishlist = wishlist
+  //   }
+  //   this.setState(cart, wishlist)
+  // }
+  async componentDidMount() {
+    let isLogin = reactLocalStorage.get("token");
+    let userInfo = reactLocalStorage.getObject("userInfo");
+    if (userInfo) {
+      debugger
+      axios.get(server + 'api/Carts/get-detail-by-user/' + userInfo.userId).then(resp => {
+        this.state.listProduct = resp.data.data.listProduct;
+        this.state.total = resp.data.data.total;
+        this.setState(this.state)
+      }).catch(e => {
+        throw e;
+      });
+      //  console.log(response);
 
-    let wishlist = reactLocalStorage.getObject("Wishlist");
+      ;
 
-    this.setState({
-      wishlist: wishlist,
-      cart: cart
-    })
+
+    } else message.warning("Login to see your cart");
+    // if (!userInfo)
+    //   let cart = reactLocalStorage.getObject("Cart");
+
+    // let wishlist = reactLocalStorage.getObject("Wishlist");
+
+    // this.setState({
+    //   wishlist: wishlist,
+    //   cart: cart
+    // })
   }
   render() {
     return (
@@ -44,19 +65,29 @@ class Cart extends React.Component {
 
                 Shopping Cart
           <div className="qty">
-                  {this.state.listProduct.length}
+                  {this.state.listProduct && this.state.listProduct.length || 0}
                 </div>
               </Row>} key="1">
 
                 <Row align="middle" justify="center">
-                  {this.state.listProduct.map(item => (<RowCart product={item}>
+                  {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item}>
                   </RowCart>
                   ))}
-                  {this.state.listProduct.length != 0 && <div className="btn-checkout">
 
-                    <span>{this.state.total}</span>|<span>CHECKOUT</span>
 
-                  </div>}
+                  {this.state.listProduct.length != 0 && <Row align="middle" justify="end" style={{ width: '50vw' }}>
+
+                    <div style={{
+                      width: '201px',
+                      fontSize: '25px'
+                    }}><span style={{ marginRight: "20px" }}>Total : </span> {currencyFormat(this.state.total)}</div>
+                    <button className="btn-checkout"   >
+
+                      CHECKOUT
+
+                  </button>
+                  </Row>
+                  }
 
                   {this.state.listProduct.length === 0 && <div>
                     <span>No product in the cart</span>

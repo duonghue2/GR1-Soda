@@ -9,6 +9,7 @@ namespace Test.Data
     {
         public string DetailId { get; set; }
         public string Id { get; set; }
+        public string Size { get; set; }
         public string? Name { get; set; }
         public int? Qty { get; set; }
         public int? Price { get; set; }

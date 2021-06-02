@@ -125,7 +125,7 @@ class ProductDetail extends React.Component {
                 <Row align="middle" justify="center"> (4 customer reviews)</Row>
                 <br />
                 <Row align="middle" justify="center">
-                  <span className="price">{this.state.product.detail.length == 0 ? this.state.product.originPrice : currencyFormat(this.state.product.detail[0].price)}</span>
+                  <span className="price">{this.state.product.detail.length == 0 ? currencyFormat(this.state.product.originPrice) : currencyFormat(this.state.product.detail[0].price)}</span>
                 </Row>
                 <br />
                 <br />

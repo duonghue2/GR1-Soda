@@ -5,7 +5,7 @@ import axios from 'axios'
 import React from 'react'
 import logo from '../../assests/logo.png'
 import { reactLocalStorage } from 'reactjs-localstorage';
-import Banner from '../banner/Banner'
+import Login from '../login/Login'
 import './Header.css'
 const { SubMenu } = Menu;
 const { Option } = Select;
@@ -23,28 +23,14 @@ const content = ({ data, logout }) => {
     )
 }
 
-const formItemLayout = {
-    labelCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 5,
-        },
-    },
-    wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 12,
-        },
-    },
-};
 class Header extends React.Component {
     state = {
         current: 'home',
         visible: false,
+
+        className: "Hidden",
+        isLogin: false,
+
         email: {
             error: null,
             validation: "",
@@ -85,14 +71,18 @@ class Header extends React.Component {
         e.preventDefault();
         if (this.state.userInfor == null)
             this.setState({
-                visible: true
+                visible: !this.state.visible
             })
     }
     componentDidMount() {
 
         this.state.userInfor = reactLocalStorage.getObject('userInfo');
     }
-
+    setVisible = (e) => {
+        this.setState({
+            visible: e
+        })
+    }
     handleSubmit = async () => {
         let email = document.getElementById('email').value;
         let password = document.getElementById('password').value;
@@ -229,47 +219,8 @@ class Header extends React.Component {
                         {!this.state.userInfor && <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} onClick={e => this.login(e)} />
                         }
                     </div>
-                    <Modal
-                        title=" Login"
-                        width={650}
-                        okText="Submit"
-                        centered
-                        visible={this.state.visible}
-                        onOk={this.handleSubmit}
-                        onCancel={this.handleCancel}
-                    >
-                        <Form {...formItemLayout} onSubmit={this.handleSubmit} >
-                            <Form.Item name="email"
+                    <Login visible={this.state.isLogin} setVisible={this.login} />
 
-                                validateStatus={this.state.email.validation}
-                                help={this.state.email.error}
-
-                                rules={[{
-                                    required: true
-
-                                }]}
-                                label="Email"
-                                hasFeedback
-                            >
-                                <Input placeholder="Enter your email" id="email" />
-                            </Form.Item>
-                            <Form.Item label="Password" name='password'
-                                validateStatus={this.state.password.validation}
-                                help={this.state.password.error}
-                                hasFeedback rules={[{
-                                    required: true
-
-                                }]}>
-                                <Input.Password allowClear placeholder="Enter your password" id="password" />
-                            </Form.Item>
-
-                            <Row style={{ marginLeft: '115px' }}>
-                                <a className="forgotPass" href="/forgotPassword">Forgot password?</a>
-                                <a className='register' href='/register' >Register</a>
-                            </Row>
-
-                        </Form>
-                    </Modal>
                 </Row>
 
             </div>

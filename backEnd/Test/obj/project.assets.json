@@ -9457,9 +9457,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj",
-      "projectName": "Test",
-      "projectPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\Test.csproj",
+      "projectUniqueName": "D:\\term 4.2\\GR1\\backEnd\\Test\\SodaBackEnd.csproj",
+      "projectName": "SodaBackEnd",
+      "projectPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\SodaBackEnd.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
       "outputPath": "D:\\term 4.2\\GR1\\backEnd\\Test\\obj\\",
       "projectStyle": "PackageReference",
@@ -9475,6 +9475,7 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "http://nuget.s-erp.vn/nuget": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
