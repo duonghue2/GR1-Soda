@@ -14,6 +14,7 @@ namespace Test.Data
         public int? Qty { get; set; }
         public int? Price { get; set; }
         public int? Amount { get; set; }
+        public int? MaxQty { get; set; }
         public int OriginPrice { get; set; }
         public string Image { get; set; }
         public string ProductId { get; set; }

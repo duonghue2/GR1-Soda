@@ -60,6 +60,7 @@ namespace Test.Controllers
                 detailCart.OriginPrice = product.Price;
                 detailCart.DetailId = detail.Id;
                 detailCart.Qty = item.Quantity;
+                detailCart.MaxQty = detail.Quantity;
                 detailCart.Amount = item.Quantity * detail.Price;
                 detailCart.ProductId = product.Id;
                 listProductModel.Add(detailCart);
@@ -161,27 +162,68 @@ namespace Test.Controllers
         //    return View(cart);
         //}
 
-        //// GET: Carts/Delete/5
-        //public async Task<IActionResult> Delete(string id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Carts/Delete/5
+        [HttpPost]
+        [Route("delete")]
+        public async Task<BaseResponse> Delete(string id,Guid userId)
+        {
+            if (id == null)
+            {
+                throw new ArgumentException("Item is null");
+            }
 
-        //    var cart = await _context.Carts
-        //        .Include(c => c.ProductDetail)
-        //        .Include(c => c.User)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (cart == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var cart = await _context.Carts
+                .FirstOrDefaultAsync(m => m.Id == id&& m.UserId==userId.ToString());
+            if (cart == null)
+            {
+                throw new ArgumentException("Item is not found");
+            }
+            _context.Carts.Remove(cart);
+            await _context.SaveChangesAsync();
+            var response = new BaseResponse();
+            var lcart = _context.Carts.Where(s => s.UserId == id).ToList();
+            if (lcart.Count == 0)
+            {
 
-        //    return View(cart);
-        //}
+                response.Data = null;
+                response.Status = 1;
+                response.Message = "Empty cart";
+                return response;
+            }
+            var listProductModel = new List<DetailCartModel>();
+            int sum = 0;
+            lcart.ForEach(item =>
+            {
+                var detail = _context.ProductDetails.Where(s => s.Id == item.ProductDetailId).FirstOrDefault();
+                var image = _context.ProductImages.Where(s => s.ProductId == detail.ProductId).Select(s => s.Image).FirstOrDefault();
+                var product = _context.Products.Where(s => s.Id == detail.ProductId).FirstOrDefault();
+                var detailCart = new DetailCartModel();
+                detailCart.Image = image;
+                detailCart.Name = product.Name;
+                detailCart.Size = detail.Size;
+                detailCart.Id = item.Id;
+                detailCart.Price = detail.Price;
+                detailCart.OriginPrice = product.Price;
+                detailCart.DetailId = detail.Id;
+                detailCart.Qty = item.Quantity;
+                detailCart.Amount = item.Quantity * detail.Price;
+                detailCart.ProductId = product.Id;
+                listProductModel.Add(detailCart);
+                sum = (int)(sum + detailCart.Amount);
+            });
+            var cartRes = new CartResponse();
+            cartRes.listProduct = listProductModel;
+            cartRes.Total = sum;
+            response.Data = cartRes;
+            response.Total = listProductModel.Count;
+            response.Status = 1;
+            response.Message = "success";
+            return response;
 
-        //// POST: Carts/Delete/5
+
+        }
+
+        // POST: Carts/Delete/5
         //[HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> DeleteConfirmed(string id)
