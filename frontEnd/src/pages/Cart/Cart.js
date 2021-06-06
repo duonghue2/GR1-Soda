@@ -25,6 +25,12 @@ class Cart extends React.Component {
   //   }
   //   this.setState(cart, wishlist)
   // }
+  onchangeQty(id, qty) {
+
+    let change = this.state.listProduct.find(s => s.id = id);
+    change.qty = qty;
+    this.setState(this.state);
+  }
   async componentDidMount() {
     let isLogin = reactLocalStorage.get("token");
     let userInfo = reactLocalStorage.getObject("userInfo");
@@ -37,21 +43,7 @@ class Cart extends React.Component {
       }).catch(e => {
         throw e;
       });
-      //  console.log(response);
-
-      ;
-
-
     } else message.warning("Login to see your cart");
-    // if (!userInfo)
-    //   let cart = reactLocalStorage.getObject("Cart");
-
-    // let wishlist = reactLocalStorage.getObject("Wishlist");
-
-    // this.setState({
-    //   wishlist: wishlist,
-    //   cart: cart
-    // })
   }
   render() {
     return (
@@ -70,7 +62,7 @@ class Cart extends React.Component {
               </Row>} key="1">
 
                 <Row align="middle" justify="center">
-                  {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item}>
+                  {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item} onChangeQty={x => this.onchangeQty(x)}>
                   </RowCart>
                   ))}
 

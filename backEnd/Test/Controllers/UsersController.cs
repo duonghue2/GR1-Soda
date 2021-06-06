@@ -21,7 +21,7 @@ namespace Test.Controllers
             _context = context;
         }
 
-        public List<String> listToken { get; set; }= new List<string>();
+        public static List<String> listToken { get; set; }= new List<string>();
         // PUT: api/getUser/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
