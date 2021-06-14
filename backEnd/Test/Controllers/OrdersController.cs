@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SodaBackEnd.Data;
+using Test.Data;
 using Test.Models;
 
 namespace Test.Controllers
@@ -14,6 +16,7 @@ namespace Test.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly Soda2Context _context;
+        
 
         public OrdersController(Soda2Context context)
         {
@@ -27,41 +30,128 @@ namespace Test.Controllers
             return await _context.Orders.ToListAsync();
         }
 
-        // GET: api/Orders/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Order>> GetOrder(string id)
-        {
-            var order = await _context.Orders.FindAsync(id);
+        //// GET: api/Orders/5
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Order>> GetOrder(string id)
+        //{
+        //    var order = await _context.Orders.FindAsync(id);
 
-            if (order == null)
+        //    if (order == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return order;
+        //}
+        [HttpGet]
+        [Route("purchase/{id}")]
+        public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetAllOrder(string id)
+        { var response = new BaseResponse<List<PurchaseHistoryResponse>> ();
+            var listOrder = new List<PurchaseHistoryResponse>();
+            var order =  _context.Orders.Where(s=>s.UserId==id).ToList();
+            if (order == null || order.Count() == 0)
             {
-                return NotFound();
+                response.Data = null;
+                response.Message = "Order not found";
+                return response;
             }
+            foreach (var item in order)
+            {
+                var history = new PurchaseHistoryResponse();
+                history.Order = item;
 
-            return order;
+                var listItem = _context.OrderDetails.Where(s => s.OrderId == item.Id).Select(s => new DetailResponse() {
+                    Id = s.ProductId,
+                    ProductDetailId=s.ProductDetailId,
+                    Image=s.Image,
+                    Qty=s.Quantity,
+                    Size=s.Size,
+                    OrderId=s.OrderId,
+                    DetailOrderId=s.Id,
+                    Price=s.UnitPrice,
+                    ItemAmount=s.ItemAmount
+                })
+              .ToList();
+                history.Details = listItem;
+                listOrder.Add(history);
+            }
+            response.Data = listOrder;
+            response.Total = listOrder.Count();
+            response.Message = "success";
+           
+           
+            return response
+                ;
         }
 
-     
 
         // POST: api/Orders
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
+        public async Task<ActionResult<OrderResponse>> Create(OrderRequest order)
         {
-            _context.Orders.Add(order);
             try
             {
-                await _context.SaveChangesAsync();
+                var cartController = new CartsController(_context);
+            var detail = await cartController.DetailByUserId(order.UserId);
+            var newOrder = new Order();
+            newOrder.Id = Guid.NewGuid().ToString();
+            newOrder.UserId = order.UserId;
+            newOrder.Province = order.Province;
+            newOrder.District = order.District;
+            newOrder.Ward = order.Ward;
+            newOrder.ShippingCost = 0;
+            newOrder.Address = order.Address;
+            newOrder.Receiver = order.Receiver;
+            newOrder.CreateAt = DateTime.Now;
+            newOrder.Discount = 0;
+            newOrder.Amount =detail.Data.Total;
+            newOrder.State = "pending";
+                newOrder.CreateAt = DateTime.Now;
+               
+            _context.Orders.Add(newOrder);
+                foreach (var item in detail.Data.listProduct)
+                {
+                    var detailProduct = _context.ProductDetails.Find(item.ProductDetailId);
+                    
+                    if (detailProduct.Quantity > item.Qty)
+                    {
+                        var newDetailOrder = new OrderDetail();
+                        newDetailOrder.Id = Guid.NewGuid().ToString();
+                        newDetailOrder.OrderId = newOrder.Id;
+                        newDetailOrder.ItemAmount = item.Price.Value;
+                        newDetailOrder.ProductDetailId = item.ProductDetailId;
+                        newDetailOrder.Quantity = item.Qty;
+                        newDetailOrder.UnitPrice = item.OriginPrice;
+                        newDetailOrder.ProductName = item.Name;
+                        newDetailOrder.Size = item.Size;
+                        newDetailOrder.Image = item.Image;
+                        
+                        _context.OrderDetails.Add(newDetailOrder);
+
+                        detailProduct.Quantity -= item.Qty;
+                        _context.ProductDetails.Update(detailProduct);
+                    }
+                    else throw new ArgumentException("Not enough item in stock");
+                }
+
+                
+                     await _context.SaveChangesAsync();
+               await cartController.DeleteConfirmed(order.UserId);
+                var response = new OrderResponse();
+                response.IsSuccess = true;
+                response.OrderID = newOrder.Id;
+                return  response;
             }
             catch (DbUpdateException)
             {
-               
-                    throw;
-                
+
+                throw;
+
             }
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+           
         }
 
         // DELETE: api/Orders/5
@@ -79,6 +169,7 @@ namespace Test.Controllers
 
             return order;
         }
+
 
         private bool OrderExists(string id)
         {

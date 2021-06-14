@@ -54,8 +54,8 @@ class ProductDetail extends React.Component {
       this.props.setVisible(false);
     }
     else {
-      const { history } = this.props;
-      history.push("/signup");
+      this.state.isLogin = true;
+      this.setState(this.state);
     }
   }
   login = (e) => {
@@ -101,7 +101,7 @@ class ProductDetail extends React.Component {
               <Row align="middle" justify="center"> (0 customer reviews)</Row>
               <br />
               <Row align="middle" justify="center">
-                {this.props.product.originPrice != this.state.price && <span className="price" style={{ textDecorationLine: 'line-through' }}>{currencyFormat(this.props.product.originPrice)}</span>}<span className="price">{currencyFormat(this.state.price)}</span>
+                {this.props.product.originPrice != this.state.price && <span className="price" style={{ textDecorationLine: 'line-through', marginRight: "10px" }}>{currencyFormat(this.props.product.originPrice)}</span>}<span className="price">{currencyFormat(this.state.price)}</span>
               </Row>
               <br />
 

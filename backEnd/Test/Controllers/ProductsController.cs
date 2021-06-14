@@ -25,7 +25,7 @@ namespace Test.Controllers
         // GET: api/Products
         [HttpPost]
         [Route("get-list-product")]
-        public async Task<BaseResponse> GetProducts(getListProductRequest request)
+        public async Task<BaseResponse<List<ProductModel>>> GetProducts(getListProductRequest request)
         {
             try {
                 var listProduct =  _context.Products.ToList();
@@ -45,7 +45,7 @@ namespace Test.Controllers
                     listProductModel.Add(productModel);
                 }
                 var list = listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList();
-                var response = new BaseResponse();
+                var response = new BaseResponse<List<ProductModel>>();
                 response.Status = 1;
                 response.Message = "oke";
                 response.Data = list;
@@ -54,7 +54,7 @@ namespace Test.Controllers
                 return response;
         }
         catch(Exception e){
-                var response = new BaseResponse();
+                var response = new BaseResponse<List<ProductModel>>();
                 response.Status = 0;
                 response.Message = e.Message;
                 return response;
@@ -63,11 +63,11 @@ namespace Test.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<BaseResponse> GetProduct(string id)
+        public async Task<BaseResponse<ProductModel>> GetProduct(string id)
         {
             var product = await _context.Products.FindAsync(id);
 
-            var response = new BaseResponse();
+            var response = new BaseResponse<ProductModel>();
             if (product == null)
             {
                 
@@ -96,12 +96,12 @@ namespace Test.Controllers
         }
         // GET: api/Products/name
         [HttpGet("name={name}")]
-        public async Task<BaseResponse> GetListProductByName(getListProductRequest request)
+        public async Task<BaseResponse<List<ProductModel>>> GetListProductByName(getListProductRequest request)
         {
             try
             {
                 var listProduct = await _context.Products.Where(s => s.Name.Contains(request.Name)).ToListAsync();
-                var response = new BaseResponse();
+                var response = new BaseResponse<List<ProductModel>>();
                 if (listProduct.Count==0)
                 {
                    
@@ -135,7 +135,7 @@ namespace Test.Controllers
             }
             catch (Exception e)
             {
-                var response = new BaseResponse();
+                var response = new BaseResponse<List<ProductModel>>();
                 response.Status = 0;
                 response.Message = e.Message;
                 return response;
@@ -146,7 +146,7 @@ namespace Test.Controllers
         }
         // POST: api/Products/
         [HttpPost("by-category")]
-        public async Task<BaseResponse> GetListProductByCategory(GetListProductByCateoryRequestcs request)
+        public async Task<BaseResponse<List<ProductModel>>> GetListProductByCategory(GetListProductByCateoryRequestcs request)
         {
 
             try
@@ -172,7 +172,7 @@ namespace Test.Controllers
                     }
                 }
                 var list =listProductModel.Count>request.Limit? listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList():listProductModel;
-                var response = new BaseResponse();
+                var response = new BaseResponse<List<ProductModel>>();
                 response.Status = 1;
                 response.Message = "oke";
                 response.Data = list;
@@ -182,7 +182,7 @@ namespace Test.Controllers
             }
             catch (Exception e)
             {
-                var response = new BaseResponse();
+                var response = new BaseResponse<List<ProductModel>>();
                 response.Status = 0;
                 response.Message = e.Message;
                 return response;

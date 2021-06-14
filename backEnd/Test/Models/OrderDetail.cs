@@ -13,9 +13,12 @@ namespace Test.Models
         public string OrderId { get; set; }
         public int? Quantity { get; set; }
         public int? UnitPrice { get; set; }
+        public string ProductDetailId { get; set; }
         public string ProductId { get; set; }
         public int ItemAmount { get; set; }
-
+        public string ProductName { get; set; }
+        public string Size { get; set; }
+        public string Image { get; set; }
         public virtual Order Order { get; set; }
         public virtual Product Product { get; set; }
     }

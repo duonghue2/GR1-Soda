@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using SodaBackEnd.Data;
 using Test.Business;
 using Test.Data;
 using Test.Models;
@@ -32,49 +33,56 @@ namespace Test.Controllers
         [HttpGet]
         [Route("get-detail-by-user/{id}")]
 
-        public async Task<BaseResponse> DetailByUserId(string id)
+        public async Task<BaseResponse<CartResponse>> DetailByUserId(string id)
         {
-            var response = new BaseResponse();
-            var cart =  _context.Carts.Where(s => s.UserId == id).ToList();
-            if (cart.Count == 0)
+            try
             {
+                var response = new BaseResponse<CartResponse>();
+                var cart = _context.Carts.Where(s => s.UserId == id).ToList();
+                if (cart.Count == 0)
+                {
 
-                response.Data = null;
+                    response.Data = null;
+                    response.Status = 1;
+                    response.Message = "Empty cart";
+                    return response;
+                }
+                var listProductModel = new List<DetailCartModel>();
+                int sum = 0;
+                cart.ForEach(item =>
+                {
+                    var detail = _context.ProductDetails.Where(s => s.Id == item.ProductDetailId).FirstOrDefault();
+                    var image = _context.ProductImages.Where(s => s.ProductId == detail.ProductId).Select(s => s.Image).FirstOrDefault();
+                    var product = _context.Products.Where(s => s.Id == detail.ProductId).FirstOrDefault();
+                    var detailCart = new DetailCartModel();
+                    detailCart.Image = image;
+                    detailCart.Name = product.Name;
+                    detailCart.Size = detail.Size;
+                    detailCart.Id = item.Id;
+                    detailCart.Price = detail.Price;
+                    detailCart.OriginPrice = product.Price;
+                    detailCart.DetailId = detail.Id;
+                    detailCart.ProductDetailId = item.ProductDetailId;
+                    detailCart.Qty = item.Quantity;
+                    detailCart.MaxQty = detail.Quantity;
+                    detailCart.Amount = item.Quantity * detail.Price;
+                    detailCart.ProductId = product.Id;
+                    listProductModel.Add(detailCart);
+                    sum = (int)(sum + detailCart.Amount);
+                });
+                var cartRes = new CartResponse();
+                cartRes.listProduct = listProductModel;
+                cartRes.Total = sum;
+                response.Data = cartRes;
+                response.Total = listProductModel.Count;
                 response.Status = 1;
-                response.Message = "Empty cart";
+                response.Message = "success";
                 return response;
             }
-            var listProductModel = new List<DetailCartModel>();
-            int sum = 0;
-            cart.ForEach(item =>
+            catch(Exception e)
             {
-                var detail = _context.ProductDetails.Where(s => s.Id == item.ProductDetailId).FirstOrDefault();
-                var image = _context.ProductImages.Where(s => s.ProductId == detail.ProductId).Select(s => s.Image).FirstOrDefault();
-                var product = _context.Products.Where(s => s.Id == detail.ProductId).FirstOrDefault();
-                var detailCart = new DetailCartModel();
-                detailCart.Image = image;
-                detailCart.Name = product.Name;
-                detailCart.Size = detail.Size;
-                detailCart.Id = item.Id;
-                detailCart.Price = detail.Price;
-                detailCart.OriginPrice = product.Price;
-                detailCart.DetailId = detail.Id;
-                detailCart.Qty = item.Quantity;
-                detailCart.MaxQty = detail.Quantity;
-                detailCart.Amount = item.Quantity * detail.Price;
-                detailCart.ProductId = product.Id;
-                listProductModel.Add(detailCart);
-                sum = (int)(sum + detailCart.Amount);
-            });
-            var cartRes = new CartResponse();
-            cartRes.listProduct = listProductModel;
-            cartRes.Total = sum;
-            response.Data = cartRes;
-            response.Total = listProductModel.Count;
-            response.Status = 1;
-            response.Message = "success";
-            return response;
-             
+                throw e;
+            }
         }
 
        
@@ -86,8 +94,20 @@ namespace Test.Controllers
         [Route("create")]
         public async Task<ActionResult> Create(Cart cart)
         {
-            cart.Id = Guid.NewGuid().ToString();
-            _context.Carts.Add(cart);
+            var oldCart = _context.Carts.Where(s => s.UserId == cart.UserId&& s.ProductDetailId==cart.ProductDetailId
+            ).FirstOrDefault();
+            if (oldCart == null)
+            {
+
+
+                cart.Id = Guid.NewGuid().ToString();
+                _context.Carts.Add(cart);
+            }
+            else
+            {
+                oldCart.Quantity += cart.Quantity;
+                _context.Carts.Update(oldCart);
+            }
             try
             {
                 await _context.SaveChangesAsync();
@@ -104,7 +124,21 @@ namespace Test.Controllers
            
            
         }
+        [HttpPost]
+        [Route("update")]
+        public async Task<BaseResponse<CartResponse>> Update(List<Cart> listCart)
+        {
+            var response = new BaseResponse<CartResponse>();
+            var oldCart = _context.Carts.Where(s => s.UserId == listCart[0].UserId).ToList();
+            _context.Carts.RemoveRange(oldCart);
+            _context.Carts.AddRange(listCart);
+            await _context.SaveChangesAsync();
+            
+            return await DetailByUserId(listCart[0].UserId);
 
+
+
+        }
         //// GET: Carts/Edit/5
         //[HttpGet]
         //[Route("edit/{id}")]
@@ -165,74 +199,42 @@ namespace Test.Controllers
         // GET: Carts/Delete/5
         [HttpPost]
         [Route("delete")]
-        public async Task<BaseResponse> Delete(string id,Guid userId)
+        public async Task<BaseResponse<CartResponse>> Delete(DeleteRequest del)
         {
-            if (id == null)
+            if (del.Id == null)
             {
                 throw new ArgumentException("Item is null");
             }
 
             var cart = await _context.Carts
-                .FirstOrDefaultAsync(m => m.Id == id&& m.UserId==userId.ToString());
+                .FirstOrDefaultAsync(m => m.Id == del.Id&& m.UserId==del.UserId);
             if (cart == null)
             {
                 throw new ArgumentException("Item is not found");
             }
             _context.Carts.Remove(cart);
             await _context.SaveChangesAsync();
-            var response = new BaseResponse();
-            var lcart = _context.Carts.Where(s => s.UserId == id).ToList();
-            if (lcart.Count == 0)
-            {
-
-                response.Data = null;
-                response.Status = 1;
-                response.Message = "Empty cart";
-                return response;
-            }
-            var listProductModel = new List<DetailCartModel>();
-            int sum = 0;
-            lcart.ForEach(item =>
-            {
-                var detail = _context.ProductDetails.Where(s => s.Id == item.ProductDetailId).FirstOrDefault();
-                var image = _context.ProductImages.Where(s => s.ProductId == detail.ProductId).Select(s => s.Image).FirstOrDefault();
-                var product = _context.Products.Where(s => s.Id == detail.ProductId).FirstOrDefault();
-                var detailCart = new DetailCartModel();
-                detailCart.Image = image;
-                detailCart.Name = product.Name;
-                detailCart.Size = detail.Size;
-                detailCart.Id = item.Id;
-                detailCart.Price = detail.Price;
-                detailCart.OriginPrice = product.Price;
-                detailCart.DetailId = detail.Id;
-                detailCart.Qty = item.Quantity;
-                detailCart.Amount = item.Quantity * detail.Price;
-                detailCart.ProductId = product.Id;
-                listProductModel.Add(detailCart);
-                sum = (int)(sum + detailCart.Amount);
-            });
-            var cartRes = new CartResponse();
-            cartRes.listProduct = listProductModel;
-            cartRes.Total = sum;
-            response.Data = cartRes;
-            response.Total = listProductModel.Count;
-            response.Status = 1;
-            response.Message = "success";
-            return response;
+            
+            return await DetailByUserId(del.UserId);
 
 
         }
 
-        // POST: Carts/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(string id)
-        //{
-        //    var cart = await _context.Carts.FindAsync(id);
-        //    _context.Carts.Remove(cart);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        //POST: Carts/Delete/5
+        //POST: Carts/Delete/5
+        [HttpPost]
+        [Route("delete-user-cart")]
+        public async Task<BaseResponse<Boolean>>DeleteConfirmed(string id)
+        {
+            var cart =  _context.Carts.Where(s=>s.UserId==id).ToList();
+            _context.Carts.RemoveRange(cart);
+            await _context.SaveChangesAsync();
+            var response = new BaseResponse<Boolean>();
+            response.Data = true;
+            response.Total = cart.Count();
+            return response;
+
+        }
 
         private bool CartExists(string id)
         {

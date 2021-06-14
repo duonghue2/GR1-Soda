@@ -1,0 +1,15 @@
+.flex-center-checkout{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+.inline{
+    width:75%
+}
+.checkout-input{
+    border:none;
+    background-color: white;
+    color:black;
+    font-size: 22px;
+}

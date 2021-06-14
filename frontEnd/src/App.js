@@ -13,7 +13,10 @@ import Checkout from './pages/Checkout/Checkout'
 import Signup from './pages/Signup/Signup'
 import 'antd/dist/antd.css';
 
+import History from './components/history/History';
+import { reactLocalStorage } from 'reactjs-localstorage';
 function App(props) {
+  let token = reactLocalStorage.getObject("token");
   return (
     // <UserProvider>
     // <CartProvider>
@@ -25,8 +28,9 @@ function App(props) {
         <Route path="/products/:id" component={ProductDetail}></Route>
         <Route path="/:sex/:categories" component={Categories}></Route>
         <Route path='/cart' component={Cart}></Route>
-        <Route path='/checkout' component={Checkout}></Route>
+        <Route path='/checkout' component={Checkout} render={token ? Checkout : Signup}></Route>
         <Route path='/signup' component={Signup}></Route>
+        <Route path="/history" component={History}></Route>
       </div>
 
     </Router>

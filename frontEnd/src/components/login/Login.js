@@ -173,7 +173,7 @@ class Login extends React.Component {
 
                     <Row style={{ marginLeft: '115px' }}>
                         <a className="forgotPass" href="/forgotPassword">Forgot password?</a>
-                        <a className='register' href='/register' >Register</a>
+                        <a className='register' href='/signup' >Register</a>
                     </Row>
 
                 </Form>

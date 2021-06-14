@@ -13,6 +13,10 @@ namespace Test.Models
         }
 
         public string Id { get; set; }
+        public string Province { get; set; }
+        public string District { get; set; }
+        public string Ward { get; set; }
+        public string Receiver { get; set; }
         public string Address { get; set; }
         public string UserId { get; set; }
         public string State { get; set; }
@@ -22,7 +26,7 @@ namespace Test.Models
         public int? Discount { get; set; }
         public DateTime? CreateAt { get; set; }
         public string ModifyBy { get; set; }
-
+       
         public virtual User User { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }

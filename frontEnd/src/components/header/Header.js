@@ -18,7 +18,8 @@ const content = ({ data, logout }) => {
             <Row style={{ fontWeight: 'bold' }}>{data.userName} </Row>
             <Row>{data.email}</Row>
             <Row>{data.phone}</Row>
-            <Row><i onClick={e => logout(e)} style={{ color: '#FACC2E', cursor: 'pointer' }}>log out</i></Row>
+            <Row onClick={e => { e.preventDefault(); window.location = '/history' }} style={{ cursor: 'pointer' }}>History</Row>
+            <Row><i onClick={e => logout(e)} style={{ color: '#FACC2E', cursor: 'pointer' }}>Log out</i></Row>
         </div>
     )
 }
@@ -47,7 +48,7 @@ class Header extends React.Component {
         //  e.preventDefault();
         reactLocalStorage.remove('token');
         reactLocalStorage.remove('userInfo');
-        reactLocalStorage.remove('Cart');
+
         this.state.userInfor = null;
         this.state.email = {
             error: null,
@@ -68,6 +69,7 @@ class Header extends React.Component {
         this.setState({ current: e.key });
     };
     login = (e) => {
+
         e.preventDefault();
         if (this.state.userInfor == null)
             this.setState({
@@ -77,6 +79,8 @@ class Header extends React.Component {
     componentDidMount() {
 
         this.state.userInfor = reactLocalStorage.getObject('userInfo');
+        if (!this.state.userInfor.userId) this.state.userInfor = null;
+        this.setState(this.state);
     }
     setVisible = (e) => {
         this.setState({
@@ -102,7 +106,7 @@ class Header extends React.Component {
 
                     if (response.data.status == 1) {
                         reactLocalStorage.set('token', response.data.token);
-                        debugger;
+
                         reactLocalStorage.setObject('userInfo', response.data.data);
                         this.state.userInfor = response.data.data;
                         message.success(response.data.message);
@@ -158,22 +162,22 @@ class Header extends React.Component {
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/women/dress">
                                         Dress
-                                   </a>
+                                    </a>
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/women/bags">
                                         Bag
-                                   </a>
+                                    </a>
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/women/glasses">
                                         Glasses
-                                 </a>
+                                    </a>
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/women/jacket">
                                         Jacket
-                                 </a>
+                                    </a>
                                 </Menu.Item>
                             </SubMenu>
                             <SubMenu key="man" title="Men">
@@ -181,27 +185,27 @@ class Header extends React.Component {
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/man/shirt">
                                         Shirt
-                                  </a>
+                                    </a>
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/man/pants">
                                         Pants
-                                  </a>
+                                    </a>
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/man/jackets">
                                         Jacket
-                                     </a>
+                                    </a>
                                 </Menu.Item>
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/man/glasses">
                                         Glasses
-                                     </a>
+                                    </a>
                                 </Menu.Item>
                             </SubMenu>
                             <Menu.Item key="contact">
                                 Contact
-            </Menu.Item>
+                            </Menu.Item>
                         </Menu>
                     </div>
                     <div className="logo item-header">
@@ -219,7 +223,7 @@ class Header extends React.Component {
                         {!this.state.userInfor && <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} onClick={e => this.login(e)} />
                         }
                     </div>
-                    <Login visible={this.state.isLogin} setVisible={this.login} />
+                    <Login visible={this.state.visible} setVisible={this.setVisible} />
 
                 </Row>
 

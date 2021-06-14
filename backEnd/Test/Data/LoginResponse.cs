@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Test.Data
 {
-    public class LoginResponse:BaseResponse
+    public class LoginResponse:BaseResponse<UserData>
     { public string token { get; set; }
     }
 }

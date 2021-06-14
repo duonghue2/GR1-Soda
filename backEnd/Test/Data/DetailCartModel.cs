@@ -18,6 +18,7 @@ namespace Test.Data
         public int OriginPrice { get; set; }
         public string Image { get; set; }
         public string ProductId { get; set; }
+        public string ProductDetailId { get; set; }
 
     }
 }

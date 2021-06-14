@@ -7,11 +7,14 @@ import './Cart.css'
 import { reactLocalStorage } from 'reactjs-localstorage';
 import { currencyFormat } from '../../utils/function'
 import axios from 'axios';
+import Login from '../../components/login/Login'
+import Footer from '../../components/footer/Footer';
 const { TabPane } = Tabs;
 class Cart extends React.Component {
   state = {
     listProduct: [],
-    wishlist: []
+    wishlist: [],
+    isLogin: false,
   }
   // componentDidUpdate(prevState) {
   //   let cart = reactLocalStorage.getObject("Cart");
@@ -25,25 +28,67 @@ class Cart extends React.Component {
   //   }
   //   this.setState(cart, wishlist)
   // }
-  onchangeQty(id, qty) {
+  onchangeQty = async (id, qty) => {
+    debugger;
+    if (qty > 0 && qty) {
+      var update = this.state.listProduct.find(s => s.id == id);
+      if (update.maxQty < qty) message.error("")
+      this.state.listProduct.find(s => s.id == id).qty = qty;
+      let payload = [];
+      let userInfo = reactLocalStorage.getObject("userInfo");
+      this.state.listProduct.forEach(s => {
+        var item = {
+          id: s.id,
+          userId: userInfo.userId,
+          productDetailId: s.productDetailId,
+          quantity: s.qty,
+          amount: s.price,
+        }
+        payload.push(item);
+      })
+      await axios.post(server + 'api/Carts/update', payload).then(resp => {
+        this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
+        this.state.total = resp.data.data != null ? resp.data.data.total : 0;
+        this.setState(this.state)
+      })
 
-    let change = this.state.listProduct.find(s => s.id = id);
-    change.qty = qty;
-    this.setState(this.state);
+
+    } else message.error("Quantity must be greater than 0");
   }
+  delete = async (id) => {
+    let userInfo = reactLocalStorage.getObject("userInfo");
+
+    await axios.post(server + 'api/Carts/delete', { userId: userInfo.userId, id: id }).then(resp => {
+      this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
+      this.state.total = resp.data.data != null ? resp.data.data.total : 0;
+      this.setState(this.state)
+    })
+  }
+
   async componentDidMount() {
     let isLogin = reactLocalStorage.get("token");
     let userInfo = reactLocalStorage.getObject("userInfo");
     if (userInfo) {
-      debugger
+
       axios.get(server + 'api/Carts/get-detail-by-user/' + userInfo.userId).then(resp => {
-        this.state.listProduct = resp.data.data.listProduct;
-        this.state.total = resp.data.data.total;
+        this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
+        this.state.total = resp.data.data != null ? resp.data.data.total : 0;
         this.setState(this.state)
       }).catch(e => {
         throw e;
       });
-    } else message.warning("Login to see your cart");
+    } else {
+      this.login();
+    }
+  }
+  login = () => {
+    this.setState({
+      isLogin: !this.state.isLogin
+    })
+  }
+  checkout = (e) => {
+    e.preventDefault();
+    this.props.history.push("/checkout")
   }
   render() {
     return (
@@ -56,40 +101,41 @@ class Cart extends React.Component {
               <TabPane tab={<Row justify="center" align="middle">
 
                 Shopping Cart
-          <div className="qty">
+                <div className="qty">
                   {this.state.listProduct && this.state.listProduct.length || 0}
                 </div>
               </Row>} key="1">
 
                 <Row align="middle" justify="center">
-                  {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item} onChangeQty={x => this.onchangeQty(x)}>
+                  {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item} onChangeQty={(a, b) => this.onchangeQty(a, b)} delete={(x) => this.delete(x)} isCheckout={false}>
                   </RowCart>
                   ))}
 
 
-                  {this.state.listProduct.length != 0 && <Row align="middle" justify="end" style={{ width: '50vw' }}>
+                  {this.state.listProduct.length != 0 && <Row align="middle" justify="end" style={{ width: '50vw', marginBottom: "50px", marginTop: '20px' }}>
 
-                    <div style={{
-                      width: '201px',
-                      fontSize: '25px'
-                    }}><span style={{ marginRight: "20px" }}>Total : </span> {currencyFormat(this.state.total)}</div>
-                    <button className="btn-checkout"   >
 
-                      CHECKOUT
+                    <button className="btn-checkout" onClick={e => this.checkout(e)}  >
 
-                  </button>
+                      <div style={{
+                        // width: '201px',
+                        fontSize: '25px'
+                      }}><span style={{ marginRight: "20px" }}>Total :  {currencyFormat(this.state.total)}</span>
+                        | CHECKOUT
+                      </div>
+                    </button>
                   </Row>
                   }
 
                   {this.state.listProduct.length === 0 && <div>
-                    <span>No product in the cart</span>
+                    <span style={{ fontSize: "20px" }}>Empty Cart</span>
                   </div>}
                 </Row>
 
               </TabPane>
               <TabPane tab={
                 <Row justify="center" align="middle">Wishlist
-               <div className="qty">
+                  <div className="qty">
                     {this.state.listProduct.length}
                   </div>
                 </Row>
@@ -100,7 +146,7 @@ class Cart extends React.Component {
 
 
                 {this.state.wishlist.length === 0 && <div>
-                  <span>No product in the wishlist</span>
+                  <span style={{ fontSize: "20px" }}>Empty Wishlist</span>
                 </div>}
               </TabPane>
               <TabPane tab="Other Tracking" key="3">
@@ -108,10 +154,11 @@ class Cart extends React.Component {
               </TabPane>
 
             </Tabs>
-
+            <Login visible={this.state.isLogin} setVisible={this.checkout} />
           </div>
 
         </div>
+        <Footer></Footer>
       </div>
     )
   }

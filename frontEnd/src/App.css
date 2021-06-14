@@ -88,12 +88,10 @@ color:#23232c;
   justify-content: center;
   border-top:unset  !important
 }
-.ant-form{
-  padding-left: 14%!important;
-}
+
 input{
   height: 40px;
-  font-size: 18px!important;
+ font-size: 18px;
 }
 .ant-form-item{
   align-items:center;
@@ -121,4 +119,7 @@ button.size:focus{
   background-color: #5c5d5f;
   color:white;
   border:none
+}
+input[type="number"]{
+  font-size: 18px;
 }

@@ -137,3 +137,6 @@ div.sticky {
     width:120px;
 
   }
+  button.size{
+      text-transform: uppercase;
+  }
