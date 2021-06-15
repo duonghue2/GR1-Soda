@@ -151,11 +151,16 @@ namespace Test.Controllers
 
             try
             {
-                var listProduct = _context.Products.Where(s=>s.Category.ToLower().Contains(request.Category.ToLower())).ToList();
+                var listProduct = _context.Products.Where(s=>s.Category.ToLower()==request.Category.ToLower()).ToList();
                 var listProductModel = new List<ProductModel>();
                 foreach (Product pr in listProduct)
                 {
-                    var detail = _context.ProductDetails.Where(s => s.ProductId == pr.Id && s.SubCategories.Contains(request.SubCategory)).ToList();
+                    var detail = _context.ProductDetails.Where(s => s.ProductId == pr.Id).ToList();
+                    if (request.SubCategory != null)
+                    {
+                       
+                    detail=detail.Where( s=>s.SubCategories.Contains(request.SubCategory)).ToList();
+                    }
                     if (detail.Count!=0)
                     {
                         var image = _context.ProductImages.Where(s => s.ProductId == pr.Id).Select(s => s.Image).ToList();

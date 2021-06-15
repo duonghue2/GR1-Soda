@@ -66,7 +66,7 @@ class Cart extends React.Component {
   }
 
   async componentDidMount() {
-    let isLogin = reactLocalStorage.get("token");
+    let token = reactLocalStorage.get("token");
     let userInfo = reactLocalStorage.getObject("userInfo");
     if (userInfo) {
 
@@ -91,76 +91,80 @@ class Cart extends React.Component {
     this.props.history.push("/checkout")
   }
   render() {
-    return (
-      <div className='flex-center'>
-        <Header></Header>
-        <div>
-          <div style={{ display: "flex", justifyContent: "center" }}>
+    let token = reactLocalStorage.get("token");
+    if (!token) window.location = "/"
 
-            <Tabs defaultActiveKey="1" onChange={this.callback} centered={true}>
-              <TabPane tab={<Row justify="center" align="middle">
+    if (token)
+      return (
+        <div className='flex-center'>
+          <Header></Header>
+          <div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
 
-                Shopping Cart
-                <div className="qty">
-                  {this.state.listProduct && this.state.listProduct.length || 0}
-                </div>
-              </Row>} key="1">
+              <Tabs defaultActiveKey="1" onChange={this.callback} centered={true}>
+                <TabPane tab={<Row justify="center" align="middle">
 
-                <Row align="middle" justify="center">
-                  {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item} onChangeQty={(a, b) => this.onchangeQty(a, b)} delete={(x) => this.delete(x)} isCheckout={false}>
+                  Shopping Cart
+                  <div className="qty">
+                    {this.state.listProduct && this.state.listProduct.length || 0}
+                  </div>
+                </Row>} key="1">
+
+                  <Row align="middle" justify="center">
+                    {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item} onChangeQty={(a, b) => this.onchangeQty(a, b)} delete={(x) => this.delete(x)} isCheckout={false}>
+                    </RowCart>
+                    ))}
+
+
+                    {this.state.listProduct.length != 0 && <Row align="middle" justify="end" style={{ width: '50vw', marginBottom: "50px", marginTop: '20px' }}>
+
+
+                      <button className="btn-checkout" onClick={e => this.checkout(e)}  >
+
+                        <div style={{
+                          // width: '201px',
+                          fontSize: '25px'
+                        }}><span style={{ marginRight: "20px" }}>Total :  {currencyFormat(this.state.total)}</span>
+                          | CHECKOUT
+                        </div>
+                      </button>
+                    </Row>
+                    }
+
+                    {this.state.listProduct.length === 0 && <div>
+                      <span style={{ fontSize: "20px" }}>Empty Cart</span>
+                    </div>}
+                  </Row>
+
+                </TabPane>
+                <TabPane tab={
+                  <Row justify="center" align="middle">Wishlist
+                    <div className="qty">
+                      {this.state.listProduct.length}
+                    </div>
+                  </Row>
+                } key="2">
+                  {!this.state.wishlist.length && this.state.wishlist.map(item => (<RowCart product={item}>
                   </RowCart>
                   ))}
 
 
-                  {this.state.listProduct.length != 0 && <Row align="middle" justify="end" style={{ width: '50vw', marginBottom: "50px", marginTop: '20px' }}>
-
-
-                    <button className="btn-checkout" onClick={e => this.checkout(e)}  >
-
-                      <div style={{
-                        // width: '201px',
-                        fontSize: '25px'
-                      }}><span style={{ marginRight: "20px" }}>Total :  {currencyFormat(this.state.total)}</span>
-                        | CHECKOUT
-                      </div>
-                    </button>
-                  </Row>
-                  }
-
-                  {this.state.listProduct.length === 0 && <div>
-                    <span style={{ fontSize: "20px" }}>Empty Cart</span>
+                  {this.state.wishlist.length === 0 && <div>
+                    <span style={{ fontSize: "20px" }}>Empty Wishlist</span>
                   </div>}
-                </Row>
+                </TabPane>
+                <TabPane tab="Other Tracking" key="3">
 
-              </TabPane>
-              <TabPane tab={
-                <Row justify="center" align="middle">Wishlist
-                  <div className="qty">
-                    {this.state.listProduct.length}
-                  </div>
-                </Row>
-              } key="2">
-                {!this.state.wishlist.length && this.state.wishlist.map(item => (<RowCart product={item}>
-                </RowCart>
-                ))}
+                </TabPane>
 
+              </Tabs>
+              <Login visible={this.state.isLogin} setVisible={this.checkout} />
+            </div>
 
-                {this.state.wishlist.length === 0 && <div>
-                  <span style={{ fontSize: "20px" }}>Empty Wishlist</span>
-                </div>}
-              </TabPane>
-              <TabPane tab="Other Tracking" key="3">
-
-              </TabPane>
-
-            </Tabs>
-            <Login visible={this.state.isLogin} setVisible={this.checkout} />
           </div>
-
+          <Footer></Footer>
         </div>
-        <Footer></Footer>
-      </div>
-    )
+      )
   }
 }
 export default Cart;

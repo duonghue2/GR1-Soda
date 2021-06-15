@@ -89,7 +89,7 @@ class Login extends React.Component {
         }
         if (email && password) {
             try {
-                await axios.post(server + 'api/login', { email: email, password: password }).then((response) => {
+                await axios.post(server + 'api/Users/login', { email: email, password: password }).then((response) => {
 
                     if (response.data.status == 1) {
                         reactLocalStorage.set('token', response.data.token);
@@ -97,11 +97,10 @@ class Login extends React.Component {
                         reactLocalStorage.setObject('userInfo', response.data.data);
                         this.state.userInfor = response.data.data;
                         message.success(response.data.message);
+                        this.props.setVisible(false);
                     }
                     else message.error(response.data.message)
-                    this.setState({
-                        visible: false
-                    })
+
                 }, (error) => {
                     message.error("Some error occurs, pls try again");
                 });

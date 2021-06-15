@@ -45,8 +45,8 @@ class DisplayListProduct extends React.Component {
                             </Row>
                             <Row align="middle" justify="space-between" >
                                 <Input placeholder="From" className="InputFilter" ></Input>
-                    -
-                    <Input placeholder="To" className="InputFilter"></Input>
+                                -
+                                <Input placeholder="To" className="InputFilter"></Input>
                             </Row>
                             <Row>
                                 <button className="submitFilter">Submit</button>
@@ -66,7 +66,7 @@ class DisplayListProduct extends React.Component {
                         </Row>
 
                         <Row align="middle" justify="center">
-                            <button className={this.props.products.length % 12 != 0 ? "Hidden" : "LoadMore"} onClick={e => this.props.handleLoadMore(e)}>Load more</button>
+                            <button className={this.props.products.length == this.props.total ? "Hidden" : "LoadMore"} onClick={e => this.props.handleLoadMore(e)}>Load more</button>
                         </Row>
                     </Col>
                 </Row>

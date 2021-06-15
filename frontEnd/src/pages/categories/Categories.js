@@ -22,7 +22,11 @@ class Categories extends React.Component {
   index = 0;
   getListProduct = async (pageNumber) => {
     const { match: { params } } = this.props;
-    await axios.post(server + 'api/Products/by-category', { page: pageNumber, limit: 12, category: params.sex, subcategory: params.categories }).then((response) => {
+    var payload = null;
+    if (params.subcategory) payload = { page: pageNumber, limit: 12, category: params.sex, subcategory: params.categories };
+    else payload = { page: pageNumber, limit: 12, category: params.sex }
+
+    await axios.post(server + 'api/Products/by-category', payload).then((response) => {
       // console.log(response);
       if (response.data.status == 1)
         this.state.listProduct = this.state.listProduct.concat(response.data.data)
@@ -32,6 +36,7 @@ class Categories extends React.Component {
     }, (error) => {
       message.error("Some error occurs, pls try again");
     });
+
   }
   componentDidMount() {
 
@@ -48,15 +53,19 @@ class Categories extends React.Component {
   render() {
     const { match: { params } } = this.props;
 
-    if (params.sex === "man" || params.sex === "women")
+    if (params.sex === "men" || params.sex === "women")
       return (
         <div>
           <Header></Header>
-          <div className="text-white verticle " style={{ backgroundImage: `url(${params.sex == "women" ? PageHeading : ManHeading})`, height: "80vh", marginRight: "25px", marginLeft: "25px" }}>
-            <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row>
-            <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row>
+          <div className="text-white verticle " style={{
+            backgroundImage: `url(${params.sex == "women" ? PageHeading : ManHeading})`, backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'cover', height: "80vh", marginRight: "25px", marginLeft: "25px"
+          }}>
+            {/* <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row> */}
+            {/* <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row> */}
           </div>
-          <DisplayListProduct products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} />
+          <DisplayListProduct products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} total={this.state.total} />
         </div>)
     else return (<div>
       {/* 

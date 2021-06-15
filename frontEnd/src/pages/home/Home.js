@@ -86,7 +86,7 @@ class Home extends React.Component {
             </Menu>
           </Row>
         </div >
-        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} />
+        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} total={this.state.total} />
         <Footer />
       </div>
 

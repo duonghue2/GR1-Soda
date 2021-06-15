@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
-import { Form, Input, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
+import { Form, Input, Cascader, Select, Row, Col, Checkbox, message } from 'antd';
+import axios from 'axios'
+import { server } from '../../enviroment'
 import './Signup.css'
+
 const { Option } = Select;
 
 const formItemLayout = {
@@ -53,8 +56,27 @@ const tailFormItemLayoutSubmit = {
 };
 
 class Signup extends React.Component {
-    onFinish = (values) => {
-        console.log('Received values of form: ', values);
+    onFinish = async (values) => {
+        debugger;
+        let payload = {
+            name: values.name,
+            email: values.email,
+            password: values.password,
+            phoneNumber: values.phone
+        }
+
+        await axios.post(server + 'api/Users/signin', payload).then((response) => {
+            debugger;
+            console.log(response.data);
+
+            if (response.data) {
+                message.success("Create an account succesfully");
+
+            }
+        }, (error) => {
+            message.error("Some error occurs, pls try again");
+        });
+
     };
 
     prefixSelector =
@@ -147,7 +169,7 @@ class Signup extends React.Component {
                                 </Form.Item>
 
                                 <Form.Item
-                                    name="nickname"
+                                    name="name"
                                     label="Nickname"
                                     tooltip="What do you want others to call you?"
                                     rules={[
@@ -193,7 +215,7 @@ class Signup extends React.Component {
                                     </Checkbox>
                                 </Form.Item>
                                 <Form.Item style={{ textAlign: 'center' }}  {...tailFormItemLayoutSubmit} >
-                                    <button className="btn-checkout btn-signup" onClick={e => this.checkout(e)}  >
+                                    <button className="btn-checkout btn-signup"  >
 
                                         <div style={{
 

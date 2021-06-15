@@ -1,27 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using SodaBackEnd.Data;
+using SodaBackEnd.Interfaces;
 using Test.Data;
 using Test.Models;
 
 namespace Test.Controllers
 {
-    [Route("api/")]
+    [Route("api/Users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly Soda2Context _context;
-
+        private readonly ITokenService _tokenService;
         public UsersController(Soda2Context context)
         {
             _context = context;
+            _tokenService = new TokenController();
         }
 
-        public static List<String> listToken { get; set; }= new List<string>();
+       
         // PUT: api/getUser/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -57,55 +65,49 @@ namespace Test.Controllers
         // POST: api/sigin
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost("signin")]
-        public async Task<ActionResult<User>> PostUser(User user)
+        [HttpPost]
+        [Route("signin")]
+        public async Task<ActionResult<UserRequest>> PostUser(UserRequest user)
         {
-            _context.Users.Add(user);
-            try
-            {
+          var isExist=  _context.Users.Where(s => s.Email == user.Email).FirstOrDefault();
+            if (isExist != null) throw new ArgumentException("EMAIL_ALREADY_EXIST");
+            var newUser = new User();
+            newUser.Id = Guid.NewGuid().ToString();
+            newUser.Name = user.Name;
+            newUser.Email = user.Email;
+            newUser.Phonenumber = user.Phonenumber;
+            newUser.Password = _tokenService.ComputeSHA256Hash(user.Password);
+         
+            _context.Users.Add(newUser);          
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (UserExists(user.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+        
+            return CreatedAtAction("CreateUser", new { id = newUser.Id }, user);
         }
-        public string Decode(string username,string password)
-        {
-            string input = username + password;
-            char[] returnValue= input.ToCharArray();
-            for(var i = 0; i < input.Length; i++)
-            {
-                returnValue[i] = (char)(input[i] + 29);
-                
-            }
-            return new String(returnValue);
+        
 
-        }
-        public bool Encode(string token)
-        {
-            return listToken.Contains(token);
 
-        }
 
         // POST: api/login
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost("login")]
+        [HttpPost]
+        [Route("login")]
         public async Task<LoginResponse> Login(LoginRequest user)
         {
             var response = new LoginResponse();
-            var data = _context.Users.Where(s => s.Email == user.Email && s.Password == user.Password).FirstOrDefault();
-            if (data == null) { response.Status = 0;
+            //var text = user.Email + user.Password;
+            //if (ComputeSHA256Hash(text) == user.Token)
+            //{
+            //    response.Status = 0;
+            //    response.Message = "Email or password is wrong";
+            //    response.Data = null;
+            //    return response;
+            //}
+            
+            var data = _context.Users.Where(s => s.Email == user.Email ).FirstOrDefault();
+            var password = _tokenService.ComputeSHA256Hash(user.Password);
+          
+            if (data == null||data.Password!=password) { response.Status = 0;
                 response.Message = "Email or password is wrong";
                 response.Data = null;
                 return response;
@@ -120,8 +122,7 @@ namespace Test.Controllers
                 response.Message = "Succesfull login";
                 
                 response.Data = userR;
-                var token=Decode(user.Email, user.Password);
-                listToken.Add(token);
+                var token = _tokenService.GetToken(userR.UserId, userR.UserName);
                 response.token = token;
                 return response;
             }

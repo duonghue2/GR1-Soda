@@ -34,42 +34,45 @@ class History extends React.Component {
     }
 
     render() {
-        return (
-            <div className='flex-center'>
-                <Header></Header>
-                <div>
-                    <div style={{ display: "flex", justifyContent: "center", flexDirection: 'column' }}>
-                        <Row align="middle" justify="center" style={{ fontSize: "25px", fontWeight: "bold" }}>History purchase</Row>
-                        {this.state.purchase.map((item, index) =>
-                            <div key={index} style={{ marginTop: '20px', marginBottom: "20px" }}>
-                                <Row justify="center" >
-                                    <div style={{ border: "1px solid #8d9196", width: "50vw", marginBottom: '10px ' }}></div>
+        let token = reactLocalStorage.get("token");
+        if (!token) window.location = "/login"
+        if (token)
+            return (
+                <div className='flex-center'>
+                    <Header></Header>
+                    <div>
+                        <div style={{ display: "flex", justifyContent: "center", flexDirection: 'column' }}>
+                            <Row align="middle" justify="center" style={{ fontSize: "25px", fontWeight: "bold" }}>History purchase</Row>
+                            {this.state.purchase.map((item, index) =>
+                                <div key={index} style={{ marginTop: '20px', marginBottom: "20px" }}>
+                                    <Row justify="center" >
+                                        <div style={{ border: "1px solid #8d9196", width: "50vw", marginBottom: '10px ' }}></div>
 
-                                </Row>
-                                <Row align="middle" justify="center" style={{ fontSize: "25px", fontWeight: "bold" }}> <span style={{ padding: "35px" }}>Order #{item.order.id.substring(0, 4)}</span> - <span style={{ padding: "35px" }}>{currencyFormat(item.order.amount)}</span> - <span style={{ padding: "35px" }}>{item.order.state}</span></Row>
-                                <Row align="middle" justify="center" key={index}>
-
-
-                                    {item.details.map(data => (<RowCart product={data} isCheckout={true}>
-                                    </RowCart>
-                                    ))}
+                                    </Row>
+                                    <Row align="middle" justify="center" style={{ fontSize: "25px", fontWeight: "bold" }}> <span style={{ padding: "35px" }}>Order #{item.order.id.substring(0, 4)}</span> - <span style={{ padding: "35px" }}>{currencyFormat(item.order.amount)}</span> - <span style={{ padding: "35px" }}>{item.order.state}</span></Row>
+                                    <Row align="middle" justify="center" key={index}>
 
 
+                                        {item.details.map(data => (<RowCart product={data} isCheckout={true}>
+                                        </RowCart>
+                                        ))}
 
 
 
 
-                                </Row>
 
-                            </div>
-                        )}
+
+                                    </Row>
+
+                                </div>
+                            )}
+
+                        </div>
 
                     </div>
-
+                    <Footer />
                 </div>
-                <Footer />
-            </div>
-        )
+            )
     }
 }
 export default History;

@@ -187,3 +187,8 @@ D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.csproj.CopyComp
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.dll
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.pdb
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.genruntimeconfig.cache
+D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.dll
+D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.Security.dll
+D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.Security.Jwt.dll
+D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.Security.OAuth.dll
+D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Owin.dll

@@ -126,3 +126,25 @@ input[type="number"]{
 .ant-image{
   width: inherit;
 }
+.ant-menu-submenu-title:hover{
+color:#23232c!important
+}
+.signup{
+  display: flex;
+   justify-content: center;
+   flex-direction: column;
+    height: 100vh;
+     background: url('https://i.pinimg.com/originals/6f/fb/4c/6ffb4c659b3493bef975282e44d6ce0d.jpg');
+
+}
+.box{
+  background-color: #f3c48b;
+  padding-top: 30px;
+  padding-bottom: 15px;
+}
+.box input[type='text'],.box .ant-input-password{
+  border-radius: 5px;
+}
+.btn-signup{
+  width:100%!important;
+}

@@ -63,6 +63,7 @@ class Header extends React.Component {
         this.setState(this.state);
 
         message.success("log out succesfully!");
+        this.props.history.push("/");
     }
     handleClick = e => {
         console.log('click ', e);
@@ -87,48 +88,7 @@ class Header extends React.Component {
             visible: e
         })
     }
-    handleSubmit = async () => {
-        let email = document.getElementById('email').value;
-        let password = document.getElementById('password').value;
-        if (!email) {
-            this.state.email.validation = "error";
-            this.state.email.error = "Email is not empty"
 
-        }
-
-        if (!password) {
-            this.state.password.validation = "error";
-            this.state.password.error = "Password is not empty"
-        }
-        if (email && password) {
-            try {
-                await axios.post(server + 'api/login', { email: email, password: password }).then((response) => {
-
-                    if (response.data.status == 1) {
-                        reactLocalStorage.set('token', response.data.token);
-
-                        reactLocalStorage.setObject('userInfo', response.data.data);
-                        this.state.userInfor = response.data.data;
-                        message.success(response.data.message);
-                    }
-                    else message.error(response.data.message)
-                    this.setState({
-                        visible: false
-                    })
-                }, (error) => {
-                    message.error("Some error occurs, pls try again");
-                });
-
-            } catch (error) {
-
-            }
-            // post data to server;
-        }
-
-
-        this.setState(this.state)
-
-    }
     handleCancel = () => {
 
         this.setState({
@@ -143,6 +103,9 @@ class Header extends React.Component {
             visible: false
         })
     }
+    redirect = (e) => {
+        window.location = "/" + e;
+    }
 
     render() {
         const { current } = this.state;
@@ -156,7 +119,7 @@ class Header extends React.Component {
                                 <a href="/">Home</a>
                             </Menu.Item>
 
-                            <SubMenu key="women" title="Women">
+                            <SubMenu key="women" title="Women" onTitleClick={() => this.redirect("women")}>
 
 
                                 <Menu.Item>
@@ -180,7 +143,7 @@ class Header extends React.Component {
                                     </a>
                                 </Menu.Item>
                             </SubMenu>
-                            <SubMenu key="man" title="Men">
+                            <SubMenu key="man" title="Men" onTitleClick={() => this.redirect("men")}>
 
                                 <Menu.Item>
                                     <a rel="noopener noreferrer" href="/man/shirt">
@@ -227,7 +190,7 @@ class Header extends React.Component {
 
                 </Row>
 
-            </div>
+            </div >
         );
     }
 }

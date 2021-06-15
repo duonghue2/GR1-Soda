@@ -25,6 +25,7 @@ class Checkout extends React.Component {
             district: [],
             ward: []
         }
+
     }
     onFinish = (e) => {
         // e.preventDefault();
@@ -93,184 +94,186 @@ class Checkout extends React.Component {
         </Form.Item>
 
     render() {
+        let token = reactLocalStorage.get("token");
+        if (!token) window.location = "/"
         let userInfo = reactLocalStorage.getObject("userInfo");
+        if (token)
+            return (
+                <div className='flex-center-checkout'>
+                    <Header />
+                    <div className="inline">
 
-        return (
-            <div className='flex-center-checkout'>
-                <Header />
-                <div className="inline">
+                        <div style={{ textAlign: "center", fontSize: '22px', fontWeight: "bold", marginBottom: "15px" }}>Order details</div>
+                        <Form
 
-                    <div style={{ textAlign: "center", fontSize: '22px', fontWeight: "bold", marginBottom: "15px" }}>Order details</div>
-                    <Form
+                            labelCol={{ span: 3, offset: 2 }}
+                            labelAlign="left"
+                            name="order"
+                            onFinish={e => this.onFinish(e)}
+                            initialValues={{
 
-                        labelCol={{ span: 3, offset: 2 }}
-                        labelAlign="left"
-                        name="order"
-                        onFinish={e => this.onFinish(e)}
-                        initialValues={{
-
-                            prefix: '84',
-                        }}
-                        scrollToFirstError={true}
-                    >
-
-                        <Form.Item
-                            name="email"
-                            label="E-mail"
-                            rules={[
-                                {
-                                    type: 'email',
-                                    message: 'The input is not valid E-mail!',
-                                },
-                                {
-                                    required: true,
-                                    message: 'Please input your E-mail!',
-                                },
-                            ]}
-                            style={{
-                                display: 'flex', justifyContent:
-                                    'center', width: 'calc(80% - 8px)'
+                                prefix: '84',
                             }}
+                            scrollToFirstError={true}
                         >
-                            <Input value={userInfo.email} />
-                        </Form.Item>
-                        <Form.Item
-                            name="phone"
-                            label="Phone Number"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your phone number!',
-                                },
-                            ]}
-                            style={{
-                                display: 'flex', justifyContent:
-                                    'center', width: 'calc(80% - 8px)'
-                            }}
-                        >
-                            <Input
-                                addonBefore={this.prefixSelector}
-                                style={{
-                                    width: '100%',
-                                }}
-                                value={userInfo.phone}
-                            />
-                        </Form.Item>
 
-                        <Input.Group compact style={{
-                            display: 'flex', justifyContent:
-                                'space-between', width: 'calc(75% - 8px)', marginLeft: '5%'
-                        }}>
-                            <Form.Item name='province'
-                                label="Province" rules={[
-                                    {
-                                        required: true,
-                                        message: "Please input your province"
-                                    }
-                                ]}
-                                labelCol={{ span: 10, offset: 1 }}
-                                style={{
-                                    display: 'flex', justifyContent:
-                                        'space-around', width: '33%'
-                                }} >
-                                <Select
-                                    onChange={e => this.loadDistrict(e)} defaultValue={this.state.defaultValue.province}
-                                >
-                                    {this.state.province.map((data, index) =>
-
-                                        <Option value={data.province_name} key={index} >{data.province_name}</Option>
-                                    )}
-
-                                </Select>
-                            </Form.Item>
-                            <Form.Item name='district' style={{
-                                display: 'flex', justifyContent:
-                                    'space-around', width: '33%'
-                            }}
-                                labelCol={{ span: 7, offset: 2 }}
-                                label="District" rules={[
-                                    {
-                                        required: true,
-                                        message: "Please input your disctric"
-                                    }
-                                ]} >
-                                <Select
-                                    onChange={e => this.loadWard(e)}
-                                >
-                                    {this.state.district.map((data, index) => <Option value={data.district_name} key={index} >{data.district_name}</Option>)}
-
-                                </Select>
-                            </Form.Item>
-                            <Form.Item name='ward' label="Ward" style={{
-                                display: 'flex', justifyContent:
-                                    'space-around', width: '33%'
-                            }}
-                                labelCol={{ span: 6, offset: 2 }}
+                            <Form.Item
+                                name="email"
+                                label="E-mail"
                                 rules={[
                                     {
-                                        required: false,
-                                        message: "Please input your ward"
-                                    }
-                                ]} >
-                                <Select
-
-                                >
-                                    {this.state.ward.map((data, index) => <Option value={data.ward_name} key={index} >{data.ward_name}</Option>)}
-
-                                </Select>
+                                        type: 'email',
+                                        message: 'The input is not valid E-mail!',
+                                    },
+                                    {
+                                        required: true,
+                                        message: 'Please input your E-mail!',
+                                    },
+                                ]}
+                                style={{
+                                    display: 'flex', justifyContent:
+                                        'center', width: 'calc(80% - 8px)'
+                                }}
+                            >
+                                <Input value={userInfo.email} />
                             </Form.Item>
-                        </Input.Group>
+                            <Form.Item
+                                name="phone"
+                                label="Phone Number"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your phone number!',
+                                    },
+                                ]}
+                                style={{
+                                    display: 'flex', justifyContent:
+                                        'center', width: 'calc(80% - 8px)'
+                                }}
+                            >
+                                <Input
+                                    addonBefore={this.prefixSelector}
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    value={userInfo.phone}
+                                />
+                            </Form.Item>
 
-                        <Form.Item
-                            name="address"
-                            label="Address"
-                            tooltip="Address receive package"
-                            style={{
+                            <Input.Group compact style={{
                                 display: 'flex', justifyContent:
-                                    'space-around', width: 'calc(80% - 8px)'
-                            }}
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input your address!',
-                                    whitespace: true,
-                                },
-                            ]}
-                        >
-                            <Input />
-                        </Form.Item>
-                        <Row align="middle" justify="center">
-                            {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item} isCheckout={true}>
-                            </RowCart>
-                            ))}
-                            <Row align="middle" justify="space-around" style={{ width: '50vw', marginBottom: "50px", marginTop: '20px', fontSize: '25px', textAlign: 'right' }}><div style={{ width: '20%' }}>Shipping cost</div> <div style={{ width: "40%", textAlign: 'right' }}>0</div></Row>
+                                    'space-between', width: 'calc(75% - 8px)', marginLeft: '5%'
+                            }}>
+                                <Form.Item name='province'
+                                    label="Province" rules={[
+                                        {
+                                            required: true,
+                                            message: "Please input your province"
+                                        }
+                                    ]}
+                                    labelCol={{ span: 10, offset: 1 }}
+                                    style={{
+                                        display: 'flex', justifyContent:
+                                            'space-around', width: '33%'
+                                    }} >
+                                    <Select
+                                        onChange={e => this.loadDistrict(e)} defaultValue={this.state.defaultValue.province}
+                                    >
+                                        {this.state.province.map((data, index) =>
 
-                            <Row align="middle" justify="end" style={{ width: '50vw', marginBottom: "50px", marginTop: '20px' }}>
+                                            <Option value={data.province_name} key={index} >{data.province_name}</Option>
+                                        )}
+
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item name='district' style={{
+                                    display: 'flex', justifyContent:
+                                        'space-around', width: '33%'
+                                }}
+                                    labelCol={{ span: 7, offset: 2 }}
+                                    label="District" rules={[
+                                        {
+                                            required: true,
+                                            message: "Please input your disctric"
+                                        }
+                                    ]} >
+                                    <Select
+                                        onChange={e => this.loadWard(e)}
+                                    >
+                                        {this.state.district.map((data, index) => <Option value={data.district_name} key={index} >{data.district_name}</Option>)}
+
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item name='ward' label="Ward" style={{
+                                    display: 'flex', justifyContent:
+                                        'space-around', width: '33%'
+                                }}
+                                    labelCol={{ span: 6, offset: 2 }}
+                                    rules={[
+                                        {
+                                            required: false,
+                                            message: "Please input your ward"
+                                        }
+                                    ]} >
+                                    <Select
+
+                                    >
+                                        {this.state.ward.map((data, index) => <Option value={data.ward_name} key={index} >{data.ward_name}</Option>)}
+
+                                    </Select>
+                                </Form.Item>
+                            </Input.Group>
+
+                            <Form.Item
+                                name="address"
+                                label="Address"
+                                tooltip="Address receive package"
+                                style={{
+                                    display: 'flex', justifyContent:
+                                        'space-around', width: 'calc(80% - 8px)'
+                                }}
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'Please input your address!',
+                                        whitespace: true,
+                                    },
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
+                            <Row align="middle" justify="center">
+                                {this.state.listProduct && this.state.listProduct.map(item => (<RowCart product={item} isCheckout={true}>
+                                </RowCart>
+                                ))}
+                                <Row align="middle" justify="space-around" style={{ width: '50vw', marginBottom: "50px", marginTop: '20px', fontSize: '25px', textAlign: 'right' }}><div style={{ width: '20%' }}>Shipping cost</div> <div style={{ width: "40%", textAlign: 'right' }}>0</div></Row>
+
+                                <Row align="middle" justify="end" style={{ width: '50vw', marginBottom: "50px", marginTop: '20px' }}>
 
 
-                                <button className="btn-checkout" style={{ cursor: 'pointer' }}  >
+                                    <button className="btn-checkout" style={{ cursor: 'pointer' }}  >
 
-                                    <div style={{
-                                        // width: '201px',
-                                        fontSize: '25px'
-                                    }}><span style={{ marginRight: "20px" }}>Total :  {currencyFormat(this.state.total)}</span>
-                                        | SUBMIT
-                                    </div>
-                                </button>
+                                        <div style={{
+                                            // width: '201px',
+                                            fontSize: '25px'
+                                        }}><span style={{ marginRight: "20px" }}>Total :  {currencyFormat(this.state.total)}</span>
+                                            | SUBMIT
+                                        </div>
+                                    </button>
+                                </Row>
+
+
+
                             </Row>
 
 
 
-                        </Row>
 
-
-
-
-                    </Form>
+                        </Form>
+                    </div>
+                    <Footer />
                 </div>
-                <Footer />
-            </div>
-        )
+            )
     }
 }
 
