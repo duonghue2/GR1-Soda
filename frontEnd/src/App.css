@@ -123,3 +123,6 @@ button.size:focus{
 input[type="number"]{
   font-size: 18px;
 }
+.ant-image{
+  width: inherit;
+}
