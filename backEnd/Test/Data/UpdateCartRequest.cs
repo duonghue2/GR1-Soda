@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Test.Models;
 
 namespace SodaBackEnd.Data
 {
-    public class DeleteRequest:BaseRequest
+    public class UpdateCartRequest:BaseRequest
     {
-       
-        public string Id { get; set; }
+      public  List<Cart> ListCart { get; set; }
     }
 }

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace SodaBackEnd.Data
 {
-    public class DeleteRequest:BaseRequest
+    public class BaseRequest
     {
-       
-        public string Id { get; set; }
+        public string UserId { get; set; }
+        public string Token { get; set; }
     }
 }

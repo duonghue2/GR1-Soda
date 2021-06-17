@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SodaBackEnd.Data;
+using SodaBackEnd.Interfaces;
 using Test.Business;
 using Test.Data;
 using Test.Models;
@@ -17,10 +18,12 @@ namespace Test.Controllers
     public class CartsController : ControllerBase
     {
         private readonly Soda2Context _context;
+        private readonly ITokenService _tokenService;
 
         public CartsController(Soda2Context context)
         {
             _context = context;
+            _tokenService = new TokenController();
         }
 
       
@@ -92,8 +95,10 @@ namespace Test.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Route("create")]
-        public async Task<ActionResult> Create(Cart cart)
+        public async Task<ActionResult> Create(AddCartRequest cart)
         {
+            var actor=_context.Users.Find(cart.UserId);
+            if (!_tokenService.isValidToken(cart.Token, cart.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
             var oldCart = _context.Carts.Where(s => s.UserId == cart.UserId&& s.ProductDetailId==cart.ProductDetailId
             ).FirstOrDefault();
             if (oldCart == null)
@@ -101,7 +106,13 @@ namespace Test.Controllers
 
 
                 cart.Id = Guid.NewGuid().ToString();
-                _context.Carts.Add(cart);
+                var cartInsert = new Cart();
+                cartInsert.Id = cart.Id;
+                cartInsert.ProductDetailId= cart.ProductDetailId;
+                cartInsert.Quantity = cart.Quantity;
+                cartInsert.UserId = cart.UserId;
+                cartInsert.Amount = cart.Amount;
+                _context.Carts.Add(cartInsert);
             }
             else
             {
@@ -126,15 +137,18 @@ namespace Test.Controllers
         }
         [HttpPost]
         [Route("update")]
-        public async Task<BaseResponse<CartResponse>> Update(List<Cart> listCart)
+        public async Task<BaseResponse<CartResponse>> Update(UpdateCartRequest updateCartRequest)
         {
+            var actor = _context.Users.Find(updateCartRequest.UserId);
+            if (!_tokenService.isValidToken(updateCartRequest.Token, updateCartRequest.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+
             var response = new BaseResponse<CartResponse>();
-            var oldCart = _context.Carts.Where(s => s.UserId == listCart[0].UserId).ToList();
+            var oldCart = _context.Carts.Where(s => s.UserId == updateCartRequest.ListCart[0].UserId).ToList();
             _context.Carts.RemoveRange(oldCart);
-            _context.Carts.AddRange(listCart);
+            _context.Carts.AddRange(updateCartRequest.ListCart);
             await _context.SaveChangesAsync();
             
-            return await DetailByUserId(listCart[0].UserId);
+            return await DetailByUserId(updateCartRequest.ListCart[0].UserId);
 
 
 
@@ -201,6 +215,9 @@ namespace Test.Controllers
         [Route("delete")]
         public async Task<BaseResponse<CartResponse>> Delete(DeleteRequest del)
         {
+
+            var actor = _context.Users.Find(del.UserId);
+            if (!_tokenService.isValidToken(del.Token, del.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
             if (del.Id == null)
             {
                 throw new ArgumentException("Item is null");
@@ -224,9 +241,11 @@ namespace Test.Controllers
         //POST: Carts/Delete/5
         [HttpPost]
         [Route("delete-user-cart")]
-        public async Task<BaseResponse<Boolean>>DeleteConfirmed(string id)
+        public async Task<BaseResponse<Boolean>>DeleteConfirmed(BaseRequest req)
         {
-            var cart =  _context.Carts.Where(s=>s.UserId==id).ToList();
+            var actor = _context.Users.Find(req.UserId);
+            if (!_tokenService.isValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+            var cart =  _context.Carts.Where(s=>s.UserId==req.UserId).ToList();
             _context.Carts.RemoveRange(cart);
             await _context.SaveChangesAsync();
             var response = new BaseResponse<Boolean>();

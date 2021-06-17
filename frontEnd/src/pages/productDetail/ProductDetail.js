@@ -62,15 +62,17 @@ class ProductDetail extends React.Component {
   }
   addToCart = async (e, i) => {
     e.preventDefault();
-    let isLogin = reactLocalStorage.get("token");
+    let token = reactLocalStorage.get("token");
     let userInfo = reactLocalStorage.getObject("userInfo");
 
-    if (isLogin) {
+    if (token) {
       const payload = {
         userId: userInfo.userId,
         productDetailId: this.state.product.detail[this.state.detailId].id,
         quantity: this.state.qty || 1,
         amount: this.state.price,
+        token,
+        userName: userInfo.userName
       }
 
       await axios.post(server + 'api/Carts/Create', payload).then((response) => {

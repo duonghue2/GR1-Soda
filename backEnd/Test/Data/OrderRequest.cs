@@ -8,6 +8,7 @@ namespace SodaBackEnd.Data
     public class OrderRequest
     {
         public string UserId { get; set; }
+        public string Token { get;set }
         public string Email { get; set; }
         public string Province { get; set; }
         public string District { get; set; }
