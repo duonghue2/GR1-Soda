@@ -216,7 +216,7 @@ namespace Test.Controllers
         public async Task<BaseResponse<CartResponse>> Delete(DeleteRequest del)
         {
 
-            var actor = _context.Users.Find(del.UserId);
+            var actor = _context.Users.Find(new Guid(del.UserId));
             if (!_tokenService.isValidToken(del.Token, del.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
             if (del.Id == null)
             {

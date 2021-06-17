@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SodaBackEnd.Data;
+using SodaBackEnd.Interfaces;
 using Test.Data;
 using Test.Models;
 
@@ -16,11 +17,12 @@ namespace Test.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly Soda2Context _context;
-        
+        private readonly ITokenService _tokenService;
 
         public OrdersController(Soda2Context context)
         {
             _context = context;
+            _tokenService = new TokenController();
         }
 
         // GET: api/Orders
@@ -45,10 +47,14 @@ namespace Test.Controllers
         //}
         [HttpGet]
         [Route("purchase/{id}")]
-        public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetAllOrder(string id)
-        { var response = new BaseResponse<List<PurchaseHistoryResponse>> ();
+        public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetAllOrder(BaseRequest req)
+        {
+
+            var actor = _context.Users.Find(req.UserId);
+            if (!_tokenService.isValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+            var response = new BaseResponse<List<PurchaseHistoryResponse>> ();
             var listOrder = new List<PurchaseHistoryResponse>();
-            var order =  _context.Orders.Where(s=>s.UserId==id).ToList();
+            var order =  _context.Orders.Where(s=>s.UserId==req.UserId).ToList();
             if (order == null || order.Count() == 0)
             {
                 response.Data = null;
@@ -93,6 +99,8 @@ namespace Test.Controllers
         {
             try
             {
+                var actor = _context.Users.Find(order.UserId);
+                if (!_tokenService.isValidToken(order.Token, order.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
                 var cartController = new CartsController(_context);
             var detail = await cartController.DetailByUserId(order.UserId);
             var newOrder = new Order();
@@ -138,7 +146,11 @@ namespace Test.Controllers
 
                 
                      await _context.SaveChangesAsync();
-               await cartController.DeleteConfirmed(order.UserId);
+                var baseRequest = new BaseRequest();
+                baseRequest.UserId = order.UserId;
+                baseRequest.Token = order.Token;
+
+               await cartController.DeleteConfirmed(baseRequest);
                 var response = new OrderResponse();
                 response.IsSuccess = true;
                 response.OrderID = newOrder.Id;
