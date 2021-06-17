@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SodaBackEnd.Data;
 using Test.Business;
 using Test.Data;
 using Test.Models;
@@ -143,6 +144,95 @@ namespace Test.Controllers
 
            
 
+        }
+        
+        [HttpPost]
+        [Route("filter")]
+        public async   Task<BaseResponse<List<ProductModel>>> Filter(FilterRequest request)
+        {
+
+            try
+            {
+                
+                var listProduct = new List<Product>();
+
+                var newListProduct1 = new List<Product>();
+                if (request.Gender != null&&request.Gender.Count>0)
+                {
+                    listProduct = _context.Products.Where(x => request.Gender.Any(s => s == x.Category)).ToList();
+                    
+
+                } 
+                    else listProduct = _context.Products.ToList();
+                if (request.Name != null)
+                {
+                   foreach(var pro in listProduct)
+                    {if (pro.Name.ToLower().Contains(request.Name.ToLower()))
+                            newListProduct1.Add(pro);
+
+                    }
+                }
+            
+                
+            
+                var listProductModel = new List<ProductModel>();
+                foreach (Product pr in newListProduct1)
+                {
+                    var query = _context.ProductDetails.Where(s => s.ProductId == pr.Id);
+                    if (request.Category!=null&&request.Category.Count>0)
+                    {
+
+                        query = query.Where(s => request.Category.Any(x => x == s.SubCategories));
+                    }
+              
+                    var  detail = query.ToList();
+                    var newListProduct = new List<ProductDetail>();
+                    
+                        foreach (var item in detail)
+                        {
+                            if (request.PriceFrom==null||(request.PriceFrom != null&&item.Price >= request.PriceFrom))
+                            {
+                                if (request.PriceTo == null || (request.PriceTo != null && item.Price <= request.PriceFrom))
+                                {
+                                    newListProduct.Add(item);
+                                }
+
+
+                            }
+                        }
+                    
+
+                    if (newListProduct.Count != 0)
+                    {
+                        var image = _context.ProductImages.Where(s => s.ProductId == pr.Id).Select(s => s.Image).ToList();
+
+                        var productModel = new ProductModel();
+                        productModel.Images = image;
+                        productModel.Name = pr.Name;
+                        productModel.Id = pr.Id;
+                        productModel.OriginPrice = pr.Price;
+                        productModel.Description = pr.Description;
+                        productModel.Category = pr.Category;
+                        productModel.Detail = newListProduct;
+                        listProductModel.Add(productModel);
+                    }
+                }
+                var list = listProductModel.Count > request.PageSize ? listProductModel.Skip((request.CurrentPage - 1) * request.PageSize).Take(request.PageSize).ToList() : listProductModel;
+                var response = new BaseResponse<List<ProductModel>>();
+                response.Status = 1;
+                response.Message = "oke";
+                response.Data = list;
+                response.Total = listProductModel.Count;
+
+                return response;
+            }
+            catch (Exception e)
+            {
+                var response = new BaseResponse<List<ProductModel>>();
+                response.Status = 0;
+                response.Message = e.Message;
+                return response;
+            }
         }
         // POST: api/Products/
         [HttpPost("by-category")]

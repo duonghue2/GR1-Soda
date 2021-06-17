@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, Row, message } from 'antd';
 import { ShoppingCartOutlined, HeartOutlined } from '@ant-design/icons'
 import ProductDetail from './ProductDetail'
-
+import { currencyFormat } from '../../utils/function'
 import { reactLocalStorage } from 'reactjs-localstorage';
 import { server } from '../../enviroment'
 import './ItemProduct.css'
@@ -100,7 +100,7 @@ class ItemProduct extends React.Component {
                         <span className="nameProduct" onClick={() => history.push('/products/' + this.props.product.id)}>{this.props.product.name}</span>
                     </Row>
                     <Row align="middle" justify="center">
-                        <span className="bold">{this.props.product.detail[0] ? this.props.product.detail[0].price : 10}</span>
+                        <span className="bold">{currencyFormat(this.props.product.detail[0] ? this.props.product.detail[0].price : 10)}</span>
 
                     </Row>
                 </div>

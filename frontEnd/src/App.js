@@ -14,7 +14,7 @@ import Signup from './pages/Signup/Signup'
 import 'antd/dist/antd.css';
 import Login from './pages/Login/Login'
 import History from './components/history/History';
-import { reactLocalStorage } from 'reactjs-localstorage';
+import Search from './pages/Search/Search'
 function App(props) {
 
   return (
@@ -29,6 +29,7 @@ function App(props) {
         <Route path="/:sex/:categories" component={Categories}></Route>
         <Route path="/:sex" component={Categories}></Route>
         <Route path='/cart' component={Cart}></Route>
+        <Route path='/search/:searchText' component={Search}></Route>
         <Route path='/checkout' >
           <Checkout />
 

@@ -2,15 +2,11 @@ import React from 'react';
 import Header from '../../components/header/Header.js'
 import PageHeading from '../../assests/collection2.jpg'
 import ManHeading from '../../assests/men-dropdown2.jpg'
-import { RightOutlined } from '@ant-design/icons'
-import { Row, message } from 'antd'
+import { message } from 'antd'
 import axios from 'axios'
 import { server } from '../../enviroment'
 import "./Categories.css"
 import DisplayListProduct from '../../components/product/DisplayListProduct'
-import image from '../../assests/Product/1.jpg'
-import ProductDetail from '../../components/product/ProductDetail.js';
-
 class Categories extends React.Component {
   state = {
     current: 'bestSellers',
@@ -52,7 +48,7 @@ class Categories extends React.Component {
   }
   render() {
     const { match: { params } } = this.props;
-
+    console.log(params);
     if (params.sex === "men" || params.sex === "women")
       return (
         <div>

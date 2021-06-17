@@ -119,6 +119,7 @@ div.sticky {
   }
   .InputFilter{
       width:100px!important;
+      padding:10px
   }
   .ml-5{
       margin-left: 25px;
@@ -132,6 +133,8 @@ div.sticky {
       height: 40px;
       margin-top: 10px;
       cursor: pointer;
+  
+    font-size: 20px;
   }
   .option >*{
     width:120px;

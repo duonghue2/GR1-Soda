@@ -16,11 +16,14 @@ class History extends React.Component {
         isLogin: false,
     }
     async componentDidMount() {
-        let isLogin = reactLocalStorage.get("token");
+        let token = reactLocalStorage.get("token");
         let userInfo = reactLocalStorage.getObject("userInfo");
         if (userInfo) {
-
-            axios.get(server + 'api/Orders/purchase/' + userInfo.userId).then(resp => {
+            var payload = {
+                userId: userInfo.userId,
+                token
+            }
+            axios.post(server + 'api/Orders/purchase', payload).then(resp => {
                 debugger;
                 this.state.purchase = resp.data.data != null ? resp.data.data : [];
                 console.log(this.state.purchase)

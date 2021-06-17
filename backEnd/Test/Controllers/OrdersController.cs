@@ -45,8 +45,8 @@ namespace Test.Controllers
 
         //    return order;
         //}
-        [HttpGet]
-        [Route("purchase/{id}")]
+        [HttpPost]
+        [Route("purchase")]
         public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetAllOrder(BaseRequest req)
         {
 
@@ -102,7 +102,7 @@ namespace Test.Controllers
                 var actor = _context.Users.Find(order.UserId);
                 if (!_tokenService.isValidToken(order.Token, order.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
                 var cartController = new CartsController(_context);
-            var detail = await cartController.DetailByUserId(order.UserId);
+            var detail = await cartController.DetailByUserId(order);
             var newOrder = new Order();
             newOrder.Id = Guid.NewGuid().ToString();
             newOrder.UserId = order.UserId;
@@ -156,10 +156,10 @@ namespace Test.Controllers
                 response.OrderID = newOrder.Id;
                 return  response;
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException e)
             {
 
-                throw;
+                throw e;
 
             }
 

@@ -33,15 +33,17 @@ namespace Test.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("get-detail-by-user/{id}")]
+        [HttpPost]
+        [Route("get-detail-by-user")]
 
-        public async Task<BaseResponse<CartResponse>> DetailByUserId(string id)
+        public async Task<BaseResponse<CartResponse>> DetailByUserId(BaseRequest req)
         {
             try
             {
+                var actor = _context.Users.Find(req.UserId);
+                if (!_tokenService.isValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
                 var response = new BaseResponse<CartResponse>();
-                var cart = _context.Carts.Where(s => s.UserId == id).ToList();
+                var cart = _context.Carts.Where(s => s.UserId == req.UserId).ToList();
                 if (cart.Count == 0)
                 {
 
@@ -147,8 +149,10 @@ namespace Test.Controllers
             _context.Carts.RemoveRange(oldCart);
             _context.Carts.AddRange(updateCartRequest.ListCart);
             await _context.SaveChangesAsync();
-            
-            return await DetailByUserId(updateCartRequest.ListCart[0].UserId);
+            var baseReq = new BaseRequest();
+            baseReq.UserId = updateCartRequest.UserId;
+            baseReq.Token = updateCartRequest.Token;
+            return await DetailByUserId(baseReq);
 
 
 
@@ -232,7 +236,7 @@ namespace Test.Controllers
             _context.Carts.Remove(cart);
             await _context.SaveChangesAsync();
             
-            return await DetailByUserId(del.UserId);
+            return await DetailByUserId(del);
 
 
         }

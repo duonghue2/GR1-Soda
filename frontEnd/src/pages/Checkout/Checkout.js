@@ -30,27 +30,43 @@ class Checkout extends React.Component {
     onFinish = (e) => {
         // e.preventDefault();
 
-        e.userId = reactLocalStorage.getObject("userInfo").userId;
-        console.log(e)
-        axios.post(server + 'api/Orders', e).then(resp => {
-            if (resp.status == 200) {
-                message.success("Create successfull new order");
-                this.props.history.push("/history");
+
+        let token = reactLocalStorage.get("token");
+        let userId = reactLocalStorage.getObject("userInfo").userId;
+        if (userId) {
+            var payload
+                = {
+                ...e,
+                userId,
+                token,
+
             }
-        }).catch(e => {
-            throw e;
-        });
+            debugger;
+            axios.post(server + 'api/Orders', payload).then(resp => {
+                if (resp.status == 200) {
+                    message.success("Create successfull new order");
+                    window.location = "/history";
+                }
+            }).catch(e => {
+                throw e;
+            });
+        }
+        else message.warning("Login to continue");
     };
 
     componentDidMount() {
-        let isLogin = reactLocalStorage.get("token");
-        let userInfo = reactLocalStorage.getObject("userInfo");
+        let token = reactLocalStorage.get("token");
+        let userId = reactLocalStorage.getObject("userInfo").userId;
+        var payload = {
+            userId,
+            token
+        }
 
-
-        axios.get(server + 'api/Carts/get-detail-by-user/' + userInfo.userId).then(resp => {
+        axios.post(server + 'api/Carts/get-detail-by-user', payload).then(resp => {
 
 
             this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
+            if (this.state.listProduct.length == 0) window.location = "/"
             this.state.total = resp.data.data != null ? resp.data.data.total : 0;
             this.setState(this.state)
         }).catch(e => {
@@ -118,16 +134,13 @@ class Checkout extends React.Component {
                         >
 
                             <Form.Item
-                                name="email"
-                                label="E-mail"
+                                name="receiver"
+                                label="Receiver "
                                 rules={[
-                                    {
-                                        type: 'email',
-                                        message: 'The input is not valid E-mail!',
-                                    },
+
                                     {
                                         required: true,
-                                        message: 'Please input your E-mail!',
+                                        message: 'Please input receiver name !',
                                     },
                                 ]}
                                 style={{

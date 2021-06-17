@@ -7,7 +7,7 @@ class Footer extends React.Component {
         return (
 
 
-            <Row justify="space-between" style={{ height: "50px", position: 'fix', bottom: 0 }}>
+            <Row justify="space-between" style={{ height: "50px", bottom: 0 }}>
                 <Row>
                     <p style={{ marginRight: "15px", marginLeft: "25px" }}>©2020 Soda</p>
                     <span style={{ marginRight: "15px" }}>News</span>

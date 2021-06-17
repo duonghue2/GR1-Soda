@@ -6,7 +6,7 @@ import './rowCart.css'
 class RowCart extends React.Component {
 
     render() {
-        console.log(this.props.product)
+
         return (
             <div className="mt-5">
                 <Row align="middle" justify="space-between" style={{ width: "50vw" }}>

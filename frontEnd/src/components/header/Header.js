@@ -1,7 +1,5 @@
-import { Menu, Image, Row, Modal, Form, Input, Select, message, Popover } from 'antd';
-import { SearchOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
-import { server } from '../../enviroment'
-import axios from 'axios'
+import { Menu, Image, Row, Input, Select, message, Popover } from 'antd';
+import { ShoppingCartOutlined, UserOutlined } from '@ant-design/icons'
 import React from 'react'
 import logo from '../../assests/logo.png'
 import { reactLocalStorage } from 'reactjs-localstorage';
@@ -10,7 +8,7 @@ import './Header.css'
 const { SubMenu } = Menu;
 const { Option } = Select;
 
-
+const { Search } = Input;
 const content = ({ data, logout }) => {
 
     return (
@@ -106,6 +104,9 @@ class Header extends React.Component {
     redirect = (e) => {
         window.location = "/" + e;
     }
+    onSearch = (e) => {
+        window.location = "/search/" + e;
+    }
 
     render() {
         const { current } = this.state;
@@ -178,7 +179,8 @@ class Header extends React.Component {
                         /></div>
 
                     <div className="item-header float-right">
-                        <SearchOutlined style={{ fontSize: '25px', marginRight: "25px", fontWeight: 'bold' }} />
+                        <Search placeholder="input search text" onSearch={this.onSearch} enterButton style={{ marginRight: "15px" }} />
+                        {/* <SearchOutlined style={{ fontSize: '25px', marginRight: "25px", fontWeight: 'bold' }} /> */}
                         <a href='/cart'><ShoppingCartOutlined style={{ fontSize: '25px', marginRight: "25px" }} /></a>
                         {this.state.userInfor && <Popover placement="bottomRight" content={content({ data: this.state.userInfor, logout: this.logout })} trigger="click">
                             <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} />

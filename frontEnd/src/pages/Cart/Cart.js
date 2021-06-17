@@ -34,17 +34,23 @@ class Cart extends React.Component {
       var update = this.state.listProduct.find(s => s.id == id);
       if (update.maxQty < qty) message.error("")
       this.state.listProduct.find(s => s.id == id).qty = qty;
-      let payload = [];
-      let userInfo = reactLocalStorage.getObject("userInfo");
+
+      let userId = reactLocalStorage.getObject("userInfo").userId;
+      let token = reactLocalStorage.get("token");
+      let payload = {
+        token, userId,
+        id,
+        listCart: []
+      }
       this.state.listProduct.forEach(s => {
         var item = {
           id: s.id,
-          userId: userInfo.userId,
+          userId,
           productDetailId: s.productDetailId,
           quantity: s.qty,
           amount: s.price,
         }
-        payload.push(item);
+        payload.listCart.push(item);
       })
       await axios.post(server + 'api/Carts/update', payload).then(resp => {
         this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
@@ -56,21 +62,30 @@ class Cart extends React.Component {
     } else message.error("Quantity must be greater than 0");
   }
   delete = async (id) => {
-    let userInfo = reactLocalStorage.getObject("userInfo");
+    let token = reactLocalStorage.get("token");
+    let userId = reactLocalStorage.getObject("userInfo").userId;
+    if (userId) {
+      let payload = {
+        token, userId,
+        id
+      }
 
-    await axios.post(server + 'api/Carts/delete', { userId: userInfo.userId, id: id }).then(resp => {
-      this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
-      this.state.total = resp.data.data != null ? resp.data.data.total : 0;
-      this.setState(this.state)
-    })
+      await axios.post(server + 'api/Carts/delete', payload).then(resp => {
+        this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
+        this.state.total = resp.data.data != null ? resp.data.data.total : 0;
+        this.setState(this.state)
+      })
+    }
   }
 
   async componentDidMount() {
     let token = reactLocalStorage.get("token");
-    let userInfo = reactLocalStorage.getObject("userInfo");
-    if (userInfo) {
-
-      axios.get(server + 'api/Carts/get-detail-by-user/' + userInfo.userId).then(resp => {
+    let userId = reactLocalStorage.getObject("userInfo").userId;
+    if (userId) {
+      let payload = {
+        token, userId
+      }
+      axios.post(server + 'api/Carts/get-detail-by-user', payload).then(resp => {
         this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
         this.state.total = resp.data.data != null ? resp.data.data.total : 0;
         this.setState(this.state)
