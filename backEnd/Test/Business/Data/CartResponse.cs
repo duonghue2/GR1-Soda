@@ -7,7 +7,7 @@ namespace Test.Data
 {
     public class CartResponse
     { 
-        public List<DetailCartModel> listProduct { get; set; }
+        public List<DetailCartModel> ListProduct { get; set; }
         public int Total { get; set; }
     }
 }

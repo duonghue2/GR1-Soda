@@ -76,7 +76,7 @@ namespace Test.Controllers
                     sum = (int)(sum + detailCart.Amount);
                 });
                 var cartRes = new CartResponse();
-                cartRes.listProduct = listProductModel;
+                cartRes.ListProduct = listProductModel;
                 cartRes.Total = sum;
                 response.Data = cartRes;
                 response.Total = listProductModel.Count;

@@ -119,7 +119,7 @@ namespace Test.Controllers
                 newOrder.CreateAt = DateTime.Now;
                
             _context.Orders.Add(newOrder);
-                foreach (var item in detail.Data.listProduct)
+                foreach (var item in detail.Data.ListProduct)
                 {
                     var detailProduct = _context.ProductDetails.Find(item.ProductDetailId);
                     
