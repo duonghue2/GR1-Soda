@@ -87,8 +87,8 @@ class ItemProduct extends React.Component {
                 <div style={{ position: "relative" }}>
                     <Image src={this.props.product.images[0]} alt="" onMouseMove={this.showCart} onMouseOut={this.hiddenCart} preview={false} onClick={this.showDetail} />
                     <Row align="middle" justify="center" className={this.state.className} onMouseMove={this.showCart} onMouseOut={this.hiddenCart}>
-                        <div className="circle" onClick={this.showDetail}><ShoppingCartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div>
-                        <div className="circle" onClick={this.addToWishlist}><HeartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div>
+                        {/* <div className="circle" onClick={this.showDetail}><ShoppingCartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div>
+                        <div className="circle" onClick={this.addToWishlist}><HeartOutlined style={{ color: 'white', fontSize: "32px", alignSelf: 'center', paddingTop: "5px" }} /></div> */}
                     </Row>
                     {this.props.product.state && <div className={this.props.product.state == "new" ? "new" : "sale"}>
                         <span className="pl-5 p-auto"> {this.props.product.state}</span>

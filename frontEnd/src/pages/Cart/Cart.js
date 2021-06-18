@@ -152,7 +152,7 @@ class Cart extends React.Component {
                   </Row>
 
                 </TabPane>
-                <TabPane tab={
+                {/* <TabPane tab={
                   <Row justify="center" align="middle">Wishlist
                     <div className="qty">
                       {this.state.listProduct.length}
@@ -170,7 +170,7 @@ class Cart extends React.Component {
                 </TabPane>
                 <TabPane tab="Other Tracking" key="3">
 
-                </TabPane>
+                </TabPane> */}
 
               </Tabs>
               <Login visible={this.state.isLogin} setVisible={this.checkout} />
