@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Test.Models
 {
-    public partial class Soda2Context : DbContext
+    public partial class SodaContext : DbContext
     {
-        public Soda2Context()
+        public SodaContext()
         {
         }
 
-        public Soda2Context(DbContextOptions<Soda2Context> options)
+        public SodaContext(DbContextOptions<SodaContext> options)
             : base(options)
         {
         }

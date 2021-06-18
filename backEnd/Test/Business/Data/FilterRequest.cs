@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Test.Data;
 
 namespace SodaBackEnd.Data
 {
-    public class FilterRequest
+    public class FilterRequest:BaseListRequest
     {
-        public int CurrentPage { get; set; } = 1;
-        public int PageSize { get; set; } = 12;
+    
         public List<string> Gender { get; set; }
         public List<string> Category { get; set; }
         public int? PriceFrom { get; set; }

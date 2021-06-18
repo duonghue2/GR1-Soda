@@ -19,7 +19,7 @@ namespace SodaBackEnd.Data
 
             return ComputeSHA256Hash(key + issuer + userId + username);
         }
-        public  bool isValidToken(string token, string userId, string userName)
+        public  bool IsValidToken(string token, string userId, string userName)
         {
             return GetToken(userId, userName) == token;
 
@@ -32,5 +32,7 @@ namespace SodaBackEnd.Data
                 return BitConverter.ToString(sha256.ComputeHash(Encoding.UTF8.GetBytes(text))).Replace("-", "");
             }
         }
+
+       
     }
 }

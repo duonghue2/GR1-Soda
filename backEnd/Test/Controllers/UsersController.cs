@@ -21,9 +21,9 @@ namespace Test.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly Soda2Context _context;
+        private readonly SodaContext _context;
         private readonly ITokenService _tokenService;
-        public UsersController(Soda2Context context)
+        public UsersController(SodaContext context)
         {
             _context = context;
             _tokenService = new TokenController();
@@ -33,44 +33,62 @@ namespace Test.Controllers
         // PUT: api/getUser/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("getUser/{id}")]
-        public async Task<IActionResult> PutUser(string id, User user)
-        {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("getUser/{id}")]
+        //public async Task<IActionResult> PutUser(string id, User user)
+        //{
+        //    if (id != user.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(user).State = EntityState.Modified;
+        //    _context.Entry(user).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UserExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!UserExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
         // POST: api/sigin
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
         [Route("signin")]
-        public async Task<ActionResult<UserRequest>> PostUser(UserRequest user)
+        public async Task<ActionResult<BaseResponse<UserRequest>>> PostUser(UserRequest user)
         {
           var isExist=  _context.Users.Where(s => s.Email == user.Email).FirstOrDefault();
-            if (isExist != null) throw new ArgumentException("EMAIL_ALREADY_EXIST");
+            var isExistPhone = _context.Users.Where(s => s.Phonenumber == user.Phonenumber).FirstOrDefault();
+            var response = new BaseResponse<UserRequest>();
+
+
+            if (isExist != null) {
+                response.Data = null;
+                response.Message = "EMAIL_ALREADY_USED";
+                response.Status = 0;
+                return response;
+                    };
+            var isPhoneExits = _context.Users.Where(s => s.Phonenumber == user.Phonenumber).FirstOrDefault();
+            if (isPhoneExits != null)
+            {
+                response.Data = null;
+                response.Message = "PHONE_NUMBER_ALREADY_USED";
+                response.Status = 0;
+                return response;
+            };
+            
             var newUser = new User();
             newUser.Id = Guid.NewGuid().ToString();
             newUser.Name = user.Name;
@@ -128,21 +146,21 @@ namespace Test.Controllers
             }
         }
 
-        // DELETE: api/deleteUser/5
-        [HttpDelete("deleteUser/{id}")]
-        public async Task<ActionResult<User>> DeleteUser(string id)
-        {
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
-            {
-                return NotFound();
-            }
+        //// DELETE: api/deleteUser/5
+        //[HttpDelete("deleteUser/{id}")]
+        //public async Task<ActionResult<User>> DeleteUser(string id)
+        //{
+        //    var user = await _context.Users.FindAsync(id);
+        //    if (user == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Users.Remove(user);
-            await _context.SaveChangesAsync();
+        //    _context.Users.Remove(user);
+        //    await _context.SaveChangesAsync();
 
-            return user;
-        }
+        //    return user;
+        //}
 
         private bool UserExists(string id)
         {

@@ -16,9 +16,9 @@ namespace Test.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly Soda2Context _context;
+        private readonly SodaContext _context;
 
-        public ProductsController(Soda2Context context)
+        public ProductsController(SodaContext context)
         {
             _context = context;
         }
@@ -26,7 +26,7 @@ namespace Test.Controllers
         // GET: api/Products
         [HttpPost]
         [Route("get-list-product")]
-        public async Task<BaseResponse<List<ProductModel>>> GetProducts(getListProductRequest request)
+        public async Task<BaseResponse<List<ProductModel>>> GetProducts(BaseListRequest request)
         {
             try {
                 var listProduct =  _context.Products.ToList();
@@ -45,7 +45,7 @@ namespace Test.Controllers
                     productModel.Detail = detail;
                     listProductModel.Add(productModel);
                 }
-                var list = listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList();
+                var list = listProductModel.Skip((request.CurrentPage - 1) * request.PageSize).Take(request.PageSize).ToList();
                 var response = new BaseResponse<List<ProductModel>>();
                 response.Status = 1;
                 response.Message = "oke";
@@ -95,56 +95,56 @@ namespace Test.Controllers
             return response;
 
         }
-        // GET: api/Products/name
-        [HttpGet("name={name}")]
-        public async Task<BaseResponse<List<ProductModel>>> GetListProductByName(getListProductRequest request)
-        {
-            try
-            {
-                var listProduct = await _context.Products.Where(s => s.Name.Contains(request.Name)).ToListAsync();
-                var response = new BaseResponse<List<ProductModel>>();
-                if (listProduct.Count==0)
-                {
+        //// GET: api/Products/name
+        //[HttpGet("name={name}")]
+        //public async Task<BaseResponse<List<ProductModel>>> GetListProductByName(getListProductRequest request)
+        //{
+        //    try
+        //    {
+        //        var listProduct = await _context.Products.Where(s => s.Name.Contains(request.Name)).ToListAsync();
+        //        var response = new BaseResponse<List<ProductModel>>();
+        //        if (listProduct.Count==0)
+        //        {
                    
-                    response.Status = 0;
-                    response.Message = "Not found any product";
-                    response.Data = null;
-                    return response;
-                }
-                var listProductModel = new List<ProductModel>();
-                foreach (Product pr in listProduct)
-                {
-                    var image = _context.ProductImages.Where(s => s.ProductId == pr.Id).Select(s => s.Image).ToList();
-                    var detail = _context.ProductDetails.Where(s => s.ProductId == pr.Id).ToList();
+        //            response.Status = 0;
+        //            response.Message = "Not found any product";
+        //            response.Data = null;
+        //            return response;
+        //        }
+        //        var listProductModel = new List<ProductModel>();
+        //        foreach (Product pr in listProduct)
+        //        {
+        //            var image = _context.ProductImages.Where(s => s.ProductId == pr.Id).Select(s => s.Image).ToList();
+        //            var detail = _context.ProductDetails.Where(s => s.ProductId == pr.Id).ToList();
 
-                    var productModel = new ProductModel();
-                    productModel.Images = image;
-                    productModel.Name = pr.Name;
-                    productModel.Id = pr.Id;
-                    productModel.OriginPrice = pr.Price;
-                    productModel.Description = pr.Description;
-                    productModel.Category = pr.Category;
-                    productModel.Detail = detail;
-                    listProductModel.Add(productModel);
-                }
-                var list = listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList();
-                response.Status = 1;
-                response.Message = "oke";
-                response.Data = list;
-                response.Total = listProductModel.Count;
-                return response;
-            }
-            catch (Exception e)
-            {
-                var response = new BaseResponse<List<ProductModel>>();
-                response.Status = 0;
-                response.Message = e.Message;
-                return response;
-            }
+        //            var productModel = new ProductModel();
+        //            productModel.Images = image;
+        //            productModel.Name = pr.Name;
+        //            productModel.Id = pr.Id;
+        //            productModel.OriginPrice = pr.Price;
+        //            productModel.Description = pr.Description;
+        //            productModel.Category = pr.Category;
+        //            productModel.Detail = detail;
+        //            listProductModel.Add(productModel);
+        //        }
+        //        var list = listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList();
+        //        response.Status = 1;
+        //        response.Message = "oke";
+        //        response.Data = list;
+        //        response.Total = listProductModel.Count;
+        //        return response;
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        var response = new BaseResponse<List<ProductModel>>();
+        //        response.Status = 0;
+        //        response.Message = e.Message;
+        //        return response;
+        //    }
 
            
 
-        }
+        //}
         
         [HttpPost]
         [Route("filter")]
@@ -166,12 +166,14 @@ namespace Test.Controllers
                     else listProduct = _context.Products.ToList();
                 if (request.Name != null)
                 {
-                   foreach(var pro in listProduct)
-                    {if (pro.Name.ToLower().Contains(request.Name.ToLower()))
+                    foreach (var pro in listProduct)
+                    {
+                        if (pro.Name.ToLower().Contains(request.Name.ToLower()))
                             newListProduct1.Add(pro);
 
                     }
                 }
+                else newListProduct1 = listProduct;
             
                 
             
@@ -236,7 +238,7 @@ namespace Test.Controllers
         }
         // POST: api/Products/
         [HttpPost("by-category")]
-        public async Task<BaseResponse<List<ProductModel>>> GetListProductByCategory(GetListProductByCateoryRequestcs request)
+        public async Task<BaseResponse<List<ProductModel>>> GetListProductByCategory(GetListProductByCateoryRequest request)
         {
 
             try
@@ -266,7 +268,7 @@ namespace Test.Controllers
                         listProductModel.Add(productModel);
                     }
                 }
-                var list =listProductModel.Count>request.Limit? listProductModel.Skip((request.Page - 1) * request.Limit).Take(request.Limit).ToList():listProductModel;
+                var list =listProductModel.Count>request.PageSize? listProductModel.Skip((request.CurrentPage - 1) * request.PageSize).Take(request.PageSize).ToList():listProductModel;
                 var response = new BaseResponse<List<ProductModel>>();
                 response.Status = 1;
                 response.Message = "oke";

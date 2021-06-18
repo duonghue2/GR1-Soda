@@ -16,10 +16,10 @@ namespace Test.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-        private readonly Soda2Context _context;
+        private readonly SodaContext _context;
         private readonly ITokenService _tokenService;
 
-        public OrdersController(Soda2Context context)
+        public OrdersController(SodaContext context)
         {
             _context = context;
             _tokenService = new TokenController();
@@ -47,11 +47,11 @@ namespace Test.Controllers
         //}
         [HttpPost]
         [Route("purchase")]
-        public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetAllOrder(BaseRequest req)
+        public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetAllOrder(BaseTokenRequest req)
         {
 
             var actor = _context.Users.Find(req.UserId);
-            if (!_tokenService.isValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+            if (!_tokenService.IsValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
             var response = new BaseResponse<List<PurchaseHistoryResponse>> ();
             var listOrder = new List<PurchaseHistoryResponse>();
             var order =  _context.Orders.Where(s=>s.UserId==req.UserId).ToList();
@@ -100,7 +100,7 @@ namespace Test.Controllers
             try
             {
                 var actor = _context.Users.Find(order.UserId);
-                if (!_tokenService.isValidToken(order.Token, order.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+                if (!_tokenService.IsValidToken(order.Token, order.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
                 var cartController = new CartsController(_context);
             var detail = await cartController.DetailByUserId(order);
             var newOrder = new Order();
@@ -146,11 +146,11 @@ namespace Test.Controllers
 
                 
                      await _context.SaveChangesAsync();
-                var baseRequest = new BaseRequest();
+                var baseRequest = new BaseTokenRequest();
                 baseRequest.UserId = order.UserId;
                 baseRequest.Token = order.Token;
 
-               await cartController.DeleteConfirmed(baseRequest);
+               await cartController.DeleteUserCart(baseRequest);
                 var response = new OrderResponse();
                 response.IsSuccess = true;
                 response.OrderID = newOrder.Id;

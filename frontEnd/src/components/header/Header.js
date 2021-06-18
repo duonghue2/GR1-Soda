@@ -61,7 +61,7 @@ class Header extends React.Component {
         this.setState(this.state);
 
         message.success("log out succesfully!");
-        this.props.history.push("/");
+        window.location = "/";
     }
     handleClick = e => {
         console.log('click ', e);
@@ -114,64 +114,68 @@ class Header extends React.Component {
         return (
             <div >
                 <Row align="middle" justify="space-between" className="header"   >
-                    <div className="item-header">
-                        <Menu onClick={this.handleClick} selectedKeys={[current]} mode="horizontal">
-                            <Menu.Item key="home" >
-                                <a href="/">Home</a>
+
+                    <Menu onClick={this.handleClick} selectedKeys={[current]} mode="horizontal">
+                        <Menu.Item key="home" >
+                            <a href="/">Home</a>
+                        </Menu.Item>
+
+                        <SubMenu key="women" title="Women" onTitleClick={() => this.redirect("women")}>
+
+
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/women/dress">
+                                    Dress
+                                </a>
                             </Menu.Item>
-
-                            <SubMenu key="women" title="Women" onTitleClick={() => this.redirect("women")}>
-
-
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/women/dress">
-                                        Dress
-                                    </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/women/bags">
-                                        Bag
-                                    </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/women/glasses">
-                                        Glasses
-                                    </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/women/jacket">
-                                        Jacket
-                                    </a>
-                                </Menu.Item>
-                            </SubMenu>
-                            <SubMenu key="man" title="Men" onTitleClick={() => this.redirect("men")}>
-
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/man/shirt">
-                                        Shirt
-                                    </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/man/pants">
-                                        Pants
-                                    </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/man/jackets">
-                                        Jacket
-                                    </a>
-                                </Menu.Item>
-                                <Menu.Item>
-                                    <a rel="noopener noreferrer" href="/man/glasses">
-                                        Glasses
-                                    </a>
-                                </Menu.Item>
-                            </SubMenu>
-                            <Menu.Item key="contact">
-                                Contact
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/women/bags">
+                                    Bag
+                                </a>
                             </Menu.Item>
-                        </Menu>
-                    </div>
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/women/glasses">
+                                    Glasses
+                                </a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/women/jacket">
+                                    Jacket
+                                </a>
+                            </Menu.Item>
+                        </SubMenu>
+                        <SubMenu key="man" title="Men" onTitleClick={() => this.redirect("men")}>
+
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/man/shirt">
+                                    Shirt
+                                </a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/man/pants">
+                                    Pants
+                                </a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/man/jackets">
+                                    Jacket
+                                </a>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <a rel="noopener noreferrer" href="/man/glasses">
+                                    Glasses
+                                </a>
+                            </Menu.Item>
+                        </SubMenu>
+                        <Menu.Item key="Unisex"  >
+                            <a rel="noopener noreferrer" href="/unisex">
+                                Unisex
+                            </a>
+                        </Menu.Item>
+                        <Menu.Item key="contact">
+                            Contact
+                        </Menu.Item>
+                    </Menu>
                     <div className="logo item-header">
                         <Image preview={false}
                             width={100}
@@ -179,15 +183,25 @@ class Header extends React.Component {
                         /></div>
 
                     <div className="item-header float-right">
+
                         <Search placeholder="input search text" onSearch={this.onSearch} enterButton style={{ marginRight: "15px" }} />
-                        {/* <SearchOutlined style={{ fontSize: '25px', marginRight: "25px", fontWeight: 'bold' }} /> */}
+
                         <a href='/cart'><ShoppingCartOutlined style={{ fontSize: '25px', marginRight: "25px" }} /></a>
+
+
+
                         {this.state.userInfor && <Popover placement="bottomRight" content={content({ data: this.state.userInfor, logout: this.logout })} trigger="click">
                             <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} />
                         </Popover>}
-                        {!this.state.userInfor && <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} onClick={e => this.login(e)} />
+                        {!this.state.userInfor &&
+
+                            <a href='/login' style={{ fontSize: "20px", fontWeight: "bold", marginRight: "15px" }}>Login</a>}
+                        {!this.state.userInfor && <a href="/signup" style={{ fontSize: "20px", fontWeight: "bold", marginRight: "30px" }}>Signup</a>
                         }
+
                     </div>
+
+
                     <Login visible={this.state.visible} setVisible={this.setVisible} />
 
                 </Row>

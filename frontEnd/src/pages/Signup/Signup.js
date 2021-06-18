@@ -68,13 +68,14 @@ class Signup extends React.Component {
         await axios.post(server + 'api/Users/signin', payload).then((response) => {
             debugger;
             console.log(response.data);
-
-            if (response.data) {
+            if (response.data.status == 0) {
+                message.error(response.data.message);
+            } else {
                 message.success("Create an account succesfully");
-
+                window.location = "/login";
             }
         }, (error) => {
-            message.error("Some error occurs, pls try again");
+            message.error(error.message);
         });
 
     };
@@ -138,6 +139,15 @@ class Signup extends React.Component {
                                             required: true,
                                             message: 'Please input your password!',
                                         },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                if (value.length < 6) {
+                                                    return Promise.reject(new Error('Password should have length greater or equal 6'));
+                                                }
+
+                                                return Promise.resolve();
+                                            }
+                                        })
                                     ]}
                                     hasFeedback
                                 >
@@ -190,6 +200,16 @@ class Signup extends React.Component {
                                             required: true,
                                             message: 'Please input your phone number!',
                                         },
+                                        ({ getFieldValue }) => ({
+                                            validator(_, value) {
+                                                var reg = /^-?\d+\.?\d*$/
+                                                if (value.length != 10 || !reg.test(value)) {
+                                                    return Promise.reject(new Error('Invalid phonenumber'));
+                                                }
+                                                return Promise.resolve();
+
+                                            },
+                                        }),
                                     ]}
                                 >
                                     <Input
@@ -228,7 +248,7 @@ class Signup extends React.Component {
                         </div>
                     </Col>
                 </Row>
-            </div>
+            </div >
         );
     }
 };

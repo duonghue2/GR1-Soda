@@ -11,7 +11,7 @@ namespace SodaBackEnd.Interfaces
         public string GetToken(string userId, string username);
 
 
-        public bool isValidToken(string token, string userId, string userName);
+        public bool IsValidToken(string token, string userId, string userName);
 
 
         public string ComputeSHA256Hash(string text);

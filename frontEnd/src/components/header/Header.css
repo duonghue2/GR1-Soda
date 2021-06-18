@@ -3,7 +3,7 @@
 }
 .header{
   height:"13vh";
- 
+
   margin: 20px 10px 20px 10px;
 
 }
@@ -14,6 +14,7 @@
   display: flex;
   
 }
+
 .item-header{
   width: 30vw;
 }
@@ -32,3 +33,9 @@
 .register{
   color:rgb(202, 117, 5)!important
 }
+@media only screen and (max-width: 950px ) {
+  /* .item-header{
+    width: 100%;
+  } */
+}
+

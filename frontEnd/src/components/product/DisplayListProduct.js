@@ -87,24 +87,38 @@ class DisplayListProduct extends React.Component {
                 </Row> */}
                 <Row >
                     <Col span={4}  >
-                        <div >
-                            {this.props.plainOptions && <div className="mt-5 mb-5">
+                        <div style={{ paddingLeft: "11%", paddingRight: "11%" }} id="filter">
+                            {this.props.plainOptions && <div className="mt-5 mb-5" >
                                 <Row align="middle" justify="center" >
-                                    <p style={{ fontSize: "18px" }}>Filter</p>
+                                    <span style={{ fontSize: "18px", textAlign: "center" }}>Filter</span>
                                 </Row>
-                                <Row>Gender</Row>
+                                <Row style={{ fontWeight: "bold" }}>Gender</Row>
                                 <Row justify="center">
                                     <div className="option">
                                         <Checkbox.Group options={genderOption} onChange={e => this.handleSex(e)} />
                                     </div>
                                 </Row>
-                                <Row>Categories</Row>
+                                <Row style={{ fontWeight: "bold" }}>Categories</Row>
                                 <Row align="middle" justify="center">
                                     <div className="option">
                                         <Checkbox.Group options={plainOptions} onChange={e => this.handleCategory(e)} />
                                     </div>
                                 </Row>
                             </div>
+                            }
+                            {this.props.options &&
+                                <div className="mt-5 mb-5" >
+                                    <Row align="middle" justify="center" >
+                                        <span style={{ fontSize: "18px", textAlign: "center" }}>Filter</span>
+                                    </Row>
+
+                                    <Row style={{ fontWeight: "bold" }}>Categories</Row>
+                                    <Row align="middle" justify="center">
+                                        <div className="option">
+                                            <Checkbox.Group options={plainOptions} onChange={e => this.handleCategory(e)} />
+                                        </div>
+                                    </Row>
+                                </div>
                             }
 
                             <Row align="middle" justify="center">

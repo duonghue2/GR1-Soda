@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace SodaBackEnd.Data
 {
-    public class OrderRequest:BaseRequest
+    public class OrderRequest:BaseTokenRequest
     {
        
       //  public string Email { get; set; }

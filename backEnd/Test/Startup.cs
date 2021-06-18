@@ -25,7 +25,7 @@ namespace Test
             services.AddControllersWithViews();
             services.AddScoped<IStateService, StateService>();
             var connection = @"Server=DESKTOP-9NGASCB\SQLEXPRESS;Database=Soda2;Trusted_Connection=True;";
-            services.AddDbContext<Soda2Context>(options => options.UseSqlServer(connection));
+            services.AddDbContext<SodaContext>(options => options.UseSqlServer(connection));
 
             services.AddCors();
             services.AddSwaggerGen();

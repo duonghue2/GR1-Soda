@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Test.Data
 {
-    public class AddCartRequest: BaseRequest
+    public class AddCartRequest: BaseTokenRequest
     {
         public string? Id { get; set; }
         public string ProductDetailId { get; set; }

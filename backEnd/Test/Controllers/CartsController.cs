@@ -17,10 +17,10 @@ namespace Test.Controllers
     [ApiController]
     public class CartsController : ControllerBase
     {
-        private readonly Soda2Context _context;
+        private readonly SodaContext _context;
         private readonly ITokenService _tokenService;
 
-        public CartsController(Soda2Context context)
+        public CartsController(SodaContext context)
         {
             _context = context;
             _tokenService = new TokenController();
@@ -36,12 +36,12 @@ namespace Test.Controllers
         [HttpPost]
         [Route("get-detail-by-user")]
 
-        public async Task<BaseResponse<CartResponse>> DetailByUserId(BaseRequest req)
+        public async Task<BaseResponse<CartResponse>> DetailByUserId(BaseTokenRequest req)
         {
             try
             {
                 var actor = _context.Users.Find(req.UserId);
-                if (!_tokenService.isValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+                if (!_tokenService.IsValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
                 var response = new BaseResponse<CartResponse>();
                 var cart = _context.Carts.Where(s => s.UserId == req.UserId).ToList();
                 if (cart.Count == 0)
@@ -100,7 +100,7 @@ namespace Test.Controllers
         public async Task<ActionResult> Create(AddCartRequest cart)
         {
             var actor=_context.Users.Find(cart.UserId);
-            if (!_tokenService.isValidToken(cart.Token, cart.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+            if (!_tokenService.IsValidToken(cart.Token, cart.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
             var oldCart = _context.Carts.Where(s => s.UserId == cart.UserId&& s.ProductDetailId==cart.ProductDetailId
             ).FirstOrDefault();
             if (oldCart == null)
@@ -142,14 +142,14 @@ namespace Test.Controllers
         public async Task<BaseResponse<CartResponse>> Update(UpdateCartRequest updateCartRequest)
         {
             var actor = _context.Users.Find(updateCartRequest.UserId);
-            if (!_tokenService.isValidToken(updateCartRequest.Token, updateCartRequest.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+            if (!_tokenService.IsValidToken(updateCartRequest.Token, updateCartRequest.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
 
             var response = new BaseResponse<CartResponse>();
             var oldCart = _context.Carts.Where(s => s.UserId == updateCartRequest.ListCart[0].UserId).ToList();
             _context.Carts.RemoveRange(oldCart);
             _context.Carts.AddRange(updateCartRequest.ListCart);
             await _context.SaveChangesAsync();
-            var baseReq = new BaseRequest();
+            var baseReq = new BaseTokenRequest();
             baseReq.UserId = updateCartRequest.UserId;
             baseReq.Token = updateCartRequest.Token;
             return await DetailByUserId(baseReq);
@@ -221,7 +221,7 @@ namespace Test.Controllers
         {
 
             var actor = _context.Users.Find(new Guid(del.UserId));
-            if (!_tokenService.isValidToken(del.Token, del.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+            if (!_tokenService.IsValidToken(del.Token, del.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
             if (del.Id == null)
             {
                 throw new ArgumentException("Item is null");
@@ -245,10 +245,10 @@ namespace Test.Controllers
         //POST: Carts/Delete/5
         [HttpPost]
         [Route("delete-user-cart")]
-        public async Task<BaseResponse<Boolean>>DeleteConfirmed(BaseRequest req)
+        public async Task<BaseResponse<Boolean>>DeleteUserCart(BaseTokenRequest req)
         {
             var actor = _context.Users.Find(req.UserId);
-            if (!_tokenService.isValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
+            if (!_tokenService.IsValidToken(req.Token, req.UserId, actor.Name)) throw new ArgumentException("Unauthorize");
             var cart =  _context.Carts.Where(s=>s.UserId==req.UserId).ToList();
             _context.Carts.RemoveRange(cart);
             await _context.SaveChangesAsync();

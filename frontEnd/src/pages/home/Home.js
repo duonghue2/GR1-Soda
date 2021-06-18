@@ -4,6 +4,8 @@ import Banner from '../../components/banner/Banner';
 import { Row, Menu, Col, message } from 'antd';
 import Footer from '../../components/footer/Footer';
 import DisplayListProduct from '../../components/product/DisplayListProduct'
+import Women from '../../assests/female.jpg'
+import Man from '../../assests/man.jpg'
 import { server } from '../../enviroment'
 import axios from 'axios'
 
@@ -31,7 +33,7 @@ class Home extends React.Component {
     }
   };
   getListProduct = async (pageNumber) => {
-    debugger;
+
     try {
       await axios.post(server + 'api/Products/get-list-product', { page: pageNumber, limit: 12 }).then((response) => {
         console.log(response.data);
@@ -67,6 +69,14 @@ class Home extends React.Component {
       <div>
         <Header />
         <Banner />
+        <Row style={{ paddingTop: "25px" }}>
+          <Col span={11} offset={1} >
+            <img src={Women} alt="women" width="100%" />
+          </Col>
+          <Col span={11} style={{ marginLeft: "15px" }}>
+            <img src={Man} alt="man" width="100%" height="100%" />
+          </Col>
+        </Row>
         <div>
           <Row align='middle' justify='center' style={{ marginTop: "15px", marginBottom: "15px" }}>
 
@@ -74,7 +84,7 @@ class Home extends React.Component {
               <Menu.Item key="allProduct" >
                 <span style={{ fontSize: "20px" }}>All products</span>
               </Menu.Item>
-              <Menu.Item key="bestSeller" >
+              {/* <Menu.Item key="bestSeller" >
                 <span style={{ fontSize: "20px" }}>Best sellers</span>
               </Menu.Item>
               <Menu.Item key="newProduct"  >
@@ -82,11 +92,13 @@ class Home extends React.Component {
               </Menu.Item>
               <Menu.Item key="saleProduct"  >
                 <span style={{ fontSize: "20px" }}>Sale Product</span>
-              </Menu.Item>
+              </Menu.Item> */}
             </Menu>
           </Row>
         </div >
+
         <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} total={this.state.total} />
+
         <Footer />
       </div>
 

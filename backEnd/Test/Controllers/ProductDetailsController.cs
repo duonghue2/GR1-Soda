@@ -13,9 +13,9 @@ namespace Test.Controllers
     [ApiController]
     public class ProductDetailsController : ControllerBase
     {
-        private readonly Soda2Context _context;
+        private readonly SodaContext _context;
 
-        public ProductDetailsController(Soda2Context context)
+        public ProductDetailsController(SodaContext context)
         {
             _context = context;
         }

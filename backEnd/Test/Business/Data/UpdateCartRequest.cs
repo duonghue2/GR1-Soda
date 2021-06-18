@@ -6,7 +6,7 @@ using Test.Models;
 
 namespace SodaBackEnd.Data
 {
-    public class UpdateCartRequest:BaseRequest
+    public class UpdateCartRequest:BaseTokenRequest
     {
       public  List<Cart> ListCart { get; set; }
     }

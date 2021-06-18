@@ -1,9 +1,4 @@
-.banner{
-    height: 85vh;
-    margin-left: 30px;
-    margin-right: 36px;
-    margin-bottom: 50px;
-}
+
 .test,.shopNow,.whiteSneaker,.women,.man{
     position: absolute;
     font-weight: bold;
@@ -38,8 +33,52 @@ text-decoration: underline;
     font-size: 30px;
     text-decoration: underline;
     }
+    
+    /* @media only screen and (max-width: 950px)and (min-width:739px) {
+        .banner{
+            height:70vh ;
+        }
+        .test{
+            top:10%;
+      
+            font-size: 40px;
+        
+        }
+        .whiteSneaker{
+            top:50vh;
+            left: 20vw;
+            font-size: 40px;
+        }
+        .shopNow{
+            top: 60vh;
+            left :25%;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+        .women{
+        top:60vh;
+        left:25vw;
+        font-size: 20px;
+        text-decoration: underline;
+        }
+        .man{
+            top:60vh;
+            left:60vw;
+            font-size: 20px;
+            text-decoration: underline;
+            }
+       } */
+       #banner{
+        height: 95vh;
+        width: 100%;
+    }
+  
+
     @media only screen and (max-width: 740px ) {
-     
+        #banner{
+            height: 70vh;
+            width: 100%;
+        }
         .test{
             top:50vh;
             left: 35%;
@@ -102,9 +141,87 @@ text-decoration: underline;
             text-decoration: underline;
             }
       }
+      @media only screen and (max-width: 500px ) {
+        #banner{
+            height: 50vh;
+            width: 100%;
+        }
+        .test{
+            top:60%;
+            left: 35%;
+            font-size: 25px;
+        
+        }
+        .whiteSneaker{
+            top:50%;
+            left: 20vw;
+            font-size: 25px;
+        }
+        .shopNow{
+            top: 40%;
+            left :25%;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+        .women{
+        top:70%;
+        left:10%;
+        font-size: 20px;
+        text-decoration: underline;
+        }
+        .man{
+            top:70%;
+            left:50%;
+            font-size: 20px;
+            text-decoration: underline;
+            }
+    }
+    @media only screen and (max-width: 415px ) {
+        .item-header{
+            width: 100%;
+            margin-top: 15px;
+        }
+        input.InputFilter{
+            width:80px
+        }
+        #banner{
+            height: 45vh;
+            width: 100%;
+        }
+        .test{
+            top:60%;
+            left: 35%;
+            font-size: 25px;
+        
+        }
+        .whiteSneaker{
+            top:50%;
+            left: 20vw;
+            font-size: 25px;
+        }
+        .shopNow{
+            top: 40%;
+            left :25%;
+            font-size: 20px;
+            text-decoration: underline;
+        }
+        .women{
+        top:70%;
+        left:10px;
+        font-size: 20px;
+        text-decoration: underline;
+        }
+        .man{
+            top:70%;
+            left:200px;
+            font-size: 20px;
+            text-decoration: underline;
+            }
+    }
 
 .banner{
 margin-left: 40px;
 margin-right: 40px;
-height: 82vh;
+margin-bottom: 50px;
+
 }
