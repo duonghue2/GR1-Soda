@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Pagination, Input, Checkbox } from 'antd';
+import { Row, Col, message, Input, Checkbox } from 'antd';
 
 import ItemProduct from '../../components/product/ItemProduct'
 import './ItemProduct.css'
@@ -8,15 +8,19 @@ import { server } from '../../enviroment'
 const plainOptions = ['Shirt', 'Jacket', 'Dress', 'Glasses', 'Bag'];
 const genderOption = ['Men', "Women", "Unisex"];
 class DisplayListProduct extends React.Component {
-    state = {
+    constructor(props) {
+        super(props);
+        this.state = {
 
-        gender: [],
-        category: [],
-        isFilter: false,
-        products: [],
-        total: 0,
-        priceFrom: null,
-        priceTo: null
+            gender: [],
+            category: [],
+            isFilter: false,
+            products: [],
+            total: 0,
+            priceFrom: null,
+            priceTo: null,
+            index: 1,
+        }
     }
     handlePriceFrom = (e) => {
 
@@ -50,7 +54,26 @@ class DisplayListProduct extends React.Component {
             this.setState(this.state)
         })
     }
+    // getListProduct = async (pageNumber) => {
+    //     debugger;
+    //     try {
+    //         await axios.post(server + 'api/Products/get-list-product', { currentPage: pageNumber, pageSize: 12 }).then((response) => {
+    //             console.log(response.data);
+    //             if (response.data.status == 1)
+    //                 this.state.products = this.state.products.concat(response.data.data);
 
+    //             this.state.total = response.data.total;
+    //             this.setState(this.state);
+    //             // console.log(this.state.listProduct)
+    //         }, (error) => {
+    //             message.error("Some error occurs, pls try again");
+    //         });
+
+    //     } catch (error) {
+
+    //     }
+
+    // }
     handleCategory = async (e) => {
         this.state.category = e;
         this.state.isFilter = true;
@@ -75,6 +98,17 @@ class DisplayListProduct extends React.Component {
 
         }
         this.getData(payload)
+
+    }
+    handleLoadMore = (e) => {
+        e.preventDefault();
+        debugger;
+
+        this.state.index = this.state.index + 1;
+
+        this.setState(this.state);
+        if (!this.state.isFilter) this.props.getListProduct(this.state.index);
+
 
     }
 
@@ -155,7 +189,7 @@ class DisplayListProduct extends React.Component {
                         </Row>
 
                         <Row align="middle" justify="center">
-                            <button className={this.props.products.length == this.props.total ? "Hidden" : "LoadMore"} onClick={e => this.props.handleLoadMore(e)}>Load more</button>
+                            <button className={this.props.products.length == this.props.total ? "Hidden" : "LoadMore"} onClick={e => this.handleLoadMore(e)}>Load more</button>
                         </Row>
                     </Col>
                 </Row>

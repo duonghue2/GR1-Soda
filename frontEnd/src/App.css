@@ -152,5 +152,5 @@ color:#23232c!important
   background-color:#23232c !important;
 }
 #filter .ant-row-center{
-  justify-content: unset;
+  justify-content: center;
 }

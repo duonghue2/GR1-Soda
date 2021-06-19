@@ -11,19 +11,24 @@ import DisplayListProduct from '../../components/product/DisplayListProduct'
 let manOption = ['Shirt', 'Jacket', 'Glasses'];
 let womanOption = ['Jacket', 'Dress', 'Glasses', 'Bag']
 class Categories extends React.Component {
-  state = {
-    current: 'bestSellers',
-    listProduct: [],
-    loadMore: null,
-    total: 0
+  constructor(props) {
+    super(props);
 
-  };
-  index = 0;
+    this.state = {
+
+      listProduct: [],
+      loadMore: null,
+      total: 0
+
+    };
+  }
+
   getListProduct = async (pageNumber) => {
     const { match: { params } } = this.props;
+    debugger
     var payload = null;
-    if (params.subcategory) payload = { page: pageNumber, limit: 12, category: params.sex, subcategory: params.categories };
-    else payload = { page: pageNumber, limit: 12, category: params.sex }
+    if (params.categories) payload = { page: pageNumber, limit: 12, category: params.sex, subcategory: params.categories };
+    else payload = { page: pageNumber, limit: 12, category: params.gender }
 
     await axios.post(server + 'api/Products/by-category', payload).then((response) => {
       // console.log(response);
@@ -42,35 +47,24 @@ class Categories extends React.Component {
     this.getListProduct(1);
 
   }
-  handleLoadMore = (e) => {
-    e.preventDefault();
-    if (this.index * 12 < this.state.total) {
-      this.index = this.index + 1;
-      this.getListProduct(this.index);
-    }
-  }
+
   render() {
     const { match: { params } } = this.props;
-    console.log(params);
-    if (params.sex === "men" || params.sex === "women" || params.sex == "unisex")
-      return (
-        <div>
-          <Header></Header>
-          <div className="text-white verticle " style={{
-            backgroundImage: `url(${params.sex == "women" ? PageHeading : params.sex == "unisex" ? Unisex : ManHeading})`, backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-            backgroundSize: 'cover', height: "80vh", marginRight: "25px", marginLeft: "25px"
-          }}>
-            {/* <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row> */}
-            {/* <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row> */}
-          </div>
-          <DisplayListProduct products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} total={this.state.total} options={params.sex == "women" ? womanOption : manOption} />
-        </div>)
-    else return (<div>
-      {/* 
+    return (
+      <div>
+        <Header></Header>
+        <div className="text-white verticle " style={{
+          backgroundImage: `url(${params.sex == "women" ? PageHeading : params.sex == "unisex" ? Unisex : ManHeading})`, backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'cover', height: "80vh", marginRight: "25px", marginLeft: "25px"
+        }}>
+          {/* <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row> */}
+          {/* <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row> */}
+        </div>
+        <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} options={params.sex == "women" ? womanOption : manOption} />
+      </div>)
 
-      <ProductDetail /> */}
-    </div>)
+
   }
 }
 export default Categories;

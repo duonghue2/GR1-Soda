@@ -124,22 +124,22 @@ class Header extends React.Component {
 
 
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/women/dress">
+                                <a rel="noopener noreferrer" href="/gender/women/dress">
                                     Dress
                                 </a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/women/bags">
+                                <a rel="noopener noreferrer" href="/gender/women/bags">
                                     Bag
                                 </a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/women/glasses">
+                                <a rel="noopener noreferrer" href="/gender/women/glasses">
                                     Glasses
                                 </a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/women/jacket">
+                                <a rel="noopener noreferrer" href="/gender/women/jacket">
                                     Jacket
                                 </a>
                             </Menu.Item>
@@ -147,31 +147,28 @@ class Header extends React.Component {
                         <SubMenu key="man" title="Men" onTitleClick={() => this.redirect("men")}>
 
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/man/shirt">
+                                <a rel="noopener noreferrer" href="/gender/men/shirt">
                                     Shirt
                                 </a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/man/pants">
+                                <a rel="noopener noreferrer" href="/gender/men/pants">
                                     Pants
                                 </a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/man/jackets">
+                                <a rel="noopener noreferrer" href="/gender/men/jacket">
                                     Jacket
                                 </a>
                             </Menu.Item>
                             <Menu.Item>
-                                <a rel="noopener noreferrer" href="/man/glasses">
+                                <a rel="noopener noreferrer" href="/gender/men/glasses">
                                     Glasses
                                 </a>
                             </Menu.Item>
                         </SubMenu>
-                        <Menu.Item key="Unisex"  >
-                            <a rel="noopener noreferrer" href="/unisex">
-                                Unisex
-                            </a>
-                        </Menu.Item>
+                        <SubMenu key="unisex" title="Unisex" onTitleClick={() => this.redirect("unisex")}>
+                        </SubMenu>
                         <Menu.Item key="contact">
                             Contact
                         </Menu.Item>
@@ -191,7 +188,10 @@ class Header extends React.Component {
 
 
                         {this.state.userInfor && <Popover placement="bottomRight" content={content({ data: this.state.userInfor, logout: this.logout })} trigger="click">
-                            <UserOutlined style={{ fontSize: '25px', marginRight: "25px" }} />
+                            <UserOutlined style={{
+                                fontSize: '25px', marginRight: "25px",
+                                paddingBottom: '4px'
+                            }} />
                         </Popover>}
                         {!this.state.userInfor &&
 

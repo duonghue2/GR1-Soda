@@ -251,7 +251,7 @@ namespace Test.Controllers
                     if (request.SubCategory != null)
                     {
                        
-                    detail=detail.Where( s=>s.SubCategories.Contains(request.SubCategory)).ToList();
+                    detail=detail.Where( s=>s.SubCategories.ToLower().Contains(request.SubCategory)).ToList();
                     }
                     if (detail.Count!=0)
                     {

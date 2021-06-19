@@ -148,4 +148,18 @@ div.sticky {
     input.InputFilter{
         width:80px!important;
         height: 35px;
-    }}
+    }
+    #filter .ant-row-center {
+        justify-content: unset;
+    }
+}
+@media only screen and (max-width: 620px ) and (min-width:416px) {
+   
+    input.InputFilter{
+        width:80px!important;
+        height: 35px;
+    }
+    #filter .ant-row-center {
+        justify-content: end;
+    }
+}

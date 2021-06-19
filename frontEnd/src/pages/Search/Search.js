@@ -16,7 +16,7 @@ class Search extends React.Component {
         total: 0
 
     };
-    index = 0;
+
     getListProduct = async (pageNumber) => {
         const { match: { params } } = this.props;
         var payload = {
@@ -37,13 +37,7 @@ class Search extends React.Component {
         this.getListProduct(1);
 
     }
-    handleLoadMore = (e) => {
-        e.preventDefault();
-        if (this.index * 12 < this.state.total) {
-            this.index = this.index + 1;
-            this.getListProduct(this.index);
-        }
-    }
+
     render() {
 
         return (
@@ -56,7 +50,7 @@ class Search extends React.Component {
                 }}>
 
                 </div>
-                <DisplayListProduct products={this.state.listProduct} {...this.props} handleLoadMore={e => this.handleLoadMore(e)} total={this.state.total} />
+                <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} />
             </div>)
 
     }

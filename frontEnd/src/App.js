@@ -15,6 +15,9 @@ import 'antd/dist/antd.css';
 import Login from './pages/Login/Login'
 import History from './components/history/History';
 import Search from './pages/Search/Search'
+import Women from './pages/Gender/Women'
+import Men from './pages/Gender/Man'
+import Unisex from './pages/Gender/Unisex'
 function App(props) {
 
   return (
@@ -26,8 +29,11 @@ function App(props) {
 
         <Route path="/" exact component={Home}></Route>
         <Route path="/products/:id" component={ProductDetail}></Route>
-        <Route path="/:sex/:categories" component={Categories}></Route>
-        <Route path="/:sex" component={Categories}></Route>
+
+        <Route path="/gender/:sex/:categories" component={Categories}></Route>
+        <Route path="/women" component={Women}></Route>
+        <Route path="/men" component={Women}></Route>
+        <Route path="/unisex" component={Unisex}></Route>
         <Route path='/cart' component={Cart}></Route>
         <Route path='/search/:searchText' component={Search}></Route>
         <Route path='/checkout' >
