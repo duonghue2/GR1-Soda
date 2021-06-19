@@ -16,10 +16,10 @@ class Home extends React.Component {
     index: 1,
     total: 0,
     loadMore: null,
-    loadMore: "LoadMore"
+    loadMore: "LoadMore",
+    loading: true
   };
-  loadMore = "LoadMore";
-  index = 1;
+
   handleClick = e => {
     this.setState({ current: e.key });
     if (e.key == "bestSeller") {
@@ -41,6 +41,7 @@ class Home extends React.Component {
           this.state.listProduct = this.state.listProduct.concat(response.data.data);
 
         this.state.total = response.data.total;
+        this.state.loading = false;
         this.setState(this.state);
         // console.log(this.state.listProduct)
       }, (error) => {
@@ -90,7 +91,7 @@ class Home extends React.Component {
           </Row>
         </div >
 
-        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} />
+        <DisplayListProduct plainOptions={['Shirt', 'Male|Jacket', 'Dress', 'Glasses', 'Bag']} products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} loading={this.state.loading} />
 
         <Footer />
       </div>

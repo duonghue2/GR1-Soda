@@ -18,7 +18,8 @@ class Categories extends React.Component {
 
       listProduct: [],
       loadMore: null,
-      total: 0
+      total: 0,
+      loading: true
 
     };
   }
@@ -34,6 +35,7 @@ class Categories extends React.Component {
       // console.log(response);
       if (response.data.status == 1)
         this.state.listProduct = this.state.listProduct.concat(response.data.data)
+      this.state.loading = false;
       console.log(response.data)
       this.state.total = response.data.total
       this.setState(this.state);
@@ -61,7 +63,7 @@ class Categories extends React.Component {
           {/* <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row> */}
           {/* <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row> */}
         </div>
-        <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} options={params.sex == "women" ? womanOption : manOption} />
+        <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} options={params.sex == "women" ? womanOption : manOption} loading={this.state.loading} />
       </div>)
 
 

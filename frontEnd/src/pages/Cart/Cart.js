@@ -117,7 +117,7 @@ class Cart extends React.Component {
             <div style={{ display: "flex", justifyContent: "center" }}>
 
               <Tabs defaultActiveKey="1" onChange={this.callback} centered={true}>
-                <TabPane tab={<Row justify="center" align="middle">
+                <TabPane tab={<Row justify="center" align="middle" >
 
                   Shopping Cart
                   <div className="qty">
@@ -147,7 +147,7 @@ class Cart extends React.Component {
                     }
 
                     {this.state.listProduct.length === 0 && <div>
-                      <span style={{ fontSize: "20px" }}>Empty Cart</span>
+                      <div style={{ fontSize: "20px", height: "80vh" }}>Empty Cart</div>
                     </div>}
                   </Row>
 

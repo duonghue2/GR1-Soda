@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, message, Input, Checkbox } from 'antd';
+import { Row, Col, message, Skeleton, Checkbox } from 'antd';
 
 import ItemProduct from '../../components/product/ItemProduct'
 import './ItemProduct.css'
@@ -111,6 +111,9 @@ class DisplayListProduct extends React.Component {
 
 
     }
+    componentDidMount() {
+        if (this.props.gender != null) this.state.gender = [this.props.gender]; this.setState(this.state);
+    }
 
     render() {
 
@@ -172,10 +175,13 @@ class DisplayListProduct extends React.Component {
                     <Col span={20} >
 
                         <Row align="start" justify="start">
+
                             {!this.state.isFilter && this.props.products.map((item, index) => (
 
                                 <Col lg={6} xl={6} xs={22} md={10} sm={10} key={index}  >
+
                                     <ItemProduct product={item} {...this.props} />
+
                                 </Col>
 
                             ))}
@@ -186,11 +192,16 @@ class DisplayListProduct extends React.Component {
                                 </Col>
 
                             ))}
+                            {((!this.state.isFilter && this.props.total == 0) || (this.state.isFilter && this.state.total == 0)) && <div style={{ width: "100%", textAlign: "center", fontWeight: "bold", fontSize: "30px" }}>No product</div>
+
+                            }
+
                         </Row>
 
                         <Row align="middle" justify="center">
-                            <button className={this.props.products.length == this.props.total ? "Hidden" : "LoadMore"} onClick={e => this.handleLoadMore(e)}>Load more</button>
+                            <button className={!this.state.isFilter ? (this.props.products.length == this.props.total ? "Hidden" : "LoadMore") : (this.state.products.length == this.state.total ? "Hidden" : "LoadMore")} onClick={e => this.handleLoadMore(e)}>Load more</button>
                         </Row>
+
                     </Col>
                 </Row>
             </div>

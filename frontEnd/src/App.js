@@ -32,7 +32,7 @@ function App(props) {
 
         <Route path="/gender/:sex/:categories" component={Categories}></Route>
         <Route path="/women" component={Women}></Route>
-        <Route path="/men" component={Women}></Route>
+        <Route path="/men" component={Men}></Route>
         <Route path="/unisex" component={Unisex}></Route>
         <Route path='/cart' component={Cart}></Route>
         <Route path='/search/:searchText' component={Search}></Route>

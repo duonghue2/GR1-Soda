@@ -56,7 +56,7 @@ class Women extends React.Component {
                 }}>
 
                 </div>
-                <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} />
+                <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} gender="unisex" />
             </div>)
 
 
