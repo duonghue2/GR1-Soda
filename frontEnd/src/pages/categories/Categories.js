@@ -3,6 +3,7 @@ import Header from '../../components/header/Header.js'
 import PageHeading from '../../assests/collection2.jpg'
 import ManHeading from '../../assests/men-dropdown2.jpg'
 import Unisex from '../../assests/b4.jpg'
+import Footer from '../../components/footer/Footer';
 import { message } from 'antd'
 import axios from 'axios'
 import { server } from '../../enviroment'
@@ -64,6 +65,8 @@ class Categories extends React.Component {
           {/* <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row> */}
         </div>
         <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} options={params.sex == "women" ? womanOption : manOption} loading={this.state.loading} />
+
+        <Footer />
       </div>)
 
 

@@ -152,6 +152,10 @@ div.sticky {
     #filter .ant-row-center {
         justify-content: unset;
     }
+    .submitFilter{
+        font-size: 13px;
+            padding-right: 2px;
+    }
 }
 @media only screen and (max-width: 620px ) and (min-width:416px) {
    

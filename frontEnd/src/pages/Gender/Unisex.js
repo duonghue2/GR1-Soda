@@ -4,6 +4,7 @@ import Unisex from '../../assests/b4.jpg'
 import { message } from 'antd'
 import axios from 'axios'
 import { server } from '../../enviroment'
+import Footer from '../../components/footer/Footer';
 import "../categories/Categories.css"
 import DisplayListProduct from '../../components/product/DisplayListProduct'
 let manOption = ['Shirt', 'Jacket', 'Glasses'];
@@ -57,6 +58,7 @@ class Women extends React.Component {
 
                 </div>
                 <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} gender="unisex" />
+                <Footer></Footer>
             </div>)
 
 

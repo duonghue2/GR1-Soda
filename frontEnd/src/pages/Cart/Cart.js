@@ -52,13 +52,19 @@ class Cart extends React.Component {
         }
         payload.listCart.push(item);
       })
-      await axios.post(server + 'api/Carts/update', payload).then(resp => {
-        this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
-        this.state.total = resp.data.data != null ? resp.data.data.total : 0;
-        this.setState(this.state)
-      })
+      try {
+        await axios.post(server + 'api/Carts/update', payload).then(resp => {
+          if (resp.data.status == 1) {
 
+            this.state.listProduct = resp.data.data != null ? resp.data.data.listProduct : [];
+            this.state.total = resp.data.data != null ? resp.data.data.total : 0;
+            this.setState(this.state)
+          } else message.error("Server error");
+        })
 
+      } catch (e) {
+        message.error("Server error");
+      }
     } else message.error("Quantity must be greater than 0");
   }
   delete = async (id) => {
