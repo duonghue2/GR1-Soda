@@ -56,7 +56,7 @@ namespace Test.Controllers
                 int sum = 0;
                 cart.ForEach(item =>
                 {
-                    var detail = _context.ProductDetails.Where(s => s.Id == item.ProductDetailId).FirstOrDefault();
+                    var detail = _context.ProductDetails.Where(s => s.Id == item.ProductDetailId && s.IsActive == true).FirstOrDefault();
                     var image = _context.ProductImages.Where(s => s.ProductId == detail.ProductId).Select(s => s.Image).FirstOrDefault();
                     var product = _context.Products.Where(s => s.Id == detail.ProductId).FirstOrDefault();
                     var detailCart = new DetailCartModel();

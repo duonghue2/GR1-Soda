@@ -18,7 +18,7 @@ namespace Test.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public string Phonenumber { get; set; }
-
+        public bool IsAdmin { get; set; }
         public virtual ICollection<Cart> Carts { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
     }

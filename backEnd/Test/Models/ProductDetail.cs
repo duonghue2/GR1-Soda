@@ -18,6 +18,7 @@ namespace Test.Models
         public int? Quantity { get; set; }
         public string ProductId { get; set; }
         public string SubCategories { get; set; }
+        public bool IsActive { get; set; }
         //public virtual Product Product { get; set; }
         //public virtual ICollection<Cart> Carts { get; set; }
     }

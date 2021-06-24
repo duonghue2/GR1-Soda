@@ -7,5 +7,6 @@ namespace Test.Data
 {
     public class LoginResponse:BaseResponse<UserData>
     { public string token { get; set; }
+       
     }
 }

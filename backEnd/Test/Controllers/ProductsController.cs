@@ -33,7 +33,7 @@ namespace Test.Controllers
                 var listProductModel = new List<ProductModel>();
                 foreach (Product pr in listProduct) {
                     var image = _context.ProductImages.Where(s => s.ProductId == pr.Id).Select(s => s.Image).ToList();
-                    var detail = _context.ProductDetails.Where(s => s.ProductId == pr.Id).ToList();
+                    var detail = _context.ProductDetails.Where(s => s.ProductId == pr.Id && s.IsActive == true).ToList();
                     
                     var productModel = new ProductModel();
                     productModel.Images = image;
@@ -82,7 +82,7 @@ namespace Test.Controllers
             productModel.OriginPrice = product.Price;
             productModel.Description = product.Description;
             productModel.Category = product.Category;
-            var detail =  _context.ProductDetails.Where(s => s.ProductId == id).ToList();
+            var detail =  _context.ProductDetails.Where(s => s.ProductId == id && s.IsActive == true).ToList();
           if(detail!=null)
             productModel.Detail = detail;
             var image = _context.ProductImages.Where(s => s.ProductId == id).Select(s => s.Image).ToList();
@@ -180,7 +180,7 @@ namespace Test.Controllers
                 var listProductModel = new List<ProductModel>();
                 foreach (Product pr in newListProduct1)
                 {
-                    var query = _context.ProductDetails.Where(s => s.ProductId == pr.Id);
+                    var query = _context.ProductDetails.Where(s => s.ProductId == pr.Id&&s.IsActive==true);
                     if (request.Category!=null&&request.Category.Count>0)
                     {
 

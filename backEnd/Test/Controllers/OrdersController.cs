@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SodaBackEnd.Business.Data;
 using SodaBackEnd.Data;
 using SodaBackEnd.Interfaces;
 using Test.Data;
@@ -47,7 +48,7 @@ namespace Test.Controllers
         //}
         [HttpPost]
         [Route("purchase")]
-        public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetAllOrder(BaseTokenRequest req)
+        public async Task<BaseResponse<List<PurchaseHistoryResponse>>> GetPurchaseHistory(BaseTokenRequest req)
         {
 
             var actor = _context.Users.Find(req.UserId);
@@ -86,6 +87,51 @@ namespace Test.Controllers
             response.Message = "success";
            
            
+            return response
+                ;
+        }
+        [HttpPost]
+        [Route("list-order")]
+        public async Task<BaseResponse<List<OrderModel>>> GetListOrder(GetListOrderRequest req)
+        {
+
+            var actor = _context.Users.Find(req.UserId);
+            if (!_tokenService.IsValidToken(req.Token, req.UserId, actor.Name)||!actor.IsAdmin) throw new ArgumentException("Unauthorize");
+            var response = new BaseResponse<List<OrderModel>>();
+            var listOrderRes = new List<OrderModel>();
+            var orders = _context.Orders.Where(s => s.State == req.State);
+            if (req.CreateDate != null) orders.Where(s => s.CreateAt.Value.Date == req.CreateDate.Value.Date && s.CreateAt.Value.Month == req.CreateDate.Value.Month && s.CreateAt.Value.Year == req.CreateDate.Value.Year);
+            if (req.ReceiverName != null) orders.Where(s => s.Receiver == req.ReceiverName);
+
+
+            var listOrder= orders.Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToList(); 
+            if (listOrder == null || listOrder.Count() == 0)
+            {
+                response.Data = null;
+                response.Total = 0;
+                response.Message = "Empty order list";
+                return response;
+            }
+            foreach (var item in listOrder)
+            {
+                var order = new OrderModel();
+                order.Id = item.Id;
+                order.Order = "#" + item.Id.ToString().Substring(0, 8);
+                order.UserId = item.UserId;
+                order.Receiver = item.Receiver;
+                order.Address = item.Address;
+                order.Receiver = item.Receiver;
+                order.State = item.State;
+                order.Amount = item.Amount;
+                order.CreateAt = item.CreateAt;
+                order.UserName = actor.Name;
+                listOrderRes.Add(order);
+            }
+            response.Data = listOrderRes;
+            response.Total = listOrder.Count();
+            response.Message = "success";
+
+
             return response
                 ;
         }

@@ -113,15 +113,6 @@ namespace Test.Controllers
         public async Task<LoginResponse> Login(LoginRequest user)
         {
             var response = new LoginResponse();
-            //var text = user.Email + user.Password;
-            //if (ComputeSHA256Hash(text) == user.Token)
-            //{
-            //    response.Status = 0;
-            //    response.Message = "Email or password is wrong";
-            //    response.Data = null;
-            //    return response;
-            //}
-            
             var data = _context.Users.Where(s => s.Email == user.Email ).FirstOrDefault();
             var password = _tokenService.ComputeSHA256Hash(user.Password);
           
@@ -138,7 +129,7 @@ namespace Test.Controllers
                 userR.UserId = data.Id;
                 response.Status = 1;
                 response.Message = "Succesfull login";
-                
+                userR.IsAdmin = data.IsAdmin;
                 response.Data = userR;
                 var token = _tokenService.GetToken(userR.UserId, userR.UserName);
                 response.token = token;
