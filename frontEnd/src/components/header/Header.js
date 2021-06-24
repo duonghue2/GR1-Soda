@@ -187,12 +187,16 @@ class Header extends React.Component {
 
 
 
-                        {this.state.userInfor && <Popover placement="bottomRight" content={content({ data: this.state.userInfor, logout: this.logout })} trigger="click">
-                            <UserOutlined style={{
-                                fontSize: '25px', marginRight: "25px",
-                                paddingBottom: '4px'
-                            }} />
-                        </Popover>}
+                        {this.state.userInfor &&
+
+                            <Popover placement="bottomRight" content={content({ data: this.state.userInfor, logout: this.logout })} trigger="click">
+                                <UserOutlined style={{
+                                    fontSize: '25px', marginRight: "25px",
+                                    paddingBottom: '4px'
+                                }} />
+                            </Popover>
+                        }
+                        {this.state.userInfor && this.state.userInfor.isAdmin && <a href="/admin" style={{ fontSize: "20px", fontWeight: "bold", marginRight: "15px" }} >Admin</a>}
                         {!this.state.userInfor &&
 
                             <a href='/login' style={{ fontSize: "20px", fontWeight: "bold", marginRight: "15px" }}>Login</a>}

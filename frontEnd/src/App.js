@@ -18,6 +18,7 @@ import Search from './pages/Search/Search'
 import Women from './pages/Gender/Women'
 import Men from './pages/Gender/Man'
 import Unisex from './pages/Gender/Unisex'
+import Admin from './pages/Admin/Dashboard'
 function App(props) {
 
   return (
@@ -45,6 +46,7 @@ function App(props) {
           <Login></Login>
         </Route>
         <Route path="/history" component={History}></Route>
+        <Route exact path="/admin" component={Admin}></Route>
       </div>
 
     </Router>

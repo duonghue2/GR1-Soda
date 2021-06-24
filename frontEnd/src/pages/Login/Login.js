@@ -69,7 +69,7 @@ class Login extends React.Component {
 
             if (response.data.status == 1) {
                 reactLocalStorage.set('token', response.data.token);
-
+                debugger
                 reactLocalStorage.setObject('userInfo', response.data.data);
 
                 message.success(response.data.message);
