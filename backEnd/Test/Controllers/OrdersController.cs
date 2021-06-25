@@ -104,7 +104,7 @@ namespace Test.Controllers
             if (req.ReceiverName != null) orders.Where(s => s.Receiver == req.ReceiverName);
 
 
-            var listOrder= orders.Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToList(); 
+            var listOrder= orders.ToList().Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToList(); 
             if (listOrder == null || listOrder.Count() == 0)
             {
                 response.Data = null;

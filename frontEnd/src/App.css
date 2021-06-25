@@ -154,3 +154,26 @@ color:#23232c!important
 #filter .ant-row-center{
   justify-content: center;
 }
+th.ant-table-cell{
+  background: #5c5d5f!important;
+    color: white!important;
+    font-size: 18px;
+    text-align: center!important;
+}
+td.ant-table-cell input{
+  width: -webkit-fill-available;
+  background: white;
+  padding-left: 10px;
+  height: 35px;
+  font-size: 15px;
+}
+td.ant-table-cell{
+  font-size: 15px;
+}
+.ant-table-wrapper .ant-table-pagination{
+  display: none;
+}
+.ant-input[disabled]{
+
+  color:black!important
+}

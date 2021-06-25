@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SodaBackEnd.Business.Data;
 using SodaBackEnd.Data;
 using Test.Business;
 using Test.Data;
@@ -290,24 +291,49 @@ namespace Test.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Product>> PostProduct(Product product)
+        public async Task<Boolean> PostProduct(ProductModel productModel)
         {
+            var product = new Product();
             product.Id = Guid.NewGuid().ToString();
+            product.Category = productModel.Category;
+            product.Description = productModel.Description;
+            product.Name = productModel.Name;
+            product.Price = productModel.OriginPrice.Value;
             _context.Products.Add(product);
-            try
+            foreach (var list in productModel.Detail)
             {
-                await _context.SaveChangesAsync();
+                
+                list.Id = Guid.NewGuid().ToString();
+                list.ProductId = product.Id;
+               
+                _context.ProductDetails.Add(list);
             }
-            catch (DbUpdateException)
+          
+          foreach(var url in productModel.Images)
             {
-                
-                
+                var image = new ProductImage();
+                image.ProductId = product.Id;
+                image.Image = url;
+                _context.ProductImages.Add(image);
+
+            }
+                try
+                {
+                    await _context.SaveChangesAsync();
+
+                }
+                catch (DbUpdateException)
+                {
+
                     throw;
-                
+
+                }
+            return true;
+               
             }
 
-            return CreatedAtAction("GetProduct", new { id = product.Id }, product);
-        }
+           
+        
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]

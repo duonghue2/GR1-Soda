@@ -36,31 +36,77 @@ namespace Test.Controllers
             var listProd = (from pro in _context.Products
                             join detail in _context.ProductDetails
                             on pro.Id equals detail.ProductId
-                           //where 
-                           //detail.IsActive&& 
-                           // (req.Name!=null&&pro.Name.Contains(req.Name))
+                            where detail.IsActive == true
+                            orderby pro.Id
+
                             select new GetListDetailResponse()
                             {
-                                ProductDetailId=detail.Id,
-                                ProductId=pro.Id,
+                                ProductDetailId = detail.Id,
+                                ProductId = pro.Id,
                                 Name = pro.Name,
                                 OriginPrice = pro.Price,
                                 SalePrice = detail.Price,
                                 Size = detail.Size,
                                 Quantity = detail.Quantity.Value,
                                 Category = pro.Category,
-                                SubCategory = detail.SubCategories
+                                SubCategory = detail.SubCategories,
+                                IsActive = detail.IsActive
                             }).
-                           
-                            ToList().Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToList();
+
+                            ToList();
+            if (req.Name != null) {
+
+                listProd=listProd.Where(s => s.Name.Contains(req.Name)).ToList();
+            }
+                       var listRes=listProd.Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToList();
             var response = new BaseResponse<List<GetListDetailResponse>>();
             response.Status = 1;
             response.Message = "success";
-            response.Data = listProd;
+            response.Data = listRes;
             response.Total = listProd.Count;
             return response;
 
         }
+        [HttpPost]
+        [Route("admin/update")]
+        public async Task<BaseResponse<Boolean>> UpdateProductDetails(GetListDetailResponse req)
+        {
+            var actor = _context.Users.Find(req.UserId);
+            if (!_tokenService.IsValidToken(req.Token, req.UserId, actor.Name) || !actor.IsAdmin) throw new ArgumentException("Unauthorize");
+            var prodetail = _context.ProductDetails.Find(req.ProductDetailId);
+            var product = _context.Products.Find(req.ProductId);
+            prodetail.Quantity = req.Quantity;
+            prodetail.SubCategories = req.SubCategory;
+            prodetail.Price = req.SalePrice;
+            product.Name = req.Name;
+            product.Price = req.OriginPrice;
+            await _context.SaveChangesAsync();
+            var response = new BaseResponse<Boolean>();
+            response.Status = 1;
+            response.Message = "success";
+            response.Data = true;
+          
+            return response;
+
+        }
+        [HttpPost]
+        [Route("admin/delete")]
+        public async Task<BaseResponse<Boolean>> DeleteProductDetail(DeleteRequest req)
+        {
+            var actor = _context.Users.Find(req.UserId);
+            if (!_tokenService.IsValidToken(req.Token, req.UserId, actor.Name) || !actor.IsAdmin) throw new ArgumentException("Unauthorize");
+            var prodetail = _context.ProductDetails.Find(req.Id);
+            prodetail.IsActive = false;
+            await _context.SaveChangesAsync();
+            var response = new BaseResponse<Boolean>();
+            response.Status = 1;
+            response.Message = "success";
+            response.Data = true;
+
+            return response;
+
+        }
+
 
         // GET: api/ProductDetails/5
         [HttpGet("{id}")]
@@ -81,40 +127,9 @@ namespace Test.Controllers
         // POST: api/ProductDetails
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<ProductDetail>> PostProductDetail(ProductDetail productDetail)
-        {
-            productDetail.Id = Guid.NewGuid().ToString();
-            _context.ProductDetails.Add(productDetail);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-              
-                    throw;
-                 
-            }
+    
 
-            return CreatedAtAction("GetProductDetail", new { id = productDetail.Id }, productDetail);
-        }
-
-        // DELETE: api/ProductDetails/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<ProductDetail>> DeleteProductDetail(string id)
-        {
-            var productDetail = await _context.ProductDetails.FindAsync(id);
-            if (productDetail == null)
-            {
-                return NotFound();
-            }
-
-            _context.ProductDetails.Remove(productDetail);
-            await _context.SaveChangesAsync();
-
-            return productDetail;
-        }
+       
 
         private bool ProductDetailExists(string id)
         {
