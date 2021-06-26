@@ -196,8 +196,10 @@ namespace Test.Models
 
             modelBuilder.Entity<ProductImage>(entity =>
             {
-                entity.HasNoKey();
 
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd()
+                    .HasColumnName("id");
                 entity.Property(e => e.Id)
                     .ValueGeneratedOnAdd()
                     .HasColumnName("id");

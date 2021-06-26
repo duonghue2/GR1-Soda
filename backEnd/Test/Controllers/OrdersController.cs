@@ -135,8 +135,49 @@ namespace Test.Controllers
             return response
                 ;
         }
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<BaseResponse<PurchaseHistoryResponse>> GetOrderById(string id)
+        {
+
+           
+            var response = new BaseResponse<PurchaseHistoryResponse>();
+           
+            var order = _context.Orders.Find(id);
+            if (order == null )
+            {
+                response.Data = null;
+                response.Message = "Order not found";
+                return response;
+            }
+            
+                var history = new PurchaseHistoryResponse();
+                history.Order = order;
+
+                var listItem = _context.OrderDetails.Where(s => s.OrderId == order.Id).Select(s => new DetailResponse()
+                {
+                    Id = s.ProductId,
+                    ProductDetailId = s.ProductDetailId,
+                    Image = s.Image,
+                    Qty = s.Quantity,
+                    Size = s.Size,
+                    OrderId = s.OrderId,
+                    DetailOrderId = s.Id,
+                    Price = s.UnitPrice,
+                    ItemAmount = s.ItemAmount
+                })
+              .ToList();
+                history.Details = listItem;
+            
+            
+            response.Data = history;
+            response.Total = 1;
+            response.Message = "success";
 
 
+            return response
+                ;
+        }
         // POST: api/Orders
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -226,6 +267,30 @@ namespace Test.Controllers
             await _context.SaveChangesAsync();
 
             return order;
+        }
+        [HttpPatch("{id}")]
+        public async Task<BaseResponse<PurchaseHistoryResponse>> ApproveOrder(string id,string state )
+        {
+            var order = _context.Orders.Where(s => id == s.Id).FirstOrDefault();
+            if (order == null) throw new Exception("ORDER_NOT_FOUND");       
+          
+            if (order.State == "pending")
+            {
+                var orderDetail = _context.OrderDetails.Where(s => s.OrderId == id).ToList();
+                foreach(var item in orderDetail)
+                {
+                    var productDetail = _context.ProductDetails.Find(item.ProductDetailId);
+                    if (productDetail.Quantity > item.Quantity) productDetail.Quantity -= item.Quantity;
+                    else { order.State = "Cancel"; break; }
+                }
+               
+            }
+           if(state!=null)order.State = state;
+            await _context.SaveChangesAsync();
+            return await GetOrderById(id);
+
+
+
         }
 
 

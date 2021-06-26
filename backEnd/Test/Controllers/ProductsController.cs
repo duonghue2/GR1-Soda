@@ -293,7 +293,9 @@ namespace Test.Controllers
         [HttpPost]
         public async Task<Boolean> PostProduct(ProductModel productModel)
         {
-            var product = new Product();
+            try
+            {
+                var product = new Product();
             product.Id = Guid.NewGuid().ToString();
             product.Category = productModel.Category;
             product.Description = productModel.Description;
@@ -311,18 +313,21 @@ namespace Test.Controllers
           
           foreach(var url in productModel.Images)
             {
-                var image = new ProductImage();
-                image.ProductId = product.Id;
-                image.Image = url;
-                _context.ProductImages.Add(image);
+                    if (url != null)
+                    {
+                        var image = new ProductImage();
+                        image.ProductId = product.Id;
+
+                        image.Image = url;
+                        _context.ProductImages.Add(image);
+                    }
 
             }
-                try
-                {
+                
                     await _context.SaveChangesAsync();
 
                 }
-                catch (DbUpdateException)
+                catch (Exception e)
                 {
 
                     throw;
