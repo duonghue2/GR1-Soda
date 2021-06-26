@@ -10,11 +10,12 @@ import axios from 'axios';
 class ProductDetail extends React.Component {
   constructor(props) {
     super(props)
+
     this.state = {
       detailId: 0,
       max: 10,
       qty: 0,
-      price: this.props.product.detail[0].price || 0
+      price: this.props.product.detail[0] ? this.props.product.detail[0].price : 0
     }
   }
 

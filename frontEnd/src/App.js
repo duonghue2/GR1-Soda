@@ -19,6 +19,7 @@ import Women from './pages/Gender/Women'
 import Men from './pages/Gender/Man'
 import Unisex from './pages/Gender/Unisex'
 import Admin from './pages/Admin/Dashboard'
+import DetailOrder from './pages/Admin/DetailOrder'
 function App(props) {
 
   return (
@@ -35,17 +36,18 @@ function App(props) {
         <Route path="/women" component={Women}></Route>
         <Route path="/men" component={Men}></Route>
         <Route path="/unisex" component={Unisex}></Route>
-        <Route path='/cart' component={Cart}></Route>
+        <Route exact path='/cart' component={Cart}></Route>
         <Route path='/search/:searchText' component={Search}></Route>
-        <Route path='/checkout' >
+        <Route exact path='/checkout' >
           <Checkout />
 
         </Route>
-        <Route path='/signup' component={Signup}></Route>
-        <Route path="/login">
+        <Route path="/admin/order/:id" component={DetailOrder}></Route>
+        <Route exact path='/signup' component={Signup}></Route>
+        <Route exact path="/login">
           <Login></Login>
         </Route>
-        <Route path="/history" component={History}></Route>
+        <Route exact path="/history" component={History}></Route>
         <Route exact path="/admin" component={Admin}></Route>
       </div>
 

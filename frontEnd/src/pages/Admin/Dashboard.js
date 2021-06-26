@@ -1,11 +1,13 @@
 import React from 'react';
-import { Menu, Row, Popover, Table, Space, Input, message, Image, Button, Pagination, Modal } from 'antd';
-import { DeleteOutlined, UserOutlined, EditOutlined, CheckOutlined, SaveOutlined } from '@ant-design/icons'
+import { Menu, Row, Popover, Table, Form, Input, message, Image, Button, Pagination, Modal, InputNumber, Space, Select } from 'antd';
+import { DeleteOutlined, UserOutlined, EditOutlined, CheckOutlined, SaveOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { reactLocalStorage } from 'reactjs-localstorage';
 import { server } from '../../enviroment'
 import axios from 'axios'
 import logo from '../../assests/logo.png'
 const { Search } = Input;
+const { TextArea } = Input;
+const { Option } = Select;
 const content = ({ data, logout }) => {
 
     return (
@@ -18,10 +20,12 @@ const content = ({ data, logout }) => {
         </div>
     )
 }
+const { SubMenu } = Menu;
+
 class Dashboard extends React.Component {
     state = {
         current: "product",
-        visible: false,
+        visible: true,
         products: [],
         orders: [],
         index: 0,
@@ -33,6 +37,7 @@ class Dashboard extends React.Component {
         currentPage: 1,
         update: {},
         selectedRowKeys: [],
+        listDetail: []
 
 
     };
@@ -46,21 +51,29 @@ class Dashboard extends React.Component {
     handleClick = e => {
         debugger;
         this.state.current = e.key;
-        this.state.currentPage = 1;
-        this.state.selectedRows = [];
-        this.state.isSave = false;
-        this.state.index = 0;
-        this.state.loading = true;
+        if (e.key != 'create') {
+            this.state.currentPage = 1;
+            this.state.selectedRows = [];
+            this.state.isSave = false;
+            this.state.index = 0;
+            this.state.loading = true;
 
-        this.getData(1)
+            this.getData(1)
+        } else this.setState(this.state);
     };
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.products !== this.state.products) {
+            this.setState(this.state);
+        }
+    }
     getData = async (x) => {
         this.state.isSave = false;
         this.state.isEdit.forEach(element => {
             element = false;
         })
         this.state.selectedRowKeys = [];
-        this.state.selectedRows = []
+        this.state.selectedRows = [];
+        this.state.update = {};
         debugger
         let token = reactLocalStorage.get("token");
         let userId = reactLocalStorage.getObject("userInfo").userId;
@@ -130,8 +143,18 @@ class Dashboard extends React.Component {
         });
 
     }
-    submit = (e) => {
-        e.preventDefault();
+    AddProduct = (e) => {
+        console.log(e);
+        let images = [e.image1, e.image2, e.image3]
+        var payload = { ...e, images };
+        axios.post(server + 'api/Products', payload).then(resp => {
+            debugger;
+            if (resp.data) {
+                this.message.success("Create successfully");
+            }
+        }).catch(e => {
+            throw e;
+        });
     }
     edit = (e) => {
         e.preventDefault();
@@ -187,7 +210,7 @@ class Dashboard extends React.Component {
 
                 ellipsis: true,
 
-                render: (text, record, index) => <Input defaultValue={text} name="name" onChange={e => this.handleChange(record, e)} disabled={!this.state.isEdit[index]} />
+                render: (text, record, index) => <Input value={text} name="name" onChange={e => this.handleChange(record, e)} disabled={!this.state.isEdit[index]} />
             },
             {
                 title: 'Price',
@@ -196,14 +219,14 @@ class Dashboard extends React.Component {
                 sorter: (a, b) => a.originPrice - b.originPrice,
 
                 ellipsis: true,
-                render: (text, record, index) => <Input value={text} disabled={!this.state.isEdit[index]} />
+                render: (text, record, index) => <Input value={text} name="originPrice" disabled={!this.state.isEdit[index]} onChange={e => this.handleChange(record, e)} />
             }, {
                 title: 'Sale price',
                 dataIndex: 'salePrice',
                 key: 'salePrice',
                 sorter: (a, b) => a.salePrice - b.salePrice,
 
-                render: (text, record, index) => <Input value={text} disabled={!this.state.isEdit[index]} />
+                render: (text, record, index) => <Input value={text} name="salePrice" disabled={!this.state.isEdit[index]} onChange={e => this.handleChange(record, e)} />
             },
             {
                 title: 'Size',
@@ -213,16 +236,23 @@ class Dashboard extends React.Component {
             {
                 title: 'Quantity',
                 dataIndex: 'quantity',
-                render: (text, record, index) => <Input value={text} disabled={!this.state.isEdit[index]} />
+                render: (text, record, index) => <Input value={text} name="quantity" disabled={!this.state.isEdit[index]} onChange={e => this.handleChange(record, e)} />
             }, {
                 title: 'Category',
                 dataIndex: 'category',
-                render: (text, record, index) => <Input value={text} disabled={!this.state.isEdit[index]} />
+                render: (text, record, index) =>
+                    <select placeholder="Select category" name="category" value={text} disabled={!this.state.isEdit[index]} onChange={e => this.handleChange(record, e)}>
+                        <option value="Women">Women</option>
+                        <option value="Men">Men</option>
+                        <option value="Unisex">Unisex</option>
+
+                    </select>
+
             },
             {
                 title: 'SubCategory',
                 dataIndex: 'subCategory',
-                render: (text, record, index) => <Input value={text} disabled={!this.state.isEdit[index]} />
+                render: (text, record, index) => <Input name="subCategory" value={text} disabled={!this.state.isEdit[index]} onChange={e => this.handleChange(record, e)} />
 
             }
         ];
@@ -276,7 +306,16 @@ class Dashboard extends React.Component {
                         <Menu.Item key="home" >
                             <a href="/">Shop</a>
                         </Menu.Item>
-                        <Menu.Item key="product"> Product</Menu.Item>
+                        {/* <Menu.Item key="product"> Product</Menu.Item> */}
+                        <SubMenu key="product" title="Product" onTitleClick={this.handleClick}>
+
+
+                            <Menu.Item key="create">
+
+                                Create Product
+
+                            </Menu.Item>
+                        </SubMenu>
                         <Menu.Item key="order">
                             Order
                         </Menu.Item>
@@ -299,13 +338,18 @@ class Dashboard extends React.Component {
                     </div>
                 </Row>
                 <Row justify="start" align="middle" style={{ marginBottom: '15px' }}>
-                    {this.state.current == 'product' && <Button onClick={e => this.showModal(e)}> Create product</Button>}
                     {this.state.selectedRows.length == 1 && this.state.current == 'product' && !this.state.isSave && <Button onClick={e => this.edit(e)}>  <EditOutlined />Edit</Button>}
                     {this.state.selectedRows.length == 1 && this.state.current == 'product' && this.state.isSave && <Button onClick={e => this.update(e)}>  <EditOutlined />Save</Button>}
                     {this.state.selectedRows.length > 0 && <Button onClick={e => this.delete(e)} >  <DeleteOutlined />Delete</Button>}
                     {this.state.selectedRows.length > 0 && this.state.current == 'order' && <Button onClick={e => this.submit(e)} >   <CheckOutlined />Approve</Button>}
+                    {this.state.current == 'order' && <Select>
+                        <Option>Pending</Option>
+                        <Option>Approved</Option>
+                        <Option>Deliveried</Option>
+                        <Option>Cancel</Option>
+                    </Select>}
                 </Row>
-                <Row style={{ marginBottom: '15px' }}><Pagination defaultCurrent={1} current={this.state.currentPage} total={this.state.total} pageSize={9} onChange={(x) => this.getData(x)} /></Row>
+                {this.state.current != 'create' && <Row style={{ marginBottom: '15px' }}><Pagination defaultCurrent={1} current={this.state.currentPage} total={this.state.total} pageSize={9} onChange={(x) => this.getData(x)} /></Row>}
                 {this.state.current == 'product' && <Table columns={columnProduct} dataSource={this.state.products}
 
                     rowSelection={{ ...rowSelection }}
@@ -318,25 +362,136 @@ class Dashboard extends React.Component {
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: event => {
-                                debugger;
-                                this.edit(rowIndex);
+
+                                window.location = "admin/order/" + record.id
 
                             }
                         }
                     }}
                 />}
-                <Modal
-                    title="Modal 1000px width"
-                    centered
-                    visible={this.state.visible}
-                    onOk={(e) => this.submit(e)}
-                    onCancel={(e) => this.showModal(e)}
-                    width={1000}
+
+                {this.state.current == 'create' && <Row align="middle" justify="center"><div style={{ width: '50%' }}><Form
+                    name="basic"
+                    labelCol={{ span: 5 }}
+                    wrapperCol={{ span: 16 }}
+                    onFinish={this.AddProduct}
+                    size="middle"
+
                 >
-                    <p>some contents...</p>
-                    <p>some contents...</p>
-                    <p>some contents...</p>
-                </Modal>
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button type="primary" htmlType="submit" >
+                            Submit
+                        </Button>
+                    </Form.Item>
+                    <Form.Item
+                        label="Product Name"
+                        name="name"
+                        rules={[{ required: true, message: 'Please input product name!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Category"
+                        name="category"
+                        rules={[{ required: true, message: 'Please input category!' }]}
+                    >
+                        <Select placeholder="Select category">
+                            <Option value="Women">Women</Option>
+                            <Option value="Men">Men</Option>
+                            <Option value="Unisex">Unisex</Option>
+
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="Price"
+                        name="originPrice"
+                        rules={[{ required: true, message: 'Please input price!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Image 1"
+                        name="image1"
+                        rules={[{ required: true, message: 'Please input image!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Image 2"
+                        name="image2"
+                        rules={[{ required: true, message: 'Please input image!' }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="Image 3"
+                        name="images3"
+
+                    >
+                        <Input />
+
+                    </Form.Item>
+
+
+                    <Form.Item
+                        label="Description"
+                        name="description"
+                        rules={[{ required: true, message: 'Please input description!' }]}
+                    >
+                        <TextArea />
+                    </Form.Item>
+                    <Form.List name="detail" >
+                        {(fields, { add, remove }) => (
+                            <>
+                                {fields.map(({ key, name, fieldKey, ...restField }) => (
+                                    <Row key={key} style={{ marginBottom: 8, width: "70%", float: 'right' }} align="middle" justify="space-between" >
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, 'size']}
+                                            fieldKey={[fieldKey, 'size']}
+                                            rules={[{ required: true, message: 'Missing first name' }]}
+                                        >
+                                            <Input placeholder="size" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, 'price']}
+                                            fieldKey={[fieldKey, 'pice']}
+
+                                        >
+                                            <InputNumber placeholder="sale price" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, 'quantity']}
+                                            fieldKey={[fieldKey, 'quantity']}
+
+                                        >
+                                            <InputNumber placeholder="quantity" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, 'subCategory']}
+                                            fieldKey={[fieldKey, 'subCategory']}
+
+                                        >
+                                            <Input placeholder="Sub-category" />
+                                        </Form.Item>
+                                        <MinusCircleOutlined onClick={() => remove(name)} />
+                                    </Row>
+                                ))}
+                                <Row align="middle" justify="center" style={{ width: '-webkit-fill-available' }} >
+                                    <Form.Item>
+                                        <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />} style={{ width: 'max-content' }}>
+                                            Add detail
+                                        </Button>
+                                    </Form.Item>
+                                </Row>
+                            </>
+                        )}
+                    </Form.List>
+                </Form></div></Row>}
+
 
             </div >
 
