@@ -1,13 +1,16 @@
 import React from 'react';
-import { Menu, Row, Popover, Table, Form, Input, message, Image, Button, Pagination, Modal, InputNumber, Space, Select } from 'antd';
+import { Menu, Row, Popover, Table, Form, Input, message, Image, Button, Pagination, Modal, InputNumber, Col, Steps, Select } from 'antd';
 import { DeleteOutlined, UserOutlined, EditOutlined, CheckOutlined, SaveOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { reactLocalStorage } from 'reactjs-localstorage';
+import { currencyFormat } from '../../utils/function'
 import { server } from '../../enviroment'
+import RowCart from '../../components/rowCart/rowCart'
 import axios from 'axios'
 import logo from '../../assests/logo.png'
 const { Search } = Input;
 const { TextArea } = Input;
 const { Option } = Select;
+const { Step } = Steps;
 const content = ({ data, logout }) => {
 
     return (
@@ -37,7 +40,16 @@ class Dashboard extends React.Component {
         currentPage: 1,
         update: {},
         selectedRowKeys: [],
-        listDetail: []
+        listDetail: [],
+        idOrder: "",
+        purchase: {
+            order: {},
+            details: []
+        },
+        step: "",
+        currentStep: 1,
+        orderstate: null
+
 
 
     };
@@ -48,25 +60,62 @@ class Dashboard extends React.Component {
         message.success("log out succesfully!");
         window.location = "/";
     }
+    getDetailOrder = () => {
+        var id = this.state.idOrder;
+        axios.get(server + 'api/Orders/' + id).then(resp => {
+            console.log(resp.data)
+            this.state.purchase = resp.data.data != null ? resp.data.data : {};
+            let orderstate = this.state.purchase.order.state
+            if (orderstate == "cancel") this.state.step = "error";
+            else if (orderstate == "deliveried") this.state.step = "finish";
+            else this.state.step = "process"
+            if (orderstate == 'pending') this.state.currentStep = 1;
+            else if (orderstate == "approved") this.state.currentStep = 2;
+            else if (orderstate == 'in process') this.state.currentStep = 3;
+            else if (orderstate == 'deliveried') this.state.currentStep = 4;
+            else this.state.currentStep = 1;
+
+            this.setState(this.state)
+        }).catch(e => {
+            throw e;
+        });
+    }
     handleClick = e => {
         debugger;
         this.state.current = e.key;
-        if (e.key != 'create') {
+        if (e.key == 'product' || e.key == "order") {
             this.state.currentPage = 1;
             this.state.selectedRows = [];
             this.state.isSave = false;
             this.state.index = 0;
             this.state.loading = true;
 
-            this.getData(1)
-        } else this.setState(this.state);
+            this.getData(1, null)
+        } else if (e.key == "create") this.setState(this.state);
+
     };
+    approved = (name, event) => {
+        debugger
+        event.preventDefault();
+
+
+        axios.patch(server + 'api/Orders/' + this.state.idOrder + "?state=" + name).then(resp => {
+            if (resp.data) {
+                this.getDetailOrder()
+            }
+            else message.error("Server internal errors");
+
+        }).catch(e => {
+            throw e;
+        });
+    }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.products !== this.state.products) {
             this.setState(this.state);
         }
     }
-    getData = async (x) => {
+    getData = async (x, name) => {
         this.state.isSave = false;
         this.state.isEdit.forEach(element => {
             element = false;
@@ -83,7 +132,8 @@ class Dashboard extends React.Component {
                 token, userId,
                 pageSize: 9,
                 currentPage: x,
-                state: 'pending'
+                state: this.state.orderstate,
+                name
             }
             if (this.state.current == 'product') axios.post(server + 'api/ProductDetails/admin', payload).then(resp => {
                 console.log(resp)
@@ -109,7 +159,7 @@ class Dashboard extends React.Component {
         }
     }
     componentDidMount() {
-        this.getData(1)
+        this.getData(1, null)
         // Array.apply(null, Array(3)).map(String.prototype.valueOf, "hi")
     }
 
@@ -119,7 +169,26 @@ class Dashboard extends React.Component {
         })
     }
     onSearch = (e) => {
-        window.location = "/admin/search/" + e;
+        if (this.state.current == "order" || this.state.current == "detailOrder") {
+            this.state.current = "order";
+            this.state.orderstate = null;
+            this.state.currentPage = 1;
+            this.state.selectedRows = [];
+            this.state.isSave = false;
+            this.state.index = 0;
+            this.state.loading = true;
+            this.getData(1, e);
+
+        }
+        else {
+            this.state.current = "product"
+            this.state.currentPage = 1;
+            this.state.selectedRows = [];
+            this.state.isSave = false;
+            this.state.index = 0;
+            this.state.loading = true;
+            this.getData(1, e);
+        }
     }
     delete = (e) => {
         e.preventDefault();
@@ -127,20 +196,32 @@ class Dashboard extends React.Component {
         let userId = reactLocalStorage.getObject("userInfo").userId;
         this.state.loading = true;
 
+        this.state.selectedRows.forEach(async (element) => {
 
-        this.state.selectedRows.forEach(element => {
+
             let payload = {
                 token, userId,
-                id: element.productDetailId
+                id: this.state.current == "product" ? element.productDetailId : element.id
             }
-            axios.post(server + 'api/ProductDetails/admin/delete', payload).then(resp => {
-                if (resp.data.data) {
-                    this.getData(this.state.currentPage);
-                }
-            }).catch(e => {
-                throw e;
-            });
+            if (this.state.current == "product")
+                axios.post(server + 'api/ProductDetails/admin/delete', payload).then(resp => {
+                    if (resp.data.data) {
+                        this.getData(this.state.currentPage, null);
+                    }
+                }).catch(e => {
+                    throw e;
+                });
+            else {
+                await axios.post(server + 'api/Orders/admin/delete', payload).then(resp => {
+                    if (resp.data) {
+                        this.getData(this.state.currentPage, null);
+                    }
+                }).catch(e => {
+                    throw e;
+                });
+            }
         });
+
 
     }
     AddProduct = (e) => {
@@ -193,10 +274,54 @@ class Dashboard extends React.Component {
         console.log(update)
 
     }
+    // approveMany = (e) => {
+    //     e.preventDefault();
+    //     this.state.selectedRows.forEach(element => {
+    //         await axios.patch(server + 'api/Orders/' + element.id + "?state=approved").then(resp => {
+    //             if (!resp.data)
+    //                 message.error("Server internal errors");
+
+    //         }).catch(e => {
+    //             throw e;
+    //         });
+    //     });
+    //     this.getData(1, null);
+    // }
     showModal = (e) => {
         e.preventDefault()
         this.state.visible = !this.state.visible;
         this.setState(this.state);
+    }
+    createProduct = (e) => {
+        e.preventDefault();
+        this.state.current = "create";
+        this.setState(this.state);
+    }
+    handleChangeOrderState = (e) => {
+
+        let token = reactLocalStorage.get("token");
+        let userId = reactLocalStorage.getObject("userInfo").userId;
+        this.state.orderstate = e;
+        if (userId) {
+            this.state.currentPage = 1;
+            let payload = {
+                token, userId,
+                pageSize: 9,
+                currentPage: 1,
+                state: e
+            }
+            axios.post(server + 'api/Orders/list-order', payload).then(resp => {
+                console.log(resp)
+                this.state.loading = false;
+                this.state.orders = resp.data.data != null ? resp.data.data : [];
+                this.state.orders = this.state.orders.map((item, index) => ({ key: index, ...item }));
+                this.state.total = resp.data.data != null ? resp.data.total : 0;
+                this.setState(this.state)
+            }).catch(e => {
+                throw e;
+            });
+
+        }
     }
     render() {
         let userInfo = reactLocalStorage.get("token");
@@ -241,7 +366,7 @@ class Dashboard extends React.Component {
                 title: 'Category',
                 dataIndex: 'category',
                 render: (text, record, index) =>
-                    <select placeholder="Select category" name="category" value={text} disabled={!this.state.isEdit[index]} onChange={e => this.handleChange(record, e)}>
+                    <select placeholder="Select category" name="category" value={text} disabled={!this.state.isEdit[index]} className="select-admin" onChange={e => this.handleChange(record, e)}>
                         <option value="Women">Women</option>
                         <option value="Men">Men</option>
                         <option value="Unisex">Unisex</option>
@@ -337,19 +462,23 @@ class Dashboard extends React.Component {
                         </Popover>
                     </div>
                 </Row>
-                <Row justify="start" align="middle" style={{ marginBottom: '15px' }}>
-                    {this.state.selectedRows.length == 1 && this.state.current == 'product' && !this.state.isSave && <Button onClick={e => this.edit(e)}>  <EditOutlined />Edit</Button>}
-                    {this.state.selectedRows.length == 1 && this.state.current == 'product' && this.state.isSave && <Button onClick={e => this.update(e)}>  <EditOutlined />Save</Button>}
-                    {this.state.selectedRows.length > 0 && <Button onClick={e => this.delete(e)} >  <DeleteOutlined />Delete</Button>}
-                    {this.state.selectedRows.length > 0 && this.state.current == 'order' && <Button onClick={e => this.submit(e)} >   <CheckOutlined />Approve</Button>}
-                    {this.state.current == 'order' && <Select>
-                        <Option>Pending</Option>
-                        <Option>Approved</Option>
-                        <Option>Deliveried</Option>
-                        <Option>Cancel</Option>
-                    </Select>}
+                <Row align="middle" justify="space-between" style={{ marginBottom: '15px', marginLeft: "25px" }}>
+                    <div >
+                        {this.state.current == 'product' && <Button onClick={e => this.createProduct(e)} className="ant-btn-primary function">  <PlusOutlined />Create Product</Button>}
+
+                        {this.state.selectedRows.length == 1 && this.state.current == 'product' && !this.state.isSave && <Button onClick={e => this.edit(e)} className="ant-btn-primary function">  <EditOutlined />Edit</Button>}
+                        {this.state.selectedRows.length == 1 && this.state.current == 'product' && this.state.isSave && <Button onClick={e => this.update(e)} className=" function ant-btn-primary">  <EditOutlined />Save</Button>}
+                        {this.state.selectedRows.length > 0 && (this.state.orderstate == "cancel" || this.state.current == "product") && <Button onClick={e => this.delete(e)} className=" function" >  <DeleteOutlined />Delete</Button>}
+                    </div><div>
+                        {this.state.current == 'order' && <Select placeholder="order state" style={{ width: 150, fontSize: "15px" }} onChange={this.handleChangeOrderState} value={this.state.orderstate}>
+                            <Option value="pending">Pending</Option>
+                            <Option value="approved">Approved</Option>
+                            <Option value="deliveried">Deliveried</Option>
+                            <Option value="cancel">Cancel</Option>
+                        </Select>}
+                    </div>
+                    {(this.state.current == 'product' || this.state.current == "order") && <Pagination defaultCurrent={1} current={this.state.currentPage} total={this.state.total} pageSize={9} onChange={(x) => this.getData(x, null)} />}
                 </Row>
-                {this.state.current != 'create' && <Row style={{ marginBottom: '15px' }}><Pagination defaultCurrent={1} current={this.state.currentPage} total={this.state.total} pageSize={9} onChange={(x) => this.getData(x)} /></Row>}
                 {this.state.current == 'product' && <Table columns={columnProduct} dataSource={this.state.products}
 
                     rowSelection={{ ...rowSelection }}
@@ -362,8 +491,11 @@ class Dashboard extends React.Component {
                     onRow={(record, rowIndex) => {
                         return {
                             onClick: event => {
+                                event.preventDefault();
+                                this.state.current = "detailOrder";
+                                this.state.idOrder = record.id;
+                                this.getDetailOrder();
 
-                                window.location = "admin/order/" + record.id
 
                             }
                         }
@@ -491,6 +623,147 @@ class Dashboard extends React.Component {
                         )}
                     </Form.List>
                 </Form></div></Row>}
+                {this.state.current == 'detailOrder' && <div>
+                    <div style={{ display: "flex", justifyContent: "center", flexDirection: 'column' }}>
+
+                        <div style={{ marginTop: '20px', marginBottom: "20px" }}>
+                            <Row justify="space-between" >
+                                <div style={{ fontSize: "25px", fontWeight: "bold" }}> <span style={{ padding: "35px" }}>Order #{this.state.purchase.order.id && this.state.purchase.order.id.substring(0, 4)}</span></div>
+                                <div style={{ width: "50vw", marginRight: "35px" }}>
+                                    <Steps direction="horizontal" current={this.state.currentStep} status={this.state.step}>
+                                        <Step title="Pending"></Step>
+                                        {this.state.purchase.order.state == "cancel" && <Step title="Cancel" />}
+                                        <Step title="Approved"></Step>
+                                        <Step title="In Progress" />
+                                        <Step title="Deliveried"></Step>
+
+                                    </Steps>
+                                </div>
+
+                            </Row>
+                            <Row align="middle" justify="space-between">
+
+                                <div style={{ fontSize: "23px", marginLeft: "35px" }}>Total <span style={{ fontSize: "23px", fontWeight: "bold" }}>{currencyFormat(this.state.purchase.order.amount)}</span> </div>
+
+
+                                <div style={{ marginRight: "25px" }}>
+                                    {this.state.purchase.order.state == 'pending' && <Button type="button" onClick={e => this.approved("approved", e)} style={{ marginRight: "15px" }}>Approved</Button>}
+                                    {this.state.purchase.order['state'] == 'pending' && <Button type="button" onClick={e => this.approved("cancel", e)} style={{ marginRight: "15px" }} >Cancel</Button>}
+                                    {this.state.purchase.order.state == 'approved' && <Button type="button" onClick={e => this.approved("in progress", e)} style={{ marginRight: "15px" }}>In progress</Button>}
+                                    {this.state.purchase.order.state == 'in progress' && <Button type="button" onClick={e => this.approved("deliveried", e)} style={{ marginRight: "15px" }}>Deliveried</Button>}
+                                </div>
+                            </Row>
+                            <div style={{ textAlign: "center", fontSize: '22px', fontWeight: "bold", marginBottom: "15px" }}>Order details</div>
+                            <Row justify="center" align="middle">
+                                <div style={{ width: "70vw" }}>
+                                    <Form
+
+                                        labelCol={{ span: 3, offset: 5 }}
+                                        labelAlign="left"
+                                        name="order"
+                                        initialValues={{
+
+                                            prefix: '84',
+                                        }}
+                                        scrollToFirstError={true}
+                                    >
+
+                                        <Form.Item
+                                            name="receiver"
+                                            label="Receiver "
+
+                                            style={{
+                                                display: 'flex', justifyContent:
+                                                    'center', width: 'calc(80% - 8px)'
+                                            }}
+                                        >
+                                            <span style={{ fontSize: "18px", fontWeight: "bold" }}>{this.state.purchase.order.receiver}</span>
+
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="phone"
+                                            label="Phone Number"
+
+                                            style={{
+                                                display: 'flex', justifyContent:
+                                                    'center', width: 'calc(80% - 8px)'
+                                            }}
+                                        >
+                                            <span style={{ fontSize: "18px", fontWeight: "bold" }}>{this.state.purchase.order.phoneNumber}</span>
+
+                                        </Form.Item>
+
+                                        <Input.Group compact style={{
+                                            display: 'flex', justifyContent:
+                                                'space-between', width: 'calc(75% - 8px)', marginLeft: '11%'
+                                        }}>
+                                            <Form.Item name='province'
+                                                label="Province"
+                                                labelCol={{ span: 4, offset: 5 }}
+                                                style={{
+                                                    display: 'flex', justifyContent:
+                                                        'space-around', width: '33%'
+                                                }} >
+                                                <div style={{ fontSize: "18px", fontWeight: "bold", marginLeft: "15px" }}>{this.state.purchase.order.province}</div>
+
+                                            </Form.Item>
+                                            <Form.Item name='district' style={{
+                                                display: 'flex', justifyContent:
+                                                    'space-around', width: '33%', textAlign: "center"
+                                            }}
+                                                labelCol={{ span: 4, offset: 8 }}
+                                                label="District"
+                                            >
+                                                <span style={{ fontSize: "18px", fontWeight: "bold" }}>{this.state.purchase.order.district}</span>
+
+
+                                            </Form.Item>
+                                            <Form.Item name='ward' label="Ward" style={{
+                                                display: 'flex', justifyContent:
+                                                    'space-around', width: '33%'
+                                            }}
+                                                labelCol={{ span: 6, offset: 2 }}
+                                            >
+                                                <span style={{ fontSize: "18px", fontWeight: "bold" }}>{this.state.purchase.order.ward}</span>
+
+
+                                            </Form.Item>
+                                        </Input.Group>
+
+                                        <Form.Item
+                                            name="address"
+                                            label="Address"
+                                            tooltip="Address receive package"
+                                            style={{
+                                                display: 'flex', justifyContent:
+                                                    'space-around', width: 'calc(80% - 8px)'
+                                            }}
+
+                                        >
+                                            <span style={{ fontSize: "18px", fontWeight: "bold" }}>{this.state.purchase.order.address}</span>
+
+
+                                        </Form.Item>
+                                    </Form>
+                                </div>
+                            </Row>
+                            <Row align="middle" justify="center" >
+                                {this.state.purchase.details.map(data => (<RowCart product={data} isCheckout={true}>
+                                </RowCart>
+                                ))}
+                            </Row>
+                            <Row justify="end" style={{ width: "70vw" }}>
+                                <Col span={2} offset={7} style={{ fontSize: "24px" }}>Total:</Col>
+                                <Col span={2} offset={1} style={{ fontSize: "24px", fontWeight: "bold" }}>
+                                    {currencyFormat(this.state.purchase.order.amount)}</Col>
+                            </Row>
+
+                        </div>
+
+
+                    </div>
+
+                </div>}
 
 
             </div >

@@ -53,6 +53,11 @@ class History extends React.Component {
 
                                     </Row>
                                     <Row align="middle" justify="center" style={{ fontSize: "25px", fontWeight: "bold" }}> <span style={{ padding: "35px" }}>Order #{item.order.id.substring(0, 4)}</span> - <span style={{ padding: "35px" }}>{currencyFormat(item.order.amount)}</span> - <span style={{ padding: "35px" }}>{item.order.state}</span></Row>
+                                    <Row align="middle" justify="center">
+                                        <div style={{ fontSize: "20px" }}> Reciever: <span style={{ fontWeight: "bold" }}>{item.order.receiver} - {item.order.phoneNumber}</span></div>
+                                        <div style={{ fontSize: "20px", marginLeft: "15px" }}>
+                                            Address: <span style={{ fontWeight: "bold" }}>{item.order.address + ", " + item.order.ward + ", " + item.order.district + ", " + item.order.province}</span></div>
+                                    </Row>
                                     <Row align="middle" justify="center" key={index}>
 
 

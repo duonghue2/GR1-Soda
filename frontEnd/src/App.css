@@ -177,3 +177,15 @@ td.ant-table-cell{
 
   color:black!important
 }
+ul.ant-pagination{
+  margin-right: 35px;
+}
+.function{
+  margin-right:15px
+}
+.select-admin{
+  
+font-size: 15px;
+color: black;
+padding:10px
+}

@@ -148,7 +148,7 @@ class Checkout extends React.Component {
                                         'center', width: 'calc(80% - 8px)'
                                 }}
                             >
-                                <Input value={userInfo.email} />
+                                <Input />
                             </Form.Item>
                             <Form.Item
                                 name="phone"
@@ -169,7 +169,7 @@ class Checkout extends React.Component {
                                     style={{
                                         width: '100%',
                                     }}
-                                    value={userInfo.phone}
+
                                 />
                             </Form.Item>
 
@@ -224,7 +224,7 @@ class Checkout extends React.Component {
                                     labelCol={{ span: 6, offset: 2 }}
                                     rules={[
                                         {
-                                            required: false,
+                                            required: true,
                                             message: "Please input your ward"
                                         }
                                     ]} >

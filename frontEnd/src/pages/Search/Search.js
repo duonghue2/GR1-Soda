@@ -5,7 +5,7 @@ import ManHeading from '../../assests/men-dropdown2.jpg'
 import { message } from 'antd'
 import axios from 'axios'
 import { server } from '../../enviroment'
-
+import Footer from '../../components/footer/Footer';
 import DisplayListProduct from '../../components/product/DisplayListProduct'
 
 class Search extends React.Component {
@@ -51,6 +51,7 @@ class Search extends React.Component {
 
                 </div>
                 <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} />
+                <Footer></Footer>
             </div>)
 
     }
