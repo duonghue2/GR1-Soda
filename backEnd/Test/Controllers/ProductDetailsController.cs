@@ -56,7 +56,7 @@ namespace Test.Controllers
                             ToList();
             if (req.Name != null) {
 
-                listProd=listProd.Where(s => s.Name.Contains(req.Name)).ToList();
+                listProd=listProd.Where(s => s.Name.ToLower().Contains(req.Name.ToLower())).ToList();
             }
                        var listRes=listProd.Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToList();
             var response = new BaseResponse<List<GetListDetailResponse>>();

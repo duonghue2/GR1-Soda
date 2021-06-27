@@ -9,8 +9,8 @@ namespace SodaBackEnd.Business.Data
     public class GetListOrderRequest:BaseListRequest
     {
         public string State { get; set; }
-        public string ReceiverName { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public string Name { get; set; }
+       
      
     }
 }

@@ -35,16 +35,18 @@ namespace Test.Controllers
                 foreach (Product pr in listProduct) {
                     var image = _context.ProductImages.Where(s => s.ProductId == pr.Id).Select(s => s.Image).ToList();
                     var detail = _context.ProductDetails.Where(s => s.ProductId == pr.Id && s.IsActive == true).ToList();
-                    
-                    var productModel = new ProductModel();
-                    productModel.Images = image;
-                    productModel.Name = pr.Name;
-                    productModel.Id = pr.Id;
-                    productModel.OriginPrice = pr.Price;
-                    productModel.Description = pr.Description;
-                    productModel.Category = pr.Category;
-                    productModel.Detail = detail;
-                    listProductModel.Add(productModel);
+                    if (detail.Count() > 0)
+                    {
+                        var productModel = new ProductModel();
+                        productModel.Images = image;
+                        productModel.Name = pr.Name;
+                        productModel.Id = pr.Id;
+                        productModel.OriginPrice = pr.Price;
+                        productModel.Description = pr.Description;
+                        productModel.Category = pr.Category;
+                        productModel.Detail = detail;
+                        listProductModel.Add(productModel);
+                    }
                 }
                 var list = listProductModel.Skip((request.CurrentPage - 1) * request.PageSize).Take(request.PageSize).ToList();
                 var response = new BaseResponse<List<ProductModel>>();
@@ -84,7 +86,12 @@ namespace Test.Controllers
             productModel.Description = product.Description;
             productModel.Category = product.Category;
             var detail =  _context.ProductDetails.Where(s => s.ProductId == id && s.IsActive == true).ToList();
-          if(detail!=null)
+          if(detail==null||detail.Count()==0)
+            {
+                response.Status = 0;
+                response.Message = "Not found product";
+                return response;
+            }
             productModel.Detail = detail;
             var image = _context.ProductImages.Where(s => s.ProductId == id).Select(s => s.Image).ToList();
             if (image != null) productModel.Images = image;
@@ -154,58 +161,38 @@ namespace Test.Controllers
 
             try
             {
-                
-                var listProduct = new List<Product>();
-
-                var newListProduct1 = new List<Product>();
+                var listProduct = _context.Products.AsQueryable();
                 if (request.Gender != null&&request.Gender.Count>0)
                 {
-                    listProduct = _context.Products.Where(x => request.Gender.Any(s => s == x.Category)).ToList();
-                    
-
+                    listProduct = listProduct.Where(x => request.Gender.Any(s => s == x.Category));
                 } 
-                    else listProduct = _context.Products.ToList();
+                 
                 if (request.Name != null)
                 {
-                    foreach (var pro in listProduct)
-                    {
-                        if (pro.Name.ToLower().Contains(request.Name.ToLower()))
-                            newListProduct1.Add(pro);
-
-                    }
+                    listProduct = listProduct.Where(s => s.Name.ToLower().Contains(request.Name.ToLower()));
                 }
-                else newListProduct1 = listProduct;
-            
-                
-            
+
+
+               var newListProduct1 = listProduct.ToList().Skip((request.CurrentPage - 1) * request.PageSize).Take(request.PageSize).ToList(); ;
+
                 var listProductModel = new List<ProductModel>();
+                
                 foreach (Product pr in newListProduct1)
                 {
-                    var query = _context.ProductDetails.Where(s => s.ProductId == pr.Id&&s.IsActive==true);
+                    var query = _context.ProductDetails.AsQueryable();
+                    query = query.Where(s => s.ProductId == pr.Id&&s.IsActive==true);
                     if (request.Category!=null&&request.Category.Count>0)
                     {
 
                         query = query.Where(s => request.Category.Any(x => x == s.SubCategories));
                     }
-              
+                    if (request.PriceFrom != null) query = query.Where(s => s.Price >= request.PriceFrom);
+                    if (request.PriceTo != null) query = query.Where(s => s.Price <= request.PriceTo);
                     var  detail = query.ToList();
-                    var newListProduct = new List<ProductDetail>();
-                    
-                        foreach (var item in detail)
-                        {
-                            if (request.PriceFrom==null||(request.PriceFrom != null&&item.Price >= request.PriceFrom))
-                            {
-                                if (request.PriceTo == null || (request.PriceTo != null && item.Price <= request.PriceFrom))
-                                {
-                                    newListProduct.Add(item);
-                                }
-
-
-                            }
-                        }
+                  
                     
 
-                    if (newListProduct.Count != 0)
+                    if (detail.Count != 0)
                     {
                         var image = _context.ProductImages.Where(s => s.ProductId == pr.Id).Select(s => s.Image).ToList();
 
@@ -216,7 +203,7 @@ namespace Test.Controllers
                         productModel.OriginPrice = pr.Price;
                         productModel.Description = pr.Description;
                         productModel.Category = pr.Category;
-                        productModel.Detail = newListProduct;
+                        productModel.Detail = detail;
                         listProductModel.Add(productModel);
                     }
                 }

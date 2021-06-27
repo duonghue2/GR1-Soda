@@ -99,9 +99,15 @@ namespace Test.Controllers
             if (!_tokenService.IsValidToken(req.Token, req.UserId, actor.Name)||!actor.IsAdmin) throw new ArgumentException("Unauthorize");
             var response = new BaseResponse<List<OrderModel>>();
             var listOrderRes = new List<OrderModel>();
-            var orders = _context.Orders.Where(s => s.State == req.State);
-            if (req.CreateDate != null) orders.Where(s => s.CreateAt.Value.Date == req.CreateDate.Value.Date && s.CreateAt.Value.Month == req.CreateDate.Value.Month && s.CreateAt.Value.Year == req.CreateDate.Value.Year);
-            if (req.ReceiverName != null) orders.Where(s => s.Receiver == req.ReceiverName);
+            var orders = _context.Orders.AsQueryable();
+         
+
+            if (req.State != null)
+            {
+               orders= orders.Where(s =>  s.State == req.State);
+            }
+
+            if (req.Name != null) { orders=orders.Where(s => s.Receiver.ToLower().Contains(req.Name.ToLower())); }
 
 
             var listOrder= orders.ToList().Skip((req.CurrentPage - 1) * req.PageSize).Take(req.PageSize).ToList(); 
@@ -122,6 +128,7 @@ namespace Test.Controllers
                 order.Address = item.Address;
                 order.Receiver = item.Receiver;
                 order.State = item.State;
+                order.PhoneNumber = item.PhoneNumber;
                 order.Amount = item.Amount;
                 order.CreateAt = item.CreateAt;
                 order.UserName = actor.Name;
@@ -194,14 +201,17 @@ namespace Test.Controllers
             newOrder.Id = Guid.NewGuid().ToString();
             newOrder.UserId = order.UserId;
             newOrder.Province = order.Province;
+                newOrder.Receiver = order.Receiver==null? actor.Name:order.Receiver;
             newOrder.District = order.District;
             newOrder.Ward = order.Ward;
             newOrder.ShippingCost = 0;
+               
             newOrder.Address = order.Address;
-            newOrder.Receiver = order.Receiver;
+                
             newOrder.CreateAt = DateTime.Now;
             newOrder.Discount = 0;
             newOrder.Amount =detail.Data.Total;
+                newOrder.PhoneNumber = order.Phone==null?actor.Phonenumber:order.Phone;
             newOrder.State = "pending";
                 newOrder.CreateAt = DateTime.Now;
                
@@ -254,22 +264,31 @@ namespace Test.Controllers
         }
 
         // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Order>> DeleteOrder(string id)
+        [HttpPost]
+        [Route("admin/delete")]
+        public async Task<Boolean> DeleteOrder(DeleteRequest id)
         {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
+            
+                var order =  _context.Orders.Find(id.Id);
+            
+            if (order.State == "cancel")
             {
-                return NotFound();
-            }
+                var detail = _context.OrderDetails.Where(s => s.OrderId == id.Id).ToList();
 
-            _context.Orders.Remove(order);
+                if (order == null)
+                {
+                    return false;
+                }
+                _context.OrderDetails.RemoveRange(detail);
+                _context.Orders.Remove(order);
+            }
+           
             await _context.SaveChangesAsync();
 
-            return order;
+            return true;
         }
         [HttpPatch("{id}")]
-        public async Task<BaseResponse<PurchaseHistoryResponse>> ApproveOrder(string id,string state )
+        public async Task<bool> UpdateStateOrder(string id,string state )
         {
             var order = _context.Orders.Where(s => id == s.Id).FirstOrDefault();
             if (order == null) throw new Exception("ORDER_NOT_FOUND");       
@@ -287,10 +306,7 @@ namespace Test.Controllers
             }
            if(state!=null)order.State = state;
             await _context.SaveChangesAsync();
-            return await GetOrderById(id);
-
-
-
+            return true;
         }
 
 

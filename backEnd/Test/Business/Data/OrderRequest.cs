@@ -12,6 +12,7 @@ namespace SodaBackEnd.Data
         public string Province { get; set; }
         public string District { get; set; }
         public string Receiver { get; set; }
+        public string Phone { get; set; }
         public string? Ward { get; set; }
         public string Address { get; set; }
     }
