@@ -71,7 +71,7 @@ class Dashboard extends React.Component {
             else this.state.step = "process"
             if (orderstate == 'pending') this.state.currentStep = 1;
             else if (orderstate == "approved") this.state.currentStep = 2;
-            else if (orderstate == 'in process') this.state.currentStep = 3;
+            else if (orderstate == 'in progress') this.state.currentStep = 3;
             else if (orderstate == 'deliveried') this.state.currentStep = 4;
             else this.state.currentStep = 1;
 
@@ -231,7 +231,9 @@ class Dashboard extends React.Component {
         axios.post(server + 'api/Products', payload).then(resp => {
             debugger;
             if (resp.data) {
-                this.message.success("Create successfully");
+                message.success("Create successfully");
+                this.state.current = "product";
+                this.setState(this.state);
             }
         }).catch(e => {
             throw e;
@@ -591,7 +593,7 @@ class Dashboard extends React.Component {
                                             fieldKey={[fieldKey, 'pice']}
 
                                         >
-                                            <InputNumber placeholder="sale price" />
+                                            <InputNumber placeholder="sale price" style={{ height: "40px", fontSize: "17px" }} />
                                         </Form.Item>
                                         <Form.Item
                                             {...restField}
@@ -599,7 +601,7 @@ class Dashboard extends React.Component {
                                             fieldKey={[fieldKey, 'quantity']}
 
                                         >
-                                            <InputNumber placeholder="quantity" />
+                                            <InputNumber placeholder="quantity" style={{ height: "40px", fontSize: "17px" }} />
                                         </Form.Item>
                                         <Form.Item
                                             {...restField}

@@ -64,7 +64,7 @@ class Categories extends React.Component {
           {/* <Row align="center" justify="center" > <span className="title"> {params.categories}</span></Row> */}
           {/* <Row align="center" justify="center"><span className="subTitle"> {params.sex} -<RightOutlined className="router" />{params.categories}</span></Row> */}
         </div>
-        <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} options={params.sex == "women" ? womanOption : manOption} loading={this.state.loading} />
+        <DisplayListProduct products={this.state.listProduct} {...this.props} getListProduct={e => this.getListProduct(e)} total={this.state.total} options={params.sex == "women" ? womanOption : manOption} loading={this.state.loading} gender={params.sex} category={params.categories} />
 
         <Footer />
       </div>)

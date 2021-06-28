@@ -239,7 +239,7 @@ namespace Test.Controllers
                     if (request.SubCategory != null)
                     {
                        
-                    detail=detail.Where( s=>s.SubCategories.ToLower().Contains(request.SubCategory)).ToList();
+                    detail=detail.Where( s=>s.SubCategories!=null&&s.SubCategories.ToLower().Contains(request.SubCategory)).ToList();
                     }
                     if (detail.Count!=0)
                     {
@@ -294,7 +294,8 @@ namespace Test.Controllers
                 
                 list.Id = Guid.NewGuid().ToString();
                 list.ProductId = product.Id;
-               
+                    list.IsActive = true;
+                    if (list.Price == null) list.Price = product.Price;
                 _context.ProductDetails.Add(list);
             }
           

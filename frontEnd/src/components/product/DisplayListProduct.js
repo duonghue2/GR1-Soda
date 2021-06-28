@@ -112,7 +112,9 @@ class DisplayListProduct extends React.Component {
 
     }
     componentDidMount() {
-        if (this.props.gender != null) this.state.gender = [this.props.gender]; this.setState(this.state);
+        if (this.props.gender != null) this.state.gender = [this.props.gender];
+        if (this.props.category != null) this.state.category = [this.props.category];
+        this.setState(this.state);
     }
 
     render() {
