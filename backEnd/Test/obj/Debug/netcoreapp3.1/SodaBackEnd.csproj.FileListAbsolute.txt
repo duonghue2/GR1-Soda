@@ -1,3 +1,4 @@
+D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\web.config
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\appsettings.Development.json
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\appsettings.json
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\SodaBackEnd.exe
@@ -154,7 +155,6 @@ D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandar
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Security.Principal.Windows.dll
 D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
-D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.csprojAssemblyReference.cache
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.AssemblyInfoInputs.cache
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.AssemblyInfo.cs
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.csproj.CoreCompileInputs.cache
@@ -187,8 +187,4 @@ D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.csproj.CopyComp
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.dll
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.pdb
 D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.genruntimeconfig.cache
-D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.dll
-D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.Security.dll
-D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.Security.Jwt.dll
-D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Microsoft.Owin.Security.OAuth.dll
-D:\term 4.2\GR1\backEnd\Test\bin\Debug\netcoreapp3.1\Owin.dll
+D:\term 4.2\GR1\backEnd\Test\obj\Debug\netcoreapp3.1\SodaBackEnd.csprojAssemblyReference.cache

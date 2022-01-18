@@ -70,14 +70,6 @@
               "target": "Package",
               "version": "[3.1.15, )"
             },
-            "Microsoft.Owin.Security": {
-              "target": "Package",
-              "version": "[4.2.0, )"
-            },
-            "Microsoft.Owin.Security.Jwt": {
-              "target": "Package",
-              "version": "[4.2.0, )"
-            },
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[3.1.5, )"
@@ -105,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.204\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.210\\RuntimeIdentifierGraph.json"
         }
       }
     }
